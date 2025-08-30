@@ -2,12 +2,9 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Play, TrendingUp, Users, Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/health-hero.jpg";
-
 const HeroSection = () => {
   const navigate = useNavigate();
-
-  return (
-    <div className="relative min-h-screen flex items-center overflow-hidden bg-gradient-hero">
+  return <div className="relative min-h-screen flex items-center overflow-hidden bg-gradient-hero">
       {/* Background Elements */}
       <div className="absolute inset-0 bg-gradient-hero opacity-90" />
       <div className="absolute top-20 left-10 w-20 h-20 bg-primary/20 rounded-full animate-bounce-gentle" />
@@ -55,48 +52,25 @@ const HeroSection = () => {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Button 
-                size="lg"
-                onClick={() => navigate("/auth")}
-                className="bg-white text-primary hover:bg-white/90 rounded-2xl px-8 py-4 text-lg font-semibold shadow-float hover:shadow-glow transition-all duration-300 hover:scale-105"
-              >
+              <Button size="lg" onClick={() => navigate("/auth")} className="bg-white text-primary hover:bg-white/90 rounded-2xl px-8 py-4 text-lg font-semibold shadow-float hover:shadow-glow transition-all duration-300 hover:scale-105">
                 Start Your Journey
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               
-              <Button 
-                variant="outline"
-                size="lg"
-                onClick={() => navigate("/data")}
-                className="border-2 border-white/30 text-white hover:bg-white/10 rounded-2xl px-8 py-4 text-lg font-semibold backdrop-blur-sm transition-all duration-300 hover:scale-105"
-              >
+              <Button variant="outline" size="lg" onClick={() => navigate("/data")} className="border-2 border-white/30 text-white hover:bg-white/10 rounded-2xl px-8 py-4 text-lg font-semibold backdrop-blur-sm transition-all duration-300 hover:scale-105">
                 <Play className="w-5 h-5 mr-2" />
                 View The Data
               </Button>
             </div>
 
             {/* Social Proof */}
-            <div className="flex items-center justify-center lg:justify-start space-x-4 pt-6">
-              <div className="flex -space-x-2">
-                {[1,2,3,4].map((i) => (
-                  <div key={i} className="w-10 h-10 rounded-full bg-gradient-secondary border-2 border-white" />
-                ))}
-              </div>
-              <div className="text-white/90">
-                <div className="font-semibold">Join 10,000+ users</div>
-                <div className="text-sm text-white/70">already on their health journey</div>
-              </div>
-            </div>
+            
           </div>
 
           {/* Hero Image */}
           <div className="relative">
             <div className="relative z-10 rounded-3xl overflow-hidden shadow-float bg-white/10 backdrop-blur-sm p-6">
-              <img 
-                src={heroImage} 
-                alt="Healthy lifestyle illustration with fruits, exercise, and wellness elements"
-                className="w-full h-auto rounded-2xl shadow-lg"
-              />
+              <img src={heroImage} alt="Healthy lifestyle illustration with fruits, exercise, and wellness elements" className="w-full h-auto rounded-2xl shadow-lg" />
             </div>
             
             {/* Floating Elements */}
@@ -122,8 +96,6 @@ const HeroSection = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default HeroSection;
