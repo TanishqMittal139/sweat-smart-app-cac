@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import Habits from "./pages/Habits";
 import Quiz from "./pages/Quiz";
 import DataVisualization from "./pages/DataVisualization";
+import Chat from "./pages/Chat";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/habits" element={<Habits />} />
           <Route path="/quiz" element={<Quiz />} />
           <Route path="/data" element={<DataVisualization />} />
+          <Route path="/chat" element={<Chat />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
