@@ -73,7 +73,7 @@ const Auth = () => {
       });
     } else {
       toast({
-        title: "Welcome to HealthyLife!",
+        title: "Welcome to SweatSmart!",
         description: "Please check your email to verify your account.",
       });
     }
@@ -112,7 +112,7 @@ const Auth = () => {
             <div className="w-10 h-10 bg-white rounded-2xl flex items-center justify-center animate-pulse-glow">
               <Heart className="w-6 h-6 text-primary" fill="currentColor" />
             </div>
-            <span className="text-2xl font-bold text-white">HealthyLife</span>
+            <span className="text-2xl font-bold text-white">SweatSmart</span>
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">Join Your Health Journey</h1>
           <p className="text-white/80">Start transforming your life today</p>

@@ -25,7 +25,7 @@ const Navigation = () => {
               <Heart className="w-5 h-5 text-white" fill="currentColor" />
             </div>
             <span className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              HealthyLife
+              SweatSmart
             </span>
           </div>
 
