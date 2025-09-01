@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,23 +8,100 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Heart, User, Mail, Lock, Scale, Ruler, Activity } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Auth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { signUp, signIn, user, loading } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Form data
+  const [signUpData, setSignUpData] = useState({
+    fullName: '',
+    email: '',
+    password: '',
+    heightCm: '',
+    weightKg: '',
+    activityLevel: ''
+  });
+  
+  const [signInData, setSignInData] = useState({
+    email: '',
+    password: ''
+  });
 
-  const handleAuth = async (action: string) => {
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user && !loading) {
+      navigate('/dashboard');
+    }
+  }, [user, loading, navigate]);
+
+  const handleSignUp = async () => {
+    if (!signUpData.fullName || !signUpData.email || !signUpData.password) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+    
+    // Prepare optional profile data
+    const profileData: any = {};
+    if (signUpData.heightCm) profileData.height_cm = parseInt(signUpData.heightCm);
+    if (signUpData.weightKg) profileData.weight_kg = parseFloat(signUpData.weightKg);
+    if (signUpData.activityLevel) profileData.activity_level = signUpData.activityLevel;
+
+    const { error } = await signUp(
+      signUpData.email,
+      signUpData.password,
+      signUpData.fullName,
+      Object.keys(profileData).length > 0 ? profileData : undefined
+    );
+
+    setIsLoading(false);
+
+    if (error) {
+      toast({
+        title: "Sign Up Failed",
+        description: error.message || "An error occurred during sign up.",
+        variant: "destructive",
+      });
+    } else {
       toast({
         title: "Welcome to HealthyLife!",
-        description: "Your account has been created successfully.",
+        description: "Please check your email to verify your account.",
       });
-      navigate("/dashboard");
-    }, 1500);
+    }
+  };
+
+  const handleSignIn = async () => {
+    if (!signInData.email || !signInData.password) {
+      toast({
+        title: "Missing Information",
+        description: "Please enter your email and password.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    
+    const { error } = await signIn(signInData.email, signInData.password);
+    
+    setIsLoading(false);
+
+    if (error) {
+      toast({
+        title: "Sign In Failed",
+        description: error.message || "Invalid email or password.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -61,7 +138,9 @@ const Auth = () => {
                     </Label>
                     <Input 
                       id="name" 
-                      placeholder="Enter your full name" 
+                      placeholder="Enter your full name"
+                      value={signUpData.fullName}
+                      onChange={(e) => setSignUpData(prev => ({ ...prev, fullName: e.target.value }))}
                       className="rounded-xl border-2 focus:border-primary"
                     />
                   </div>
@@ -74,7 +153,9 @@ const Auth = () => {
                     <Input 
                       id="email" 
                       type="email" 
-                      placeholder="Enter your email" 
+                      placeholder="Enter your email"
+                      value={signUpData.email}
+                      onChange={(e) => setSignUpData(prev => ({ ...prev, email: e.target.value }))}
                       className="rounded-xl border-2 focus:border-primary"
                     />
                   </div>
@@ -87,7 +168,9 @@ const Auth = () => {
                     <Input 
                       id="password" 
                       type="password" 
-                      placeholder="Create a password" 
+                      placeholder="Create a password"
+                      value={signUpData.password}
+                      onChange={(e) => setSignUpData(prev => ({ ...prev, password: e.target.value }))}
                       className="rounded-xl border-2 focus:border-primary"
                     />
                   </div>
@@ -107,7 +190,9 @@ const Auth = () => {
                       </Label>
                       <Input 
                         id="height" 
-                        placeholder="5'8&quot;" 
+                        placeholder="170 cm"
+                        value={signUpData.heightCm}
+                        onChange={(e) => setSignUpData(prev => ({ ...prev, heightCm: e.target.value }))}
                         className="rounded-xl border-2 focus:border-primary"
                       />
                     </div>
@@ -119,7 +204,9 @@ const Auth = () => {
                       </Label>
                       <Input 
                         id="weight" 
-                        placeholder="150 lbs" 
+                        placeholder="70 kg"
+                        value={signUpData.weightKg}
+                        onChange={(e) => setSignUpData(prev => ({ ...prev, weightKg: e.target.value }))}
                         className="rounded-xl border-2 focus:border-primary"
                       />
                     </div>
@@ -130,7 +217,10 @@ const Auth = () => {
                       <Activity className="w-4 h-4" />
                       <span>Activity Level</span>
                     </Label>
-                    <Select>
+                    <Select 
+                      value={signUpData.activityLevel} 
+                      onValueChange={(value) => setSignUpData(prev => ({ ...prev, activityLevel: value }))}
+                    >
                       <SelectTrigger className="rounded-xl border-2 focus:border-primary">
                         <SelectValue placeholder="Select your activity level" />
                       </SelectTrigger>
@@ -138,15 +228,15 @@ const Auth = () => {
                         <SelectItem value="sedentary">Sedentary (little to no exercise)</SelectItem>
                         <SelectItem value="light">Lightly Active (light exercise 1-3 days/week)</SelectItem>
                         <SelectItem value="moderate">Moderately Active (moderate exercise 3-5 days/week)</SelectItem>
-                        <SelectItem value="very">Very Active (hard exercise 6-7 days/week)</SelectItem>
-                        <SelectItem value="extra">Extra Active (very hard exercise, physical job)</SelectItem>
+                        <SelectItem value="active">Very Active (hard exercise 6-7 days/week)</SelectItem>
+                        <SelectItem value="very_active">Extra Active (very hard exercise, physical job)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
 
                 <Button 
-                  onClick={() => handleAuth("signup")}
+                  onClick={handleSignUp}
                   disabled={isLoading}
                   className="w-full bg-gradient-primary hover:shadow-glow rounded-2xl py-3 text-lg font-semibold transition-all duration-300 hover:scale-105"
                 >
@@ -161,7 +251,9 @@ const Auth = () => {
                     <Input 
                       id="signin-email" 
                       type="email" 
-                      placeholder="Enter your email" 
+                      placeholder="Enter your email"
+                      value={signInData.email}
+                      onChange={(e) => setSignInData(prev => ({ ...prev, email: e.target.value }))}
                       className="rounded-xl border-2 focus:border-primary"
                     />
                   </div>
@@ -171,14 +263,16 @@ const Auth = () => {
                     <Input 
                       id="signin-password" 
                       type="password" 
-                      placeholder="Enter your password" 
+                      placeholder="Enter your password"
+                      value={signInData.password}
+                      onChange={(e) => setSignInData(prev => ({ ...prev, password: e.target.value }))}
                       className="rounded-xl border-2 focus:border-primary"
                     />
                   </div>
                 </div>
 
                 <Button 
-                  onClick={() => handleAuth("signin")}
+                  onClick={handleSignIn}
                   disabled={isLoading}
                   className="w-full bg-gradient-primary hover:shadow-glow rounded-2xl py-3 text-lg font-semibold transition-all duration-300 hover:scale-105"
                 >
