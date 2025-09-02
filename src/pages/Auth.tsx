@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { Heart, User, Mail, Lock, Scale, Ruler, Activity } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -23,7 +24,8 @@ const Auth = () => {
     password: '',
     heightCm: '',
     weightKg: '',
-    activityLevel: ''
+    activityLevel: '',
+    unitSystem: 'metric' as 'metric' | 'imperial'
   });
   
   const [signInData, setSignInData] = useState({
@@ -52,9 +54,32 @@ const Auth = () => {
     
     // Prepare optional profile data
     const profileData: any = {};
-    if (signUpData.heightCm) profileData.height_cm = parseInt(signUpData.heightCm);
-    if (signUpData.weightKg) profileData.weight_kg = parseFloat(signUpData.weightKg);
+    
+    // Convert imperial to metric for storage
+    if (signUpData.heightCm) {
+      const heightValue = parseFloat(signUpData.heightCm);
+      if (signUpData.unitSystem === 'imperial') {
+        // Convert inches to cm
+        profileData.height_cm = Math.round(heightValue * 2.54);
+      } else {
+        profileData.height_cm = Math.round(heightValue);
+      }
+    }
+    
+    if (signUpData.weightKg) {
+      const weightValue = parseFloat(signUpData.weightKg);
+      if (signUpData.unitSystem === 'imperial') {
+        // Convert lbs to kg
+        profileData.weight_kg = Math.round(weightValue * 0.453592 * 100) / 100;
+      } else {
+        profileData.weight_kg = Math.round(weightValue * 100) / 100;
+      }
+    }
+    
     if (signUpData.activityLevel) profileData.activity_level = signUpData.activityLevel;
+    
+    // Store the user's preferred unit system
+    profileData.preferred_unit_system = signUpData.unitSystem;
 
     const { error } = await signUp(
       signUpData.email,
@@ -182,6 +207,26 @@ const Auth = () => {
                     Optional Health Information (for personalized recommendations)
                   </h3>
                   
+                  {/* Unit System Toggle */}
+                  <div className="flex items-center justify-center space-x-4 mb-6 p-4 bg-muted/50 rounded-2xl">
+                    <span className={`text-sm font-medium ${signUpData.unitSystem === 'metric' ? 'text-primary' : 'text-muted-foreground'}`}>
+                      Metric
+                    </span>
+                    <Switch
+                      checked={signUpData.unitSystem === 'imperial'}
+                      onCheckedChange={(checked) => setSignUpData(prev => ({ 
+                        ...prev, 
+                        unitSystem: checked ? 'imperial' : 'metric',
+                        heightCm: '', // Clear values when switching
+                        weightKg: ''
+                      }))}
+                      className="data-[state=checked]:bg-primary"
+                    />
+                    <span className={`text-sm font-medium ${signUpData.unitSystem === 'imperial' ? 'text-primary' : 'text-muted-foreground'}`}>
+                      Imperial
+                    </span>
+                  </div>
+                  
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="height" className="flex items-center space-x-2">
@@ -190,9 +235,16 @@ const Auth = () => {
                       </Label>
                       <Input 
                         id="height" 
-                        placeholder="170 cm"
+                        type="number"
+                        placeholder={signUpData.unitSystem === 'metric' ? '170 cm' : '68 in'}
                         value={signUpData.heightCm}
-                        onChange={(e) => setSignUpData(prev => ({ ...prev, heightCm: e.target.value }))}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          // Only allow numbers and decimal points
+                          if (value === '' || /^\d*\.?\d*$/.test(value)) {
+                            setSignUpData(prev => ({ ...prev, heightCm: value }));
+                          }
+                        }}
                         className="rounded-xl border-2 focus:border-primary"
                       />
                     </div>
@@ -204,9 +256,16 @@ const Auth = () => {
                       </Label>
                       <Input 
                         id="weight" 
-                        placeholder="70 kg"
+                        type="number"
+                        placeholder={signUpData.unitSystem === 'metric' ? '70 kg' : '154 lbs'}
                         value={signUpData.weightKg}
-                        onChange={(e) => setSignUpData(prev => ({ ...prev, weightKg: e.target.value }))}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          // Only allow numbers and decimal points
+                          if (value === '' || /^\d*\.?\d*$/.test(value)) {
+                            setSignUpData(prev => ({ ...prev, weightKg: value }));
+                          }
+                        }}
                         className="rounded-xl border-2 focus:border-primary"
                       />
                     </div>
