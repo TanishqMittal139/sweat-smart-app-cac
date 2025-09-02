@@ -6,7 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Heart, User, Mail, Lock, Scale, Ruler, Activity } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Heart, User, Mail, Lock, Scale, Ruler, Activity, Info } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
@@ -25,7 +26,8 @@ const Auth = () => {
     heightCm: '',
     weightKg: '',
     activityLevel: '',
-    unitSystem: 'metric' as 'metric' | 'imperial'
+    unitSystem: 'metric' as 'metric' | 'imperial',
+    biologicalSex: '' as 'male' | 'female' | ''
   });
   
   const [signInData, setSignInData] = useState({
@@ -77,6 +79,7 @@ const Auth = () => {
     }
     
     if (signUpData.activityLevel) profileData.activity_level = signUpData.activityLevel;
+    if (signUpData.biologicalSex) profileData.biological_sex = signUpData.biologicalSex;
     
     // Store the user's preferred unit system
     profileData.preferred_unit_system = signUpData.unitSystem;
@@ -226,6 +229,42 @@ const Auth = () => {
                       Imperial
                     </span>
                   </div>
+
+                  {/* Biological Sex Toggle */}
+                  <TooltipProvider>
+                    <div className="space-y-3">
+                      <div className="flex items-center space-x-2">
+                        <Label className="flex items-center space-x-2">
+                          <User className="w-4 h-4" />
+                          <span>Biological Sex</span>
+                        </Label>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Info className="w-4 h-4 text-muted-foreground" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Please select your biological sex for accurate health recommendations</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                      <div className="flex items-center justify-center space-x-4 p-4 bg-muted/50 rounded-2xl">
+                        <span className={`text-sm font-medium ${signUpData.biologicalSex === 'female' ? 'text-primary' : 'text-muted-foreground'}`}>
+                          Female
+                        </span>
+                        <Switch
+                          checked={signUpData.biologicalSex === 'male'}
+                          onCheckedChange={(checked) => setSignUpData(prev => ({ 
+                            ...prev, 
+                            biologicalSex: checked ? 'male' : 'female'
+                          }))}
+                          className="data-[state=checked]:bg-primary"
+                        />
+                        <span className={`text-sm font-medium ${signUpData.biologicalSex === 'male' ? 'text-primary' : 'text-muted-foreground'}`}>
+                          Male
+                        </span>
+                      </div>
+                    </div>
+                  </TooltipProvider>
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
