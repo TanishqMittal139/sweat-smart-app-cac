@@ -233,19 +233,14 @@ const Auth = () => {
                   {/* Biological Sex Toggle */}
                   <TooltipProvider>
                     <div className="space-y-3">
-                      <div className="flex items-center space-x-2">
+                      <div className="space-y-2">
                         <Label className="flex items-center space-x-2">
                           <User className="w-4 h-4" />
                           <span>Biological Sex</span>
                         </Label>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Info className="w-4 h-4 text-muted-foreground cursor-help" />
-                          </TooltipTrigger>
-                          <TooltipContent side="right" align="center" className="max-w-xs">
-                            <p>Please select your biological sex for accurate health recommendations</p>
-                          </TooltipContent>
-                        </Tooltip>
+                        <p className="text-sm text-muted-foreground">
+                          Please select your biological sex for accurate health recommendations
+                        </p>
                       </div>
                       <div className="flex items-center justify-center space-x-4 p-4 bg-muted/50 rounded-2xl">
                         <span className={`text-sm font-medium ${signUpData.biologicalSex === 'female' ? 'text-primary' : 'text-muted-foreground'}`}>
