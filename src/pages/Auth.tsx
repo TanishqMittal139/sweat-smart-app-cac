@@ -239,10 +239,10 @@ const Auth = () => {
                           <span>Biological Sex</span>
                         </Label>
                         <Tooltip>
-                          <TooltipTrigger>
-                            <Info className="w-4 h-4 text-muted-foreground" />
+                          <TooltipTrigger asChild>
+                            <Info className="w-4 h-4 text-muted-foreground cursor-help" />
                           </TooltipTrigger>
-                          <TooltipContent>
+                          <TooltipContent side="right" align="center" className="max-w-xs">
                             <p>Please select your biological sex for accurate health recommendations</p>
                           </TooltipContent>
                         </Tooltip>
