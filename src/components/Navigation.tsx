@@ -2,10 +2,12 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Heart, Menu, X, Activity, Target, TrendingUp, User, Bot } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const navItems = [
     { name: "Dashboard", href: "/dashboard", icon: Activity },
@@ -44,11 +46,11 @@ const Navigation = () => {
             <Button 
               variant="outline" 
               size="sm"
-              onClick={() => navigate("/auth")}
+              onClick={() => navigate(user ? "/dashboard" : "/auth")}
               className="rounded-xl border-2 hover:border-primary hover:text-primary transition-all duration-200"
             >
               <User className="w-4 h-4 mr-2" />
-              Sign In
+              {user ? user.user_metadata?.first_name || "Dashboard" : "Sign In"}
             </Button>
           </div>
 
@@ -86,13 +88,13 @@ const Navigation = () => {
                 variant="outline" 
                 size="sm"
                 onClick={() => {
-                  navigate("/auth");
+                  navigate(user ? "/dashboard" : "/auth");
                   setIsOpen(false);
                 }}
                 className="w-full rounded-xl border-2 hover:border-primary hover:text-primary transition-all duration-200"
               >
                 <User className="w-4 h-4 mr-2" />
-                Sign In
+                {user ? user.user_metadata?.first_name || "Dashboard" : "Sign In"}
               </Button>
             </div>
           </div>
