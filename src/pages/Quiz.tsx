@@ -226,7 +226,7 @@ const Quiz = () => {
   }
 
   const currentQ = questions[currentQuestion];
-  const progress = ((currentQuestion + 1) / questions.length) * 100;
+  const progress = (currentQuestion / questions.length) * 100;
 
   return (
     <div className="min-h-screen bg-background">
