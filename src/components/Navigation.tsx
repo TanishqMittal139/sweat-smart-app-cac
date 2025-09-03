@@ -47,7 +47,7 @@ const Navigation = () => {
               variant="outline" 
               size="sm"
               onClick={() => navigate(user ? "/dashboard" : "/auth")}
-              className="rounded-xl border-2 hover:border-primary hover:text-primary transition-all duration-200"
+              className="rounded-xl border-2 hover:bg-muted/50 hover:border-muted-foreground/50 transition-all duration-200"
             >
               <User className="w-4 h-4 mr-2" />
               {user ? user.user_metadata?.first_name || "Dashboard" : "Sign In"}
@@ -91,7 +91,7 @@ const Navigation = () => {
                   navigate(user ? "/dashboard" : "/auth");
                   setIsOpen(false);
                 }}
-                className="w-full rounded-xl border-2 hover:border-primary hover:text-primary transition-all duration-200"
+                className="w-full rounded-xl border-2 hover:bg-muted/50 hover:border-muted-foreground/50 transition-all duration-200"
               >
                 <User className="w-4 h-4 mr-2" />
                 {user ? user.user_metadata?.first_name || "Dashboard" : "Sign In"}
