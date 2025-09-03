@@ -215,16 +215,16 @@ const Auth = () => {
                     <span className={`text-sm font-medium ${signUpData.unitSystem === 'metric' ? 'text-primary' : 'text-muted-foreground'}`}>
                       Metric
                     </span>
-                    <Switch
-                      checked={signUpData.unitSystem === 'imperial'}
-                      onCheckedChange={(checked) => setSignUpData(prev => ({ 
-                        ...prev, 
-                        unitSystem: checked ? 'imperial' : 'metric',
-                        heightCm: '', // Clear values when switching
-                        weightKg: ''
-                      }))}
-                      className="data-[state=checked]:bg-primary"
-                    />
+                        <Switch
+                          checked={signUpData.unitSystem === 'imperial'}
+                          onCheckedChange={(checked) => setSignUpData(prev => ({ 
+                            ...prev, 
+                            unitSystem: checked ? 'imperial' : 'metric',
+                            heightCm: '', // Clear values when switching
+                            weightKg: ''
+                          }))}
+                          className="bg-primary data-[state=checked]:bg-primary data-[state=unchecked]:bg-primary"
+                        />
                     <span className={`text-sm font-medium ${signUpData.unitSystem === 'imperial' ? 'text-primary' : 'text-muted-foreground'}`}>
                       Imperial
                     </span>
@@ -252,7 +252,7 @@ const Auth = () => {
                             ...prev, 
                             biologicalSex: checked ? 'male' : 'female'
                           }))}
-                          className="data-[state=checked]:bg-primary"
+                          className="bg-primary data-[state=checked]:bg-primary data-[state=unchecked]:bg-primary"
                         />
                         <span className={`text-sm font-medium ${signUpData.biologicalSex === 'male' ? 'text-primary' : 'text-muted-foreground'}`}>
                           Male
