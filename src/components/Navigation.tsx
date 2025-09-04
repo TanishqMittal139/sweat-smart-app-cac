@@ -55,7 +55,7 @@ const Navigation = () => {
                 variant="outline" 
                 size="sm"
                 onClick={() => navigate("/auth")}
-                className="rounded-xl border-2 hover:bg-muted/50 hover:border-muted-foreground/50 transition-all duration-200"
+                className="rounded-xl border-2 hover:bg-muted/50 hover:border-muted-foreground/50 hover:text-current transition-all duration-200"
               >
                 <User className="w-4 h-4 mr-2" />
                 Sign In
@@ -108,7 +108,7 @@ const Navigation = () => {
                     navigate("/auth");
                     setIsOpen(false);
                   }}
-                  className="w-full rounded-xl border-2 hover:bg-muted/50 hover:border-muted-foreground/50 transition-all duration-200"
+                  className="w-full rounded-xl border-2 hover:bg-muted/50 hover:border-muted-foreground/50 hover:text-current transition-all duration-200"
                 >
                   <User className="w-4 h-4 mr-2" />
                   Sign In
