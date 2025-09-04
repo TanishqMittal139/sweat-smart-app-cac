@@ -11,13 +11,19 @@ import { Heart, User, Mail, Lock, Scale, Ruler, Activity, Info } from "lucide-re
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-
 const Auth = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
-  const { signUp, signIn, user, loading } = useAuth();
+  const {
+    toast
+  } = useToast();
+  const {
+    signUp,
+    signIn,
+    user,
+    loading
+  } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-  
+
   // Form data
   const [signUpData, setSignUpData] = useState({
     fullName: '',
@@ -29,7 +35,6 @@ const Auth = () => {
     unitSystem: 'metric' as 'metric' | 'imperial',
     biologicalSex: '' as 'male' | 'female' | ''
   });
-  
   const [signInData, setSignInData] = useState({
     email: '',
     password: ''
@@ -41,22 +46,20 @@ const Auth = () => {
       navigate('/dashboard');
     }
   }, [user, loading, navigate]);
-
   const handleSignUp = async () => {
     if (!signUpData.fullName || !signUpData.email || !signUpData.password) {
       toast({
         title: "Missing Information",
         description: "Please fill in all required fields.",
-        variant: "destructive",
+        variant: "destructive"
       });
       return;
     }
-
     setIsLoading(true);
-    
+
     // Prepare optional profile data
     const profileData: any = {};
-    
+
     // Convert imperial to metric for storage
     if (signUpData.heightCm) {
       const heightValue = parseFloat(signUpData.heightCm);
@@ -67,7 +70,6 @@ const Auth = () => {
         profileData.height_cm = Math.round(heightValue);
       }
     }
-    
     if (signUpData.weightKg) {
       const weightValue = parseFloat(signUpData.weightKg);
       if (signUpData.unitSystem === 'imperial') {
@@ -77,63 +79,51 @@ const Auth = () => {
         profileData.weight_kg = Math.round(weightValue * 100) / 100;
       }
     }
-    
     if (signUpData.activityLevel) profileData.activity_level = signUpData.activityLevel;
     if (signUpData.biologicalSex) profileData.biological_sex = signUpData.biologicalSex;
-    
+
     // Store the user's preferred unit system
     profileData.preferred_unit_system = signUpData.unitSystem;
-
-    const { error } = await signUp(
-      signUpData.email,
-      signUpData.password,
-      signUpData.fullName,
-      Object.keys(profileData).length > 0 ? profileData : undefined
-    );
-
+    const {
+      error
+    } = await signUp(signUpData.email, signUpData.password, signUpData.fullName, Object.keys(profileData).length > 0 ? profileData : undefined);
     setIsLoading(false);
-
     if (error) {
       toast({
         title: "Sign Up Failed",
         description: error.message || "An error occurred during sign up.",
-        variant: "destructive",
+        variant: "destructive"
       });
     } else {
       toast({
         title: "Welcome to SweatSmart!",
-        description: "Please check your email to verify your account.",
+        description: "Please check your email to verify your account."
       });
     }
   };
-
   const handleSignIn = async () => {
     if (!signInData.email || !signInData.password) {
       toast({
         title: "Missing Information",
         description: "Please enter your email and password.",
-        variant: "destructive",
+        variant: "destructive"
       });
       return;
     }
-
     setIsLoading(true);
-    
-    const { error } = await signIn(signInData.email, signInData.password);
-    
+    const {
+      error
+    } = await signIn(signInData.email, signInData.password);
     setIsLoading(false);
-
     if (error) {
       toast({
         title: "Sign In Failed",
         description: error.message || "Invalid email or password.",
-        variant: "destructive",
+        variant: "destructive"
       });
     }
   };
-
-  return (
-    <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
+  return <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-flex items-center space-x-2 mb-4">
@@ -164,13 +154,10 @@ const Auth = () => {
                       <User className="w-4 h-4" />
                       <span>Full Name</span>
                     </Label>
-                    <Input 
-                      id="name" 
-                      placeholder="Enter your full name"
-                      value={signUpData.fullName}
-                      onChange={(e) => setSignUpData(prev => ({ ...prev, fullName: e.target.value }))}
-                      className="rounded-xl border-2 focus:border-primary"
-                    />
+                    <Input id="name" placeholder="Enter your full name" value={signUpData.fullName} onChange={e => setSignUpData(prev => ({
+                    ...prev,
+                    fullName: e.target.value
+                  }))} className="rounded-xl border-2 focus:border-primary" />
                   </div>
 
                   <div className="space-y-2">
@@ -178,14 +165,10 @@ const Auth = () => {
                       <Mail className="w-4 h-4" />
                       <span>Email</span>
                     </Label>
-                    <Input 
-                      id="email" 
-                      type="email" 
-                      placeholder="Enter your email"
-                      value={signUpData.email}
-                      onChange={(e) => setSignUpData(prev => ({ ...prev, email: e.target.value }))}
-                      className="rounded-xl border-2 focus:border-primary"
-                    />
+                    <Input id="email" type="email" placeholder="Enter your email" value={signUpData.email} onChange={e => setSignUpData(prev => ({
+                    ...prev,
+                    email: e.target.value
+                  }))} className="rounded-xl border-2 focus:border-primary" />
                   </div>
 
                   <div className="space-y-2">
@@ -193,14 +176,10 @@ const Auth = () => {
                       <Lock className="w-4 h-4" />
                       <span>Password</span>
                     </Label>
-                    <Input 
-                      id="password" 
-                      type="password" 
-                      placeholder="Create a password"
-                      value={signUpData.password}
-                      onChange={(e) => setSignUpData(prev => ({ ...prev, password: e.target.value }))}
-                      className="rounded-xl border-2 focus:border-primary"
-                    />
+                    <Input id="password" type="password" placeholder="Create a password" value={signUpData.password} onChange={e => setSignUpData(prev => ({
+                    ...prev,
+                    password: e.target.value
+                  }))} className="rounded-xl border-2 focus:border-primary" />
                   </div>
                 </div>
 
@@ -215,16 +194,13 @@ const Auth = () => {
                     <span className={`text-sm font-medium ${signUpData.unitSystem === 'metric' ? 'text-primary' : 'text-muted-foreground'}`}>
                       Metric
                     </span>
-                        <Switch
-                          checked={signUpData.unitSystem === 'imperial'}
-                          onCheckedChange={(checked) => setSignUpData(prev => ({ 
-                            ...prev, 
-                            unitSystem: checked ? 'imperial' : 'metric',
-                            heightCm: '', // Clear values when switching
-                            weightKg: ''
-                          }))}
-                          className="bg-primary data-[state=checked]:bg-primary data-[state=unchecked]:bg-primary"
-                        />
+                        <Switch checked={signUpData.unitSystem === 'imperial'} onCheckedChange={checked => setSignUpData(prev => ({
+                    ...prev,
+                    unitSystem: checked ? 'imperial' : 'metric',
+                    heightCm: '',
+                    // Clear values when switching
+                    weightKg: ''
+                  }))} className="bg-primary data-[state=checked]:bg-primary data-[state=unchecked]:bg-primary" />
                     <span className={`text-sm font-medium ${signUpData.unitSystem === 'imperial' ? 'text-primary' : 'text-muted-foreground'}`}>
                       Imperial
                     </span>
@@ -246,14 +222,10 @@ const Auth = () => {
                         <span className={`text-sm font-medium ${signUpData.biologicalSex === 'female' ? 'text-primary' : 'text-muted-foreground'}`}>
                           Female
                         </span>
-                        <Switch
-                          checked={signUpData.biologicalSex === 'male'}
-                          onCheckedChange={(checked) => setSignUpData(prev => ({ 
-                            ...prev, 
-                            biologicalSex: checked ? 'male' : 'female'
-                          }))}
-                          className="bg-primary data-[state=checked]:bg-primary data-[state=unchecked]:bg-primary"
-                        />
+                        <Switch checked={signUpData.biologicalSex === 'male'} onCheckedChange={checked => setSignUpData(prev => ({
+                        ...prev,
+                        biologicalSex: checked ? 'male' : 'female'
+                      }))} className="bg-primary data-[state=checked]:bg-primary data-[state=unchecked]:bg-primary" />
                         <span className={`text-sm font-medium ${signUpData.biologicalSex === 'male' ? 'text-primary' : 'text-muted-foreground'}`}>
                           Male
                         </span>
@@ -267,20 +239,16 @@ const Auth = () => {
                         <Ruler className="w-4 h-4" />
                         <span>Height</span>
                       </Label>
-                      <Input 
-                        id="height" 
-                        type="number"
-                        placeholder={signUpData.unitSystem === 'metric' ? '170 cm' : '68 in'}
-                        value={signUpData.heightCm}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          // Only allow numbers and decimal points
-                          if (value === '' || /^\d*\.?\d*$/.test(value)) {
-                            setSignUpData(prev => ({ ...prev, heightCm: value }));
-                          }
-                        }}
-                        className="rounded-xl border-2 focus:border-primary"
-                      />
+                      <Input id="height" type="number" placeholder={signUpData.unitSystem === 'metric' ? '170 cm' : '68 in'} value={signUpData.heightCm} onChange={e => {
+                      const value = e.target.value;
+                      // Only allow numbers and decimal points
+                      if (value === '' || /^\d*\.?\d*$/.test(value)) {
+                        setSignUpData(prev => ({
+                          ...prev,
+                          heightCm: value
+                        }));
+                      }
+                    }} className="rounded-xl border-2 focus:border-primary" />
                     </div>
 
                     <div className="space-y-2">
@@ -288,20 +256,16 @@ const Auth = () => {
                         <Scale className="w-4 h-4" />
                         <span>Weight</span>
                       </Label>
-                      <Input 
-                        id="weight" 
-                        type="number"
-                        placeholder={signUpData.unitSystem === 'metric' ? '70 kg' : '154 lbs'}
-                        value={signUpData.weightKg}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          // Only allow numbers and decimal points
-                          if (value === '' || /^\d*\.?\d*$/.test(value)) {
-                            setSignUpData(prev => ({ ...prev, weightKg: value }));
-                          }
-                        }}
-                        className="rounded-xl border-2 focus:border-primary"
-                      />
+                      <Input id="weight" type="number" placeholder={signUpData.unitSystem === 'metric' ? '70 kg' : '154 lbs'} value={signUpData.weightKg} onChange={e => {
+                      const value = e.target.value;
+                      // Only allow numbers and decimal points
+                      if (value === '' || /^\d*\.?\d*$/.test(value)) {
+                        setSignUpData(prev => ({
+                          ...prev,
+                          weightKg: value
+                        }));
+                      }
+                    }} className="rounded-xl border-2 focus:border-primary" />
                     </div>
                   </div>
 
@@ -310,10 +274,10 @@ const Auth = () => {
                       <Activity className="w-4 h-4" />
                       <span>Activity Level</span>
                     </Label>
-                    <Select 
-                      value={signUpData.activityLevel} 
-                      onValueChange={(value) => setSignUpData(prev => ({ ...prev, activityLevel: value }))}
-                    >
+                    <Select value={signUpData.activityLevel} onValueChange={value => setSignUpData(prev => ({
+                    ...prev,
+                    activityLevel: value
+                  }))}>
                       <SelectTrigger className="rounded-xl border-2 focus:border-primary">
                         <SelectValue placeholder="Select your activity level" />
                       </SelectTrigger>
@@ -328,11 +292,7 @@ const Auth = () => {
                   </div>
                 </div>
 
-                <Button 
-                  onClick={handleSignUp}
-                  disabled={isLoading}
-                  className="w-full bg-gradient-primary hover:shadow-glow rounded-2xl py-3 text-lg font-semibold transition-all duration-300 hover:scale-105"
-                >
+                <Button onClick={handleSignUp} disabled={isLoading} className="w-full bg-gradient-primary hover:shadow-glow rounded-2xl py-3 text-lg font-semibold transition-all duration-300 hover:scale-105">
                   {isLoading ? "Creating Account..." : "Create Account"}
                 </Button>
               </TabsContent>
@@ -341,59 +301,37 @@ const Auth = () => {
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="signin-email">Email</Label>
-                    <Input 
-                      id="signin-email" 
-                      type="email" 
-                      placeholder="Enter your email"
-                      value={signInData.email}
-                      onChange={(e) => setSignInData(prev => ({ ...prev, email: e.target.value }))}
-                      className="rounded-xl border-2 focus:border-primary"
-                    />
+                    <Input id="signin-email" type="email" placeholder="Enter your email" value={signInData.email} onChange={e => setSignInData(prev => ({
+                    ...prev,
+                    email: e.target.value
+                  }))} className="rounded-xl border-2 focus:border-primary" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="signin-password">Password</Label>
-                    <Input 
-                      id="signin-password" 
-                      type="password" 
-                      placeholder="Enter your password"
-                      value={signInData.password}
-                      onChange={(e) => setSignInData(prev => ({ ...prev, password: e.target.value }))}
-                      className="rounded-xl border-2 focus:border-primary"
-                    />
+                    <Input id="signin-password" type="password" placeholder="Enter your password" value={signInData.password} onChange={e => setSignInData(prev => ({
+                    ...prev,
+                    password: e.target.value
+                  }))} className="rounded-xl border-2 focus:border-primary" />
                   </div>
                 </div>
 
-                <Button 
-                  onClick={handleSignIn}
-                  disabled={isLoading}
-                  className="w-full bg-gradient-primary hover:shadow-glow rounded-2xl py-3 text-lg font-semibold transition-all duration-300 hover:scale-105"
-                >
+                <Button onClick={handleSignIn} disabled={isLoading} className="w-full bg-gradient-primary hover:shadow-glow rounded-2xl py-3 text-lg font-semibold transition-all duration-300 hover:scale-105">
                   {isLoading ? "Signing In..." : "Sign In"}
                 </Button>
               </TabsContent>
             </Tabs>
 
-            <div className="text-center mt-6 pt-6 border-t">
-              <p className="text-sm text-muted-foreground">
-                By continuing, you agree to our Terms of Service and Privacy Policy
-              </p>
-            </div>
+            
           </CardContent>
         </Card>
 
         <div className="text-center mt-6">
-          <Button 
-            variant="ghost" 
-            onClick={() => navigate("/")}
-            className="text-white/80 hover:text-white hover:bg-white/10 rounded-xl"
-          >
+          <Button variant="ghost" onClick={() => navigate("/")} className="text-white/80 hover:text-white hover:bg-white/10 rounded-xl">
             ← Back to Home
           </Button>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Auth;
