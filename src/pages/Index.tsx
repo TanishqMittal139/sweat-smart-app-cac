@@ -3,83 +3,57 @@ import HeroSection from "@/components/HeroSection";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Heart, 
-  Brain, 
-  Target, 
-  TrendingUp, 
-  Users, 
-  Shield, 
-  Sparkles, 
-  ArrowRight,
-  AlertTriangle,
-  Activity
-} from "lucide-react";
+import { Heart, Brain, Target, TrendingUp, Users, Shield, Sparkles, ArrowRight, AlertTriangle, Activity } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
 const Index = () => {
   const navigate = useNavigate();
-
-  const features = [
-    {
-      icon: Brain,
-      title: "AI Health Coach",
-      description: "Personalized guidance trained on hundreds of research papers",
-      color: "text-primary",
-      bgColor: "bg-primary/10"
-    },
-    {
-      icon: Target,
-      title: "Smart Habit Tracking",
-      description: "Track weight, sleep, activity with actionable insights",
-      color: "text-secondary", 
-      bgColor: "bg-secondary/10"
-    },
-    {
-      icon: Sparkles,
-      title: "Interactive Quizzes",
-      description: "Learn through gamified health challenges and earn badges",
-      color: "text-accent",
-      bgColor: "bg-accent/10"
-    },
-    {
-      icon: TrendingUp,
-      title: "Data Visualization",
-      description: "Understand obesity trends and health disparities",
-      color: "text-warning",
-      bgColor: "bg-warning/10"
-    }
-  ];
-
-  const healthStats = [
-    {
-      stat: "36.2%",
-      label: "of US adults are obese",
-      trend: "↑ Rising",
-      severity: "high"
-    },
-    {
-      stat: "73.6%", 
-      label: "of US adults are overweight or obese",
-      trend: "↑ Critical", 
-      severity: "critical"
-    },
-    {
-      stat: "$173B",
-      label: "annual medical costs of obesity",
-      trend: "↑ Growing",
-      severity: "high"
-    },
-    {
-      stat: "2-3x",
-      label: "higher risk of chronic diseases",
-      trend: "⚠ Impact",
-      severity: "critical" 
-    }
-  ];
-
-  return (
-    <div className="min-h-screen bg-background">
+  const features = [{
+    icon: Brain,
+    title: "AI Health Coach",
+    description: "Personalized guidance trained on hundreds of research papers",
+    color: "text-primary",
+    bgColor: "bg-primary/10"
+  }, {
+    icon: Target,
+    title: "Smart Habit Tracking",
+    description: "Track weight, sleep, activity with actionable insights",
+    color: "text-secondary",
+    bgColor: "bg-secondary/10"
+  }, {
+    icon: Sparkles,
+    title: "Interactive Quizzes",
+    description: "Learn through gamified health challenges and earn badges",
+    color: "text-accent",
+    bgColor: "bg-accent/10"
+  }, {
+    icon: TrendingUp,
+    title: "Data Visualization",
+    description: "Understand obesity trends and health disparities",
+    color: "text-warning",
+    bgColor: "bg-warning/10"
+  }];
+  const healthStats = [{
+    stat: "36.2%",
+    label: "of US adults are obese",
+    trend: "↑ Rising",
+    severity: "high"
+  }, {
+    stat: "73.6%",
+    label: "of US adults are overweight or obese",
+    trend: "↑ Critical",
+    severity: "critical"
+  }, {
+    stat: "$173B",
+    label: "annual medical costs of obesity",
+    trend: "↑ Growing",
+    severity: "high"
+  }, {
+    stat: "2-3x",
+    label: "higher risk of chronic diseases",
+    trend: "⚠ Impact",
+    severity: "critical"
+  }];
+  return <div className="min-h-screen bg-background">
       <Navigation />
       
       {/* Hero Section */}
@@ -103,30 +77,21 @@ const Index = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            {healthStats.map((item, index) => (
-              <Card key={index} className="rounded-2xl border-2 hover:shadow-bubble transition-all duration-300 hover:scale-105">
+            {healthStats.map((item, index) => <Card key={index} className="rounded-2xl border-2 hover:shadow-bubble transition-all duration-300 hover:scale-105">
                 <CardContent className="p-6 text-center">
                   <div className="text-3xl md:text-4xl font-bold text-foreground mb-2">
                     {item.stat}
                   </div>
                   <div className="text-muted-foreground mb-3">{item.label}</div>
-                  <Badge 
-                    variant={item.severity === "critical" ? "destructive" : "secondary"}
-                    className="rounded-full"
-                  >
+                  <Badge variant={item.severity === "critical" ? "destructive" : "secondary"} className="rounded-full">
                     {item.trend}
                   </Badge>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
 
           <div className="text-center">
-            <Button 
-              size="lg"
-              onClick={() => navigate("/data")}
-              className="rounded-2xl px-8 py-4 bg-gradient-primary hover:shadow-glow transition-all duration-300 hover:scale-105"
-            >
+            <Button size="lg" onClick={() => navigate("/data")} className="rounded-2xl px-8 py-4 bg-gradient-primary hover:shadow-glow transition-all duration-300 hover:scale-105">
               Explore Full Data Analysis
               <TrendingUp className="w-5 h-5 ml-2" />
             </Button>
@@ -147,8 +112,7 @@ const Index = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {features.map((feature, index) => (
-              <Card key={index} className="rounded-2xl border-2 hover:shadow-bubble transition-all duration-300 hover:scale-105 group">
+            {features.map((feature, index) => <Card key={index} className="rounded-2xl border-2 hover:shadow-bubble transition-all duration-300 hover:scale-105 group">
                 <CardHeader className="space-y-4">
                   <div className={`w-12 h-12 rounded-2xl ${feature.bgColor} flex items-center justify-center group-hover:animate-bounce-gentle`}>
                     <feature.icon className={`w-6 h-6 ${feature.color}`} />
@@ -160,16 +124,11 @@ const Index = () => {
                     {feature.description}
                   </CardDescription>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
 
           <div className="text-center mt-16">
-            <Button 
-              size="lg"
-              onClick={() => navigate("/dashboard")}
-              className="rounded-2xl px-8 py-4 bg-gradient-secondary hover:shadow-glow transition-all duration-300 hover:scale-105"
-            >
+            <Button size="lg" onClick={() => navigate("/dashboard")} className="rounded-2xl px-8 py-4 bg-gradient-secondary hover:shadow-glow transition-all duration-300 hover:scale-105">
               Try the Dashboard
               <Activity className="w-5 h-5 ml-2" />
             </Button>
@@ -190,11 +149,7 @@ const Index = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button 
-                size="lg"
-                onClick={() => navigate("/auth")}
-                className="bg-white text-accent hover:bg-white/90 rounded-2xl px-8 py-4 text-lg font-semibold shadow-float hover:shadow-glow transition-all duration-300 hover:scale-105"
-              >
+              <Button size="lg" onClick={() => navigate("/auth")} className="bg-white text-accent hover:bg-white/90 rounded-2xl px-8 py-4 text-lg font-semibold shadow-float hover:shadow-glow transition-all duration-300 hover:scale-105">
                 Get Started Free
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
@@ -205,21 +160,10 @@ const Index = () => {
               </div>
             </div>
 
-            <div className="flex items-center justify-center space-x-6 pt-6 text-white/80">
-              <div className="flex items-center space-x-2">
-                <Heart className="w-4 h-4" fill="currentColor" />
-                <span className="text-sm">Loved by 10K+ users</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Users className="w-4 h-4" />
-                <span className="text-sm">Growing community</span>
-              </div>
-            </div>
+            
           </div>
         </div>
       </section>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
