@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,15 +14,18 @@ import {
   Target,
   Zap,
   ArrowRight,
-  RotateCcw
+  RotateCcw,
+  Loader2
 } from "lucide-react";
 import confetti from "canvas-confetti";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface Question {
-  id: number;
+  id: string;
   question: string;
   options: string[];
-  correctAnswer: number;
+  correct_answer: number;
   explanation: string;
   category: string;
 }
@@ -34,74 +37,55 @@ const Quiz = () => {
   const [score, setScore] = useState(0);
   const [isQuizComplete, setIsQuizComplete] = useState(false);
   const [userAnswers, setUserAnswers] = useState<(number | null)[]>([]);
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
 
-  const questions: Question[] = [
-    {
-      id: 1,
-      question: "Which of these is the most effective strategy for sustainable weight loss?",
-      options: [
-        "Extreme calorie restriction (under 1000 calories/day)",
-        "Creating a moderate calorie deficit (300-500 calories/day) with balanced nutrition",
-        "Eliminating entire food groups permanently",
-        "Only eating once per day"
-      ],
-      correctAnswer: 1,
-      explanation: "A moderate calorie deficit combined with balanced nutrition is sustainable and preserves muscle mass while promoting fat loss.",
-      category: "Weight Management"
-    },
-    {
-      id: 2,
-      question: "How much water should an average adult drink per day?",
-      options: [
-        "4 glasses (32 oz)",
-        "6 glasses (48 oz)", 
-        "8 glasses (64 oz)",
-        "12 glasses (96 oz)"
-      ],
-      correctAnswer: 2,
-      explanation: "The '8x8 rule' (8 glasses of 8 ounces) is a good general guideline, though individual needs may vary based on activity and climate.",
-      category: "Hydration"
-    },
-    {
-      id: 3,
-      question: "What's the recommended amount of moderate aerobic activity per week for adults?",
-      options: [
-        "75 minutes",
-        "150 minutes",
-        "300 minutes", 
-        "500 minutes"
-      ],
-      correctAnswer: 1,
-      explanation: "The CDC recommends at least 150 minutes of moderate-intensity aerobic activity per week, plus muscle-strengthening activities twice a week.",
-      category: "Exercise"
-    },
-    {
-      id: 4,
-      question: "Which sleep duration is associated with the best health outcomes for most adults?",
-      options: [
-        "5-6 hours",
-        "6-7 hours",
-        "7-9 hours",
-        "9-10 hours"
-      ],
-      correctAnswer: 2,
-      explanation: "Adults aged 18-64 should aim for 7-9 hours of sleep per night for optimal health, cognitive function, and recovery.",
-      category: "Sleep"
-    },
-    {
-      id: 5,
-      question: "What's a myth about metabolism?",
-      options: [
-        "Muscle tissue burns more calories than fat tissue",
-        "Eating frequent small meals dramatically boosts metabolism",
-        "Age affects metabolic rate",
-        "Exercise increases metabolic rate"
-      ],
-      correctAnswer: 1,
-      explanation: "While eating does temporarily increase metabolism, frequent small meals don't provide a significant advantage over fewer, larger meals.",
-      category: "Nutrition Myths"
+  // Fetch 5 random questions from the database
+  const fetchRandomQuestions = async () => {
+    try {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from('quiz_questions')
+        .select('*')
+        .limit(30); // Get all questions first
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        // Randomly select 5 questions from all available
+        const shuffled = [...data].sort(() => 0.5 - Math.random());
+        const selectedQuestions = shuffled.slice(0, 5).map(q => ({
+          id: q.id,
+          question: q.question,
+          options: Array.isArray(q.options) ? q.options : JSON.parse(q.options as string),
+          correct_answer: q.correct_answer,
+          explanation: q.explanation,
+          category: q.category
+        }));
+        setQuestions(selectedQuestions);
+      } else {
+        toast({
+          title: "No questions found",
+          description: "Unable to load quiz questions. Please try again later.",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching questions:', error);
+      toast({
+        title: "Error loading quiz",
+        description: "Unable to load quiz questions. Please try again later.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
     }
-  ];
+  };
+
+  useEffect(() => {
+    fetchRandomQuestions();
+  }, []);
 
   const handleAnswerSelect = (answerIndex: number) => {
     setSelectedAnswer(answerIndex);
@@ -114,7 +98,7 @@ const Quiz = () => {
     newUserAnswers[currentQuestion] = selectedAnswer;
     setUserAnswers(newUserAnswers);
 
-    if (selectedAnswer === questions[currentQuestion].correctAnswer) {
+    if (selectedAnswer === questions[currentQuestion].correct_answer) {
       setScore(score + 1);
     }
 
@@ -144,7 +128,59 @@ const Quiz = () => {
     setScore(0);
     setIsQuizComplete(false);
     setUserAnswers([]);
+    fetchRandomQuestions();
   };
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="text-center space-y-8">
+            <div className="animate-bounce-gentle">
+              <Brain className="w-16 h-16 text-primary mx-auto mb-4" />
+            </div>
+            <h1 className="text-3xl md:text-4xl font-bold text-foreground">
+              Loading Quiz...
+            </h1>
+            <div className="flex justify-center">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state if no questions loaded
+  if (!isLoading && questions.length === 0) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="text-center space-y-8">
+            <div>
+              <XCircle className="w-16 h-16 text-destructive mx-auto mb-4" />
+            </div>
+            <h1 className="text-3xl md:text-4xl font-bold text-foreground">
+              Unable to Load Quiz
+            </h1>
+            <p className="text-xl text-muted-foreground">
+              Please try again later or contact support if the problem persists.
+            </p>
+            <Button 
+              onClick={fetchRandomQuestions}
+              className="bg-gradient-primary hover:shadow-glow rounded-2xl px-6 py-3 text-lg font-semibold transition-all duration-300 hover:scale-105"
+            >
+              <RotateCcw className="w-5 h-5 mr-2" />
+              Try Again
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const getScoreMessage = () => {
     const percentage = (score / questions.length) * 100;
@@ -287,11 +323,11 @@ const Quiz = () => {
                 className={`w-full text-left p-6 rounded-2xl border-2 transition-all duration-300 hover:scale-105 ${
                   selectedAnswer === index
                     ? showResult
-                      ? index === currentQ.correctAnswer
+                      ? index === currentQ.correct_answer
                         ? "border-success bg-success/10 text-success"
                         : "border-destructive bg-destructive/10 text-destructive"
                       : "border-primary bg-primary/10 text-primary"
-                    : showResult && index === currentQ.correctAnswer
+                    : showResult && index === currentQ.correct_answer
                     ? "border-success bg-success/10 text-success"
                     : "border-border hover:border-muted-foreground"
                 }`}
@@ -300,7 +336,7 @@ const Quiz = () => {
                   <span className="flex-1 pr-4">{option}</span>
                   {showResult && (
                     <div>
-                      {index === currentQ.correctAnswer ? (
+                      {index === currentQ.correct_answer ? (
                         <CheckCircle className="w-5 h-5 text-success" />
                       ) : selectedAnswer === index ? (
                         <XCircle className="w-5 h-5 text-destructive" />
@@ -319,9 +355,9 @@ const Quiz = () => {
             <CardContent className="p-6">
               <div className="flex items-start space-x-4">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                  selectedAnswer === currentQ.correctAnswer ? "bg-success" : "bg-destructive"
+                  selectedAnswer === currentQ.correct_answer ? "bg-success" : "bg-destructive"
                 }`}>
-                  {selectedAnswer === currentQ.correctAnswer ? (
+                  {selectedAnswer === currentQ.correct_answer ? (
                     <CheckCircle className="w-5 h-5 text-white" />
                   ) : (
                     <XCircle className="w-5 h-5 text-white" />
@@ -329,9 +365,9 @@ const Quiz = () => {
                 </div>
                 <div className="flex-1">
                   <h3 className={`font-semibold mb-2 ${
-                    selectedAnswer === currentQ.correctAnswer ? "text-success" : "text-destructive"
+                    selectedAnswer === currentQ.correct_answer ? "text-success" : "text-destructive"
                   }`}>
-                    {selectedAnswer === currentQ.correctAnswer ? "Correct! 🎉" : "Not quite right"}
+                    {selectedAnswer === currentQ.correct_answer ? "Correct! 🎉" : "Not quite right"}
                   </h3>
                   <p className="text-muted-foreground">{currentQ.explanation}</p>
                 </div>

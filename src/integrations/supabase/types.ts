@@ -53,6 +53,39 @@ export type Database = {
         }
         Relationships: []
       }
+      quiz_questions: {
+        Row: {
+          category: string
+          correct_answer: number
+          created_at: string
+          explanation: string
+          id: string
+          options: Json
+          question: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          correct_answer: number
+          created_at?: string
+          explanation: string
+          id?: string
+          options: Json
+          question: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          correct_answer?: number
+          created_at?: string
+          explanation?: string
+          id?: string
+          options?: Json
+          question?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
