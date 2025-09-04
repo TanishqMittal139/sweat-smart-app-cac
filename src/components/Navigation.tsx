@@ -43,15 +43,24 @@ const Navigation = () => {
                 <span className="font-medium">{item.name}</span>
               </button>
             ))}
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => navigate(user ? "/dashboard" : "/auth")}
-              className="rounded-xl border-2 hover:bg-muted/50 hover:border-muted-foreground/50 transition-all duration-200"
-            >
-              <User className="w-4 h-4 mr-2" />
-              {user ? user.user_metadata?.first_name || "Dashboard" : "Sign In"}
-            </Button>
+            {user ? (
+              <div className="flex items-center space-x-2 text-foreground">
+                <User className="w-4 h-4" />
+                <span className="font-medium">
+                  {user.user_metadata?.first_name || user.email}
+                </span>
+              </div>
+            ) : (
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => navigate("/auth")}
+                className="rounded-xl border-2 hover:bg-muted/50 hover:border-muted-foreground/50 transition-all duration-200"
+              >
+                <User className="w-4 h-4 mr-2" />
+                Sign In
+              </Button>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -84,18 +93,27 @@ const Navigation = () => {
                   <span className="font-medium">{item.name}</span>
                 </button>
               ))}
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => {
-                  navigate(user ? "/dashboard" : "/auth");
-                  setIsOpen(false);
-                }}
-                className="w-full rounded-xl border-2 hover:bg-muted/50 hover:border-muted-foreground/50 transition-all duration-200"
-              >
-                <User className="w-4 h-4 mr-2" />
-                {user ? user.user_metadata?.first_name || "Dashboard" : "Sign In"}
-              </Button>
+              {user ? (
+                <div className="flex items-center space-x-3 text-foreground py-2 px-3">
+                  <User className="w-4 h-4" />
+                  <span className="font-medium">
+                    {user.user_metadata?.first_name || user.email}
+                  </span>
+                </div>
+              ) : (
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => {
+                    navigate("/auth");
+                    setIsOpen(false);
+                  }}
+                  className="w-full rounded-xl border-2 hover:bg-muted/50 hover:border-muted-foreground/50 transition-all duration-200"
+                >
+                  <User className="w-4 h-4 mr-2" />
+                  Sign In
+                </Button>
+              )}
             </div>
           </div>
         )}
