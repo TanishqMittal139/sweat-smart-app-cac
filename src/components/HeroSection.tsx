@@ -41,12 +41,12 @@ const HeroSection = () => {
                 <div className="text-white/80 text-sm">US Adults Obese</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-white">10K+</div>
-                <div className="text-white/80 text-sm">Lives Changed</div>
+                <div className="text-2xl md:text-3xl font-bold text-white">2.8M</div>
+                <div className="text-white/80 text-sm">Deaths Annually</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-white">4.8★</div>
-                <div className="text-white/80 text-sm">User Rating</div>
+                <div className="text-2xl md:text-3xl font-bold text-white">13x</div>
+                <div className="text-white/80 text-sm">Higher Diabetes Risk</div>
               </div>
             </div>
 
@@ -57,7 +57,7 @@ const HeroSection = () => {
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               
-              <Button variant="outline" size="lg" onClick={() => navigate("/data")} className="border-2 border-white/30 text-white hover:border-white/50 rounded-2xl px-8 py-4 text-lg font-semibold backdrop-blur-sm transition-all duration-300 hover:scale-105">
+              <Button variant="outline" size="lg" onClick={() => navigate("/data")} className="border-2 border-white/30 text-white rounded-2xl px-8 py-4 text-lg font-semibold backdrop-blur-sm transition-all duration-300 hover:scale-105">
                 <Play className="w-5 h-5 mr-2" />
                 View The Data
               </Button>
