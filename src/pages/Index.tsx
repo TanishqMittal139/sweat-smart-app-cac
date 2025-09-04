@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Heart, Brain, Target, TrendingUp, Users, Shield, Sparkles, ArrowRight, AlertTriangle, Activity } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 const Index = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const features = [{
     icon: Brain,
     title: "AI Health Coach",
@@ -136,34 +138,36 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-accent">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="space-y-8">
-            <h2 className="text-3xl md:text-5xl font-bold text-white">
-              Ready to Transform Your Health?
-            </h2>
-            <p className="text-xl text-white/90 max-w-2xl mx-auto">
-              Join thousands who've already started their journey to a healthier, happier life.
-              Your transformation begins with a single step.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button size="lg" onClick={() => navigate("/auth")} className="bg-white text-accent hover:bg-white/90 rounded-2xl px-8 py-4 text-lg font-semibold shadow-float hover:shadow-glow transition-all duration-300 hover:scale-105">
-                Get Started Free
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
+      {/* CTA Section - Only show when user is not signed in */}
+      {!user && (
+        <section className="py-20 bg-gradient-accent">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div className="space-y-8">
+              <h2 className="text-3xl md:text-5xl font-bold text-white">
+                Ready to Transform Your Health?
+              </h2>
+              <p className="text-xl text-white/90 max-w-2xl mx-auto">
+                Join thousands who've already started their journey to a healthier, happier life.
+                Your transformation begins with a single step.
+              </p>
               
-              <div className="flex items-center space-x-2 text-white/90">
-                <Shield className="w-5 h-5" />
-                <span className="text-sm">No credit card required</span>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <Button size="lg" onClick={() => navigate("/auth")} className="bg-white text-accent hover:bg-white/90 rounded-2xl px-8 py-4 text-lg font-semibold shadow-float hover:shadow-glow transition-all duration-300 hover:scale-105">
+                  Get Started Free
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+                
+                <div className="flex items-center space-x-2 text-white/90">
+                  <Shield className="w-5 h-5" />
+                  <span className="text-sm">No credit card required</span>
+                </div>
               </div>
-            </div>
 
-            
+              
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>;
 };
 export default Index;
