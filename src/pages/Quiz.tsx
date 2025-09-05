@@ -39,6 +39,7 @@ const Quiz = () => {
   const [userAnswers, setUserAnswers] = useState<(number | null)[]>([]);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [answerChecked, setAnswerChecked] = useState(false);
   const { toast } = useToast();
 
   // Fetch 5 random questions from the database
@@ -91,7 +92,7 @@ const Quiz = () => {
     setSelectedAnswer(answerIndex);
   };
 
-  const handleNextQuestion = () => {
+  const handleCheckAnswer = () => {
     if (selectedAnswer === null) return;
 
     const newUserAnswers = [...userAnswers];
@@ -103,22 +104,26 @@ const Quiz = () => {
     }
 
     setShowResult(true);
-    
-    setTimeout(() => {
-      if (currentQuestion < questions.length - 1) {
-        setCurrentQuestion(currentQuestion + 1);
-        setSelectedAnswer(null);
-        setShowResult(false);
-      } else {
-        setIsQuizComplete(true);
-        // Trigger confetti animation
-        confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 }
-        });
-      }
-    }, 2000);
+    setAnswerChecked(true);
+  };
+
+  const handleNextQuestion = () => {
+    if (!answerChecked) return;
+
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+      setSelectedAnswer(null);
+      setShowResult(false);
+      setAnswerChecked(false);
+    } else {
+      setIsQuizComplete(true);
+      // Trigger confetti animation
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+    }
   };
 
   const resetQuiz = () => {
@@ -128,6 +133,7 @@ const Quiz = () => {
     setScore(0);
     setIsQuizComplete(false);
     setUserAnswers([]);
+    setAnswerChecked(false);
     fetchRandomQuestions();
   };
 
@@ -376,33 +382,48 @@ const Quiz = () => {
           </Card>
         )}
 
-        {/* Next Button */}
-        <div className="text-center mt-8">
-          <Button
-            onClick={handleNextQuestion}
-            disabled={selectedAnswer === null}
-            className="bg-gradient-primary hover:shadow-glow rounded-2xl px-8 py-4 text-lg font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {currentQuestion === questions.length - 1 ? (
-              <>
-                <Trophy className="w-5 h-5 mr-2" />
-                Finish Quiz
-              </>
-            ) : (
-              <>
-                Next Question
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </>
-            )}
-          </Button>
+        {/* Buttons */}
+        <div className="text-center mt-8 space-y-4">
+          {/* Check Answer Button */}
+          <div>
+            <Button
+              onClick={handleCheckAnswer}
+              disabled={selectedAnswer === null || answerChecked}
+              className="bg-gradient-primary hover:shadow-glow rounded-2xl px-8 py-4 text-lg font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <CheckCircle className="w-5 h-5 mr-2" />
+              Check Answer
+            </Button>
+          </div>
+
+          {/* Next Question Button */}
+          <div>
+            <Button
+              onClick={handleNextQuestion}
+              disabled={!answerChecked}
+              className="bg-secondary hover:bg-secondary/80 rounded-2xl px-8 py-4 text-lg font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {currentQuestion === questions.length - 1 ? (
+                <>
+                  <Trophy className="w-5 h-5 mr-2" />
+                  Finish Quiz
+                </>
+              ) : (
+                <>
+                  Next Question
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </>
+              )}
+            </Button>
+          </div>
         </div>
 
-        {/* Current Score */}
+         {/* Current Score */}
         <div className="text-center mt-6">
           <div className="inline-flex items-center space-x-4 text-muted-foreground">
             <div className="flex items-center space-x-2">
               <Zap className="w-4 h-4 text-warning" />
-              <span>Current Score: {score}/{showResult ? currentQuestion + 1 : currentQuestion}</span>
+              <span>Current Score: {score}/{answerChecked ? currentQuestion + 1 : currentQuestion}</span>
             </div>
           </div>
         </div>
