@@ -244,21 +244,13 @@ const Quiz = () => {
               </CardContent>
             </Card>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex justify-center">
               <Button 
                 onClick={resetQuiz}
                 className="bg-gradient-primary hover:shadow-glow rounded-2xl px-6 py-3 text-lg font-semibold transition-all duration-300 hover:scale-105"
               >
                 <RotateCcw className="w-5 h-5 mr-2" />
                 Try Again
-              </Button>
-              
-              <Button 
-                variant="outline"
-                className="rounded-2xl px-6 py-3 text-lg font-semibold border-2 hover:border-secondary hover:text-secondary transition-all duration-300 hover:scale-105"
-              >
-                <Target className="w-5 h-5 mr-2" />
-                View Explanations
               </Button>
             </div>
           </div>
