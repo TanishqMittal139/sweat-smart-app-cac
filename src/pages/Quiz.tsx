@@ -402,7 +402,7 @@ const Quiz = () => {
           <div className="inline-flex items-center space-x-4 text-muted-foreground">
             <div className="flex items-center space-x-2">
               <Zap className="w-4 h-4 text-warning" />
-              <span>Current Score: {score}/{currentQuestion + (showResult ? 1 : 0)}</span>
+              <span>Current Score: {score}/{showResult ? currentQuestion + 1 : currentQuestion}</span>
             </div>
           </div>
         </div>
