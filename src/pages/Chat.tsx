@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send, Bot, User } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import Navigation from "@/components/Navigation";
 
 interface Message {
@@ -13,6 +15,7 @@ interface Message {
 }
 
 const Chat = () => {
+  const { toast } = useToast();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -35,20 +38,65 @@ const Chat = () => {
     };
 
     setMessages(prev => [...prev, userMessage]);
+    const currentInput = inputValue;
     setInputValue("");
     setIsLoading(true);
 
-    // Simulate AI response (replace with actual AI integration later)
-    setTimeout(() => {
+    try {
+      // Get conversation context (last 10 messages for context)
+      const conversationHistory = messages.slice(-10).map(msg => ({
+        role: msg.sender === "user" ? "user" : "assistant",
+        content: msg.content
+      }));
+
+      // Add current message
+      conversationHistory.push({
+        role: "user",
+        content: currentInput
+      });
+
+      const { data, error } = await supabase.functions.invoke('chat-health-ai', {
+        body: { messages: conversationHistory }
+      });
+
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw new Error(error.message);
+      }
+
+      if (data?.error) {
+        console.error('AI function error:', data.error);
+        throw new Error(data.error);
+      }
+
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: "I understand you're asking about " + inputValue + ". While I'm not fully functional yet, I'm designed to provide evidence-based health information. In the future, I'll be able to give you personalized advice based on hundreds of research papers about nutrition, fitness, and wellness!",
+        content: data.response,
         sender: "ai",
         timestamp: new Date(),
       };
+
       setMessages(prev => [...prev, aiMessage]);
+    } catch (error) {
+      console.error('Error getting AI response:', error);
+      
+      toast({
+        title: "Error",
+        description: "Failed to get AI response. Please try again.",
+        variant: "destructive",
+      });
+
+      // Add error message to chat
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        content: "I apologize, but I'm having trouble responding right now. Please try asking your question again in a moment.",
+        sender: "ai",
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -152,7 +200,7 @@ const Chat = () => {
               </Button>
             </div>
             <p className="text-xs text-muted-foreground mt-2 text-center">
-              AI responses are simulated. Full functionality coming soon!
+              AI responses are for informational purposes only. Consult healthcare professionals for medical advice.
             </p>
           </div>
         </div>
