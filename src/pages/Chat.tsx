@@ -6,6 +6,7 @@ import { Send, Bot, User, RotateCcw } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import Navigation from "@/components/Navigation";
+import ReactMarkdown from "react-markdown";
 
 interface Message {
   id: string;
@@ -201,7 +202,9 @@ const Chat = () => {
                         ? "bg-primary text-primary-foreground"
                         : "bg-muted"
                     }`}>
-                      <p className="text-sm leading-relaxed">{message.content}</p>
+                      <div className="text-sm leading-relaxed prose prose-sm max-w-none prose-headings:mt-2 prose-headings:mb-1 prose-p:my-1">
+                        <ReactMarkdown>{message.content}</ReactMarkdown>
+                      </div>
                     </div>
                     <p className="text-xs text-muted-foreground mt-2">
                       {message.timestamp.toLocaleTimeString()}
