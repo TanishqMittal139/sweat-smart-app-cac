@@ -202,7 +202,7 @@ const Chat = () => {
                         ? "bg-primary text-primary-foreground"
                         : "bg-muted"
                     }`}>
-                      <div className="text-sm leading-relaxed prose prose-sm max-w-none prose-headings:mt-2 prose-headings:mb-1 prose-p:my-1">
+                      <div className="text-sm leading-relaxed prose prose-sm max-w-none prose-headings:mt-4 prose-headings:mb-2 prose-p:my-1">
                         <ReactMarkdown>{message.content}</ReactMarkdown>
                       </div>
                     </div>
