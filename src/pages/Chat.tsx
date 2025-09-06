@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Bot, User } from "lucide-react";
+import { Send, Bot, User, RotateCcw } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import Navigation from "@/components/Navigation";
@@ -14,18 +14,54 @@ interface Message {
   timestamp: Date;
 }
 
+const DEFAULT_MESSAGE: Message = {
+  id: "1",
+  content: "Hello! I'm your health assistant. I can help you with questions about nutrition, fitness, wellness, and healthy lifestyle choices. What would you like to discuss today?",
+  sender: "ai",
+  timestamp: new Date(),
+};
+
+const STORAGE_KEY = "health-chat-messages";
+
 const Chat = () => {
   const { toast } = useToast();
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      content: "Hello! I'm your health assistant. I can help you with questions about nutrition, fitness, wellness, and healthy lifestyle choices. What would you like to discuss today?",
-      sender: "ai",
-      timestamp: new Date(),
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([DEFAULT_MESSAGE]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  // Load messages from localStorage on mount
+  useEffect(() => {
+    try {
+      const savedMessages = localStorage.getItem(STORAGE_KEY);
+      if (savedMessages) {
+        const parsedMessages = JSON.parse(savedMessages).map((msg: any) => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp)
+        }));
+        setMessages(parsedMessages);
+      }
+    } catch (error) {
+      console.error('Error loading messages from localStorage:', error);
+    }
+  }, []);
+
+  // Save messages to localStorage whenever messages change
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+    } catch (error) {
+      console.error('Error saving messages to localStorage:', error);
+    }
+  }, [messages]);
+
+  const clearChat = () => {
+    setMessages([DEFAULT_MESSAGE]);
+    localStorage.removeItem(STORAGE_KEY);
+    toast({
+      title: "Chat cleared",
+      description: "Your conversation has been reset.",
+    });
+  };
 
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
@@ -114,14 +150,25 @@ const Chat = () => {
         <div className="bg-card/80 backdrop-blur-lg rounded-3xl shadow-bubble border border-border h-full flex flex-col">
           {/* Header */}
           <div className="p-6 border-b border-border">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-primary rounded-2xl flex items-center justify-center animate-pulse-glow">
-                <Bot className="w-6 h-6 text-white" />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-primary rounded-2xl flex items-center justify-center animate-pulse-glow">
+                  <Bot className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-foreground">Health Assistant</h1>
+                  <p className="text-sm text-muted-foreground">Your AI companion for health and wellness</p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-foreground">Health Assistant</h1>
-                <p className="text-sm text-muted-foreground">Your AI companion for health and wellness</p>
-              </div>
+              <Button
+                onClick={clearChat}
+                variant="ghost"
+                size="icon"
+                className="rounded-2xl hover:bg-muted"
+                title="Clear chat"
+              >
+                <RotateCcw className="w-4 h-4" />
+              </Button>
             </div>
           </div>
 
