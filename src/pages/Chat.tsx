@@ -164,7 +164,7 @@ const Chat = () => {
                 onClick={clearChat}
                 variant="ghost"
                 size="icon"
-                className="rounded-2xl hover:bg-muted"
+                className="rounded-2xl hover:bg-muted hover:text-current"
                 title="Clear chat"
               >
                 <RotateCcw className="w-4 h-4" />
