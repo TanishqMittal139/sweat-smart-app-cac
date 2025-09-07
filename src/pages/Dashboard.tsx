@@ -17,7 +17,6 @@ import {
   Award, 
   Zap, 
   Activity,
-  Plus,
   MessageCircle,
   BarChart3,
   LogOut,
@@ -193,33 +192,11 @@ const Dashboard = () => {
     return null;
   }
 
-  const todayStats = [
-    { 
-      label: "Steps", 
-      value: 7834, 
-      target: 10000, 
-      icon: Activity, 
-      color: "text-primary",
-      bgColor: "bg-primary/10"
-    }
-  ];
+  const todayStats: any[] = [];
 
-  const weeklyProgress = [
-    { day: "Mon", completed: 85 },
-    { day: "Tue", completed: 92 },
-    { day: "Wed", completed: 78 },
-    { day: "Thu", completed: 96 },
-    { day: "Fri", completed: 88 },
-    { day: "Sat", completed: 94 },
-    { day: "Sun", completed: 82 },
-  ];
+  const weeklyProgress: any[] = [];
 
-  const achievements = [
-    { title: "7-Day Streak", description: "Logged habits for 7 days", earned: true },
-    { title: "Step Master", description: "10K steps in a day", earned: true },
-    { title: "Early Bird", description: "Wake up before 7 AM", earned: false },
-    { title: "Consistency King", description: "Track habits daily", earned: true },
-  ];
+  const achievements: any[] = [];
 
   const firstName = profile?.full_name?.split(' ')[0] || 'there';
 
@@ -404,38 +381,48 @@ const Dashboard = () => {
               </h2>
               
               <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
-                {todayStats.map((stat, index) => (
-                  <Card key={index} className="rounded-2xl border-2 hover:shadow-bubble transition-all duration-300">
-                    <CardContent className="p-6">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className={`w-12 h-12 rounded-2xl ${stat.bgColor} flex items-center justify-center`}>
-                          <stat.icon className={`w-6 h-6 ${stat.color}`} />
-                        </div>
-                        <div className="text-right">
-                          <div className="text-2xl font-bold text-foreground">
-                            {stat.value}
-                          </div>
-                          <div className="text-sm text-muted-foreground">
-                            of {stat.target}
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-sm">
-                          <span className="font-medium">{stat.label}</span>
-                          <span className="text-muted-foreground">
-                            {Math.round((stat.value / stat.target) * 100)}%
-                          </span>
-                        </div>
-                        <Progress 
-                          value={(stat.value / stat.target) * 100} 
-                          className="h-2 rounded-full"
-                        />
-                      </div>
+                {todayStats.length === 0 ? (
+                  <Card className="rounded-2xl border-2">
+                    <CardContent className="p-8 text-center">
+                      <Activity className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold text-muted-foreground mb-2">No Data Yet</h3>
+                      <p className="text-sm text-muted-foreground">Start tracking your activities to see progress here.</p>
                     </CardContent>
                   </Card>
-                ))}
+                ) : (
+                  todayStats.map((stat, index) => (
+                    <Card key={index} className="rounded-2xl border-2 hover:shadow-bubble transition-all duration-300">
+                      <CardContent className="p-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className={`w-12 h-12 rounded-2xl ${stat.bgColor} flex items-center justify-center`}>
+                            <stat.icon className={`w-6 h-6 ${stat.color}`} />
+                          </div>
+                          <div className="text-right">
+                            <div className="text-2xl font-bold text-foreground">
+                              {stat.value}
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              of {stat.target}
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-sm">
+                            <span className="font-medium">{stat.label}</span>
+                            <span className="text-muted-foreground">
+                              {Math.round((stat.value / stat.target) * 100)}%
+                            </span>
+                          </div>
+                          <Progress 
+                            value={(stat.value / stat.target) * 100} 
+                            className="h-2 rounded-full"
+                          />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
+                )}
               </div>
             </section>
 
@@ -456,26 +443,34 @@ const Dashboard = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-7 gap-4">
-                    {weeklyProgress.map((day, index) => (
-                      <div key={index} className="text-center space-y-2">
-                        <div className="text-sm font-medium text-muted-foreground">
-                          {day.day}
-                        </div>
-                        <div className="relative">
-                          <div className="w-12 h-32 bg-muted rounded-2xl mx-auto overflow-hidden">
-                            <div 
-                              className="w-full bg-gradient-primary rounded-2xl transition-all duration-500"
-                              style={{ height: `${day.completed}%` }}
-                            />
+                  {weeklyProgress.length === 0 ? (
+                    <div className="text-center py-8">
+                      <BarChart3 className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold text-muted-foreground mb-2">No Weekly Data</h3>
+                      <p className="text-sm text-muted-foreground">Complete some activities this week to see your progress.</p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-7 gap-4">
+                      {weeklyProgress.map((day, index) => (
+                        <div key={index} className="text-center space-y-2">
+                          <div className="text-sm font-medium text-muted-foreground">
+                            {day.day}
                           </div>
-                          <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-sm font-semibold">
-                            {day.completed}%
+                          <div className="relative">
+                            <div className="w-12 h-32 bg-muted rounded-2xl mx-auto overflow-hidden">
+                              <div 
+                                className="w-full bg-gradient-primary rounded-2xl transition-all duration-500"
+                                style={{ height: `${day.completed}%` }}
+                              />
+                            </div>
+                            <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-sm font-semibold">
+                              {day.completed}%
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </section>
@@ -491,14 +486,6 @@ const Dashboard = () => {
               </h3>
               
               <div className="space-y-3">
-                <Button 
-                  onClick={() => navigate("/habits")}
-                  className="w-full justify-start bg-gradient-primary hover:shadow-glow rounded-2xl py-3 transition-all duration-300 hover:scale-105"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Log New Habit
-                </Button>
-                
                 <Button 
                   onClick={() => navigate("/quiz")}
                   variant="outline"
@@ -528,33 +515,41 @@ const Dashboard = () => {
               
               <Card className="rounded-2xl border-2">
                 <CardContent className="p-4 space-y-4">
-                  {achievements.map((achievement, index) => (
-                    <div 
-                      key={index} 
-                      className={`flex items-center space-x-3 p-3 rounded-xl transition-all duration-300 ${
-                        achievement.earned 
-                          ? "bg-success/10 border border-success/20" 
-                          : "bg-muted/50"
-                      }`}
-                    >
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        achievement.earned ? "bg-success text-white" : "bg-muted"
-                      }`}>
-                        <Award className="w-4 h-4" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-semibold text-sm">{achievement.title}</div>
-                        <div className="text-xs text-muted-foreground truncate">
-                          {achievement.description}
-                        </div>
-                      </div>
-                      {achievement.earned && (
-                        <div className="text-success animate-bounce-gentle">
-                          <Heart className="w-4 h-4" fill="currentColor" />
-                        </div>
-                      )}
+                  {achievements.length === 0 ? (
+                    <div className="text-center py-6">
+                      <Award className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold text-muted-foreground mb-2">No Achievements Yet</h3>
+                      <p className="text-sm text-muted-foreground">Complete activities to unlock achievements.</p>
                     </div>
-                  ))}
+                  ) : (
+                    achievements.map((achievement, index) => (
+                      <div 
+                        key={index} 
+                        className={`flex items-center space-x-3 p-3 rounded-xl transition-all duration-300 ${
+                          achievement.earned 
+                            ? "bg-success/10 border border-success/20" 
+                            : "bg-muted/50"
+                        }`}
+                      >
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                          achievement.earned ? "bg-success text-white" : "bg-muted"
+                        }`}>
+                          <Award className="w-4 h-4" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-semibold text-sm">{achievement.title}</div>
+                          <div className="text-xs text-muted-foreground truncate">
+                            {achievement.description}
+                          </div>
+                        </div>
+                        {achievement.earned && (
+                          <div className="text-success animate-bounce-gentle">
+                            <Heart className="w-4 h-4" fill="currentColor" />
+                          </div>
+                        )}
+                      </div>
+                    ))
+                  )}
                 </CardContent>
               </Card>
             </section>
@@ -573,15 +568,15 @@ const Dashboard = () => {
                     </div>
                   </div>
                   <p className="text-white/90 mb-4">
-                    You're most consistent with habits in the morning. Try scheduling your activity 
-                    goals earlier in the day for better success!
+                    Complete some activities to get personalized insights and recommendations!
                   </p>
                   <Button 
+                    onClick={() => navigate("/chat")}
                     variant="outline"
                     size="sm"
                     className="border-white/30 text-white hover:bg-white/10 rounded-xl"
                   >
-                    Learn More
+                    Chat with AI
                   </Button>
                 </CardContent>
               </Card>
