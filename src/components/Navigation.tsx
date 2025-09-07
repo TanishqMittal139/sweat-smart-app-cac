@@ -11,7 +11,6 @@ const Navigation = () => {
 
   const navItems = [
     { name: "Dashboard", href: "/dashboard", icon: Activity },
-    { name: "Habits", href: "/habits", icon: Target },
     { name: "Quiz", href: "/quiz", icon: TrendingUp },
     { name: "Data", href: "/data", icon: TrendingUp },
     { name: "Chat", href: "/chat", icon: Bot },
