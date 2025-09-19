@@ -101,30 +101,6 @@ const Games = () => {
           </p>
         </div>
 
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <Card className="rounded-2xl border-2 shadow-soft">
-            <CardContent className="p-6 text-center">
-              <Trophy className="w-8 h-8 text-warning mx-auto mb-2" />
-              <div className="text-2xl font-bold text-foreground">0</div>
-              <div className="text-sm text-muted-foreground">Games Completed</div>
-            </CardContent>
-          </Card>
-          <Card className="rounded-2xl border-2 shadow-soft">
-            <CardContent className="p-6 text-center">
-              <Star className="w-8 h-8 text-primary mx-auto mb-2" />
-              <div className="text-2xl font-bold text-foreground">0</div>
-              <div className="text-sm text-muted-foreground">Total Points</div>
-            </CardContent>
-          </Card>
-          <Card className="rounded-2xl border-2 shadow-soft">
-            <CardContent className="p-6 text-center">
-              <Zap className="w-8 h-8 text-success mx-auto mb-2" />
-              <div className="text-2xl font-bold text-foreground">0</div>
-              <div className="text-sm text-muted-foreground">Day Streak</div>
-            </CardContent>
-          </Card>
-        </div>
 
         {/* Games Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
