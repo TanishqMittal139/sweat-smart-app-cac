@@ -5,12 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { 
   User,
   Ruler,
   Scale,
-  Settings,
   LogOut
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -32,7 +30,6 @@ const Profile = () => {
   const { user, loading, signOut } = useAuth();
   const { toast } = useToast();
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editData, setEditData] = useState({
     height: '',
     weight: '',
@@ -136,7 +133,6 @@ const Profile = () => {
         setProfile(data);
       }
 
-      setIsEditDialogOpen(false);
       toast({
         title: "Profile Updated",
         description: "Your profile has been updated successfully.",
@@ -198,20 +194,116 @@ const Profile = () => {
                   <span>Account Information</span>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label className="text-sm font-medium text-muted-foreground">Full Name</Label>
-                  <p className="text-lg font-medium text-foreground">
-                    {profile?.full_name || 'Not provided'}
-                  </p>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Full Name</Label>
+                    <p className="text-lg font-medium text-foreground">
+                      {profile?.full_name || 'Not provided'}
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Email</Label>
+                    <p className="text-lg font-medium text-foreground">
+                      {user.email}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium text-muted-foreground">Email</Label>
-                  <p className="text-lg font-medium text-foreground">
-                    {user.email}
-                  </p>
+
+                {/* Unit System Toggle */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-muted-foreground">Unit System</Label>
+                  <div className="flex items-center justify-start space-x-4 p-4 bg-muted/50 rounded-2xl">
+                    <span className={`text-sm font-medium ${editData.unitSystem === 'metric' ? 'text-primary' : 'text-muted-foreground'}`}>
+                      Metric
+                    </span>
+                    <Switch
+                      checked={editData.unitSystem === 'imperial'}
+                      onCheckedChange={(checked) => setEditData(prev => ({ 
+                        ...prev, 
+                        unitSystem: checked ? 'imperial' : 'metric',
+                        height: '', // Clear values when switching
+                        weight: ''
+                      }))}
+                      className="bg-primary data-[state=checked]:bg-primary data-[state=unchecked]:bg-primary"
+                    />
+                    <span className={`text-sm font-medium ${editData.unitSystem === 'imperial' ? 'text-primary' : 'text-muted-foreground'}`}>
+                      Imperial
+                    </span>
+                  </div>
                 </div>
-                <div className="pt-4">
+
+                {/* Biological Sex Toggle */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-muted-foreground">Biological Sex</Label>
+                  <div className="flex items-center justify-start space-x-4 p-4 bg-muted/50 rounded-2xl">
+                    <span className={`text-sm font-medium ${editData.biologicalSex === 'female' ? 'text-primary' : 'text-muted-foreground'}`}>
+                      Female
+                    </span>
+                    <Switch
+                      checked={editData.biologicalSex === 'male'}
+                      onCheckedChange={(checked) => setEditData(prev => ({ 
+                        ...prev, 
+                        biologicalSex: checked ? 'male' : 'female'
+                      }))}
+                      className="bg-primary data-[state=checked]:bg-primary data-[state=unchecked]:bg-primary"
+                    />
+                    <span className={`text-sm font-medium ${editData.biologicalSex === 'male' ? 'text-primary' : 'text-muted-foreground'}`}>
+                      Male
+                    </span>
+                  </div>
+                </div>
+
+                {/* Height and Weight */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="height" className="text-sm font-medium text-muted-foreground">Height</Label>
+                    <Input 
+                      id="height" 
+                      type="number"
+                      placeholder={editData.unitSystem === 'metric' ? '170 cm' : '68 in'}
+                      value={editData.height}
+                      onChange={(e) => setEditData(prev => ({ ...prev, height: e.target.value }))}
+                      className="rounded-xl"
+                    />
+                    {profile?.height_cm && (
+                      <p className="text-sm text-muted-foreground">
+                        Current: {profile.preferred_unit_system === 'imperial' 
+                          ? `${Math.round(profile.height_cm / 2.54)}"` 
+                          : `${profile.height_cm}cm`}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="weight" className="text-sm font-medium text-muted-foreground">Weight</Label>
+                    <Input 
+                      id="weight" 
+                      type="number"
+                      placeholder={editData.unitSystem === 'metric' ? '70 kg' : '154 lbs'}
+                      value={editData.weight}
+                      onChange={(e) => setEditData(prev => ({ ...prev, weight: e.target.value }))}
+                      className="rounded-xl"
+                    />
+                    {profile?.weight_kg && (
+                      <p className="text-sm text-muted-foreground">
+                        Current: {profile.preferred_unit_system === 'imperial' 
+                          ? `${Math.round(profile.weight_kg / 0.453592)}lbs` 
+                          : `${profile.weight_kg}kg`}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t">
+                  <Button 
+                    onClick={handleSaveProfile}
+                    disabled={isSaving}
+                    className="bg-gradient-primary rounded-2xl"
+                  >
+                    {isSaving ? "Saving..." : "Save Changes"}
+                  </Button>
                   <Button 
                     variant="destructive" 
                     onClick={handleSignOut}
@@ -220,162 +312,6 @@ const Profile = () => {
                     <LogOut className="w-4 h-4 mr-2" />
                     Sign Out
                   </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </section>
-
-          {/* Physical Information */}
-          <section>
-            <Card className="rounded-2xl border-2">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Settings className="w-6 h-6 text-primary" />
-                  <span>Physical Information</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                  {profile?.height_cm && (
-                    <div className="text-center">
-                      <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-2">
-                        <Ruler className="w-6 h-6 text-primary" />
-                      </div>
-                      <div className="text-2xl font-bold text-foreground">
-                        {profile.preferred_unit_system === 'imperial' 
-                          ? `${Math.round(profile.height_cm / 2.54)}"` 
-                          : `${profile.height_cm}cm`}
-                      </div>
-                      <div className="text-sm text-muted-foreground">Height</div>
-                    </div>
-                  )}
-                  
-                  {profile?.weight_kg && (
-                    <div className="text-center">
-                      <div className="w-12 h-12 rounded-2xl bg-secondary/10 flex items-center justify-center mx-auto mb-2">
-                        <Scale className="w-6 h-6 text-secondary" />
-                      </div>
-                      <div className="text-2xl font-bold text-foreground">
-                        {profile.preferred_unit_system === 'imperial' 
-                          ? `${Math.round(profile.weight_kg / 0.453592)}lbs` 
-                          : `${profile.weight_kg}kg`}
-                      </div>
-                      <div className="text-sm text-muted-foreground">Weight</div>
-                    </div>
-                  )}
-                  
-                  {profile?.biological_sex && (
-                    <div className="text-center">
-                      <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-2">
-                        <User className="w-6 h-6 text-accent" />
-                      </div>
-                      <div className="text-2xl font-bold text-foreground capitalize">
-                        {profile.biological_sex}
-                      </div>
-                      <div className="text-sm text-muted-foreground">Biological Sex</div>
-                    </div>
-                  )}
-                </div>
-                
-                <div className="text-center">
-                  <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-                    <DialogTrigger asChild>
-                      <Button variant="outline" className="rounded-2xl">
-                        <Settings className="w-4 h-4 mr-2" />
-                        Edit Information
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="rounded-2xl">
-                      <DialogHeader>
-                        <DialogTitle>Edit Profile Information</DialogTitle>
-                      </DialogHeader>
-                      <div className="space-y-6">
-                        {/* Unit System Toggle */}
-                        <div className="flex items-center justify-center space-x-4 p-4 bg-muted/50 rounded-2xl">
-                          <span className={`text-sm font-medium ${editData.unitSystem === 'metric' ? 'text-primary' : 'text-muted-foreground'}`}>
-                            Metric
-                          </span>
-                          <Switch
-                            checked={editData.unitSystem === 'imperial'}
-                            onCheckedChange={(checked) => setEditData(prev => ({ 
-                              ...prev, 
-                              unitSystem: checked ? 'imperial' : 'metric',
-                              height: '', // Clear values when switching
-                              weight: ''
-                            }))}
-                            className="bg-primary data-[state=checked]:bg-primary data-[state=unchecked]:bg-primary"
-                          />
-                          <span className={`text-sm font-medium ${editData.unitSystem === 'imperial' ? 'text-primary' : 'text-muted-foreground'}`}>
-                            Imperial
-                          </span>
-                        </div>
-
-                        {/* Biological Sex Toggle */}
-                        <div className="space-y-3">
-                          <Label>Biological Sex</Label>
-                          <div className="flex items-center justify-center space-x-4 p-4 bg-muted/50 rounded-2xl">
-                            <span className={`text-sm font-medium ${editData.biologicalSex === 'female' ? 'text-primary' : 'text-muted-foreground'}`}>
-                              Female
-                            </span>
-                            <Switch
-                              checked={editData.biologicalSex === 'male'}
-                              onCheckedChange={(checked) => setEditData(prev => ({ 
-                                ...prev, 
-                                biologicalSex: checked ? 'male' : 'female'
-                              }))}
-                              className="bg-primary data-[state=checked]:bg-primary data-[state=unchecked]:bg-primary"
-                            />
-                            <span className={`text-sm font-medium ${editData.biologicalSex === 'male' ? 'text-primary' : 'text-muted-foreground'}`}>
-                              Male
-                            </span>
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="edit-height">Height</Label>
-                            <Input 
-                              id="edit-height" 
-                              type="number"
-                              placeholder={editData.unitSystem === 'metric' ? '170 cm' : '68 in'}
-                              value={editData.height}
-                              onChange={(e) => setEditData(prev => ({ ...prev, height: e.target.value }))}
-                              className="rounded-xl"
-                            />
-                          </div>
-
-                          <div className="space-y-2">
-                            <Label htmlFor="edit-weight">Weight</Label>
-                            <Input 
-                              id="edit-weight" 
-                              type="number"
-                              placeholder={editData.unitSystem === 'metric' ? '70 kg' : '154 lbs'}
-                              value={editData.weight}
-                              onChange={(e) => setEditData(prev => ({ ...prev, weight: e.target.value }))}
-                              className="rounded-xl"
-                            />
-                          </div>
-                        </div>
-
-                        <div className="flex space-x-4">
-                          <Button 
-                            variant="outline" 
-                            onClick={() => setIsEditDialogOpen(false)}
-                            className="flex-1 rounded-2xl"
-                          >
-                            Cancel
-                          </Button>
-                          <Button 
-                            onClick={handleSaveProfile}
-                            disabled={isSaving}
-                            className="flex-1 bg-gradient-primary rounded-2xl"
-                          >
-                            {isSaving ? "Saving..." : "Save Changes"}
-                          </Button>
-                        </div>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
                 </div>
               </CardContent>
             </Card>

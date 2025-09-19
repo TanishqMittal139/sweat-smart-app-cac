@@ -46,7 +46,7 @@ const Navigation = () => {
               <Button
                 variant="ghost"
                 onClick={() => navigate("/profile")}
-                className="flex items-center space-x-2 text-foreground hover:bg-muted rounded-xl"
+                className="flex items-center space-x-2 text-foreground hover:text-foreground hover:bg-muted rounded-xl"
               >
                 <User className="w-4 h-4" />
                 <span className="font-medium">
@@ -102,7 +102,7 @@ const Navigation = () => {
                     navigate("/profile");
                     setIsOpen(false);
                   }}
-                  className="flex items-center space-x-3 text-foreground py-2 px-3 rounded-xl hover:bg-muted w-full text-left"
+                  className="flex items-center space-x-3 text-foreground hover:text-foreground py-2 px-3 rounded-xl hover:bg-muted w-full text-left"
                 >
                   <User className="w-4 h-4" />
                   <span className="font-medium">
