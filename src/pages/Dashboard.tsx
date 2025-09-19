@@ -338,7 +338,7 @@ const Dashboard = () => {
                   <p className="text-white/90 mb-4">
                     Complete some activities to get personalized insights and recommendations!
                   </p>
-                  <Button onClick={() => navigate("/chat")} variant="outline" size="sm" className="border-white/30 text-white hover:bg-white/10 rounded-xl">
+                  <Button onClick={() => navigate("/chat")} variant="outline" size="sm" className="border-white/30 text-white bg-white/10 hover:scale-105 rounded-xl transition-transform">
                     Chat with AI
                   </Button>
                 </CardContent>
