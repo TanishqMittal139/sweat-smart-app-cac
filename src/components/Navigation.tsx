@@ -43,12 +43,16 @@ const Navigation = () => {
               </button>
             ))}
             {user ? (
-              <div className="flex items-center space-x-2 text-foreground">
+              <Button
+                variant="ghost"
+                onClick={() => navigate("/profile")}
+                className="flex items-center space-x-2 text-foreground hover:bg-muted rounded-xl"
+              >
                 <User className="w-4 h-4" />
                 <span className="font-medium">
-                  {user.user_metadata?.first_name || user.email}
+                  {user.user_metadata?.full_name?.split(' ')[0] || user.user_metadata?.first_name || user.email?.split('@')[0]}
                 </span>
-              </div>
+              </Button>
             ) : (
               <Button 
                 variant="outline" 
@@ -93,12 +97,18 @@ const Navigation = () => {
                 </button>
               ))}
               {user ? (
-                <div className="flex items-center space-x-3 text-foreground py-2 px-3">
+                <button
+                  onClick={() => {
+                    navigate("/profile");
+                    setIsOpen(false);
+                  }}
+                  className="flex items-center space-x-3 text-foreground py-2 px-3 rounded-xl hover:bg-muted w-full text-left"
+                >
                   <User className="w-4 h-4" />
                   <span className="font-medium">
-                    {user.user_metadata?.first_name || user.email}
+                    {user.user_metadata?.full_name?.split(' ')[0] || user.user_metadata?.first_name || user.email?.split('@')[0]}
                   </span>
-                </div>
+                </button>
               ) : (
                 <Button 
                   variant="outline" 
