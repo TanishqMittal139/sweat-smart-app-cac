@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Heart, Menu, X, Activity, Target, TrendingUp, User, Bot } from "lucide-react";
+import { Heart, Menu, X, Activity, Target, TrendingUp, User, Bot, Gamepad2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -11,7 +11,7 @@ const Navigation = () => {
 
   const navItems = [
     { name: "Dashboard", href: "/dashboard", icon: Activity },
-    { name: "Quiz", href: "/quiz", icon: TrendingUp },
+    { name: "Games", href: "/games", icon: Gamepad2 },
     { name: "Data", href: "/data", icon: TrendingUp },
     { name: "Chat", href: "/chat", icon: Bot },
   ];
