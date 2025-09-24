@@ -110,14 +110,26 @@ const Dashboard = () => {
       } = await supabase.from('profiles').update(updateData).eq('user_id', user.id);
       if (profileError) throw profileError;
 
-      // Create weight entry if weight was updated
+      // Create or update weight entry if weight was updated
       if (weightInKg) {
+        const todayDate = new Date().toISOString().split('T')[0]; // Today's date in YYYY-MM-DD format
+        
+        // First, delete any existing entries for today
+        const { error: deleteError } = await supabase
+          .from('weight_entries')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('recorded_date', todayDate);
+        
+        if (deleteError) throw deleteError;
+        
+        // Then insert the new entry
         const { error: entryError } = await supabase
           .from('weight_entries')
           .insert({
             user_id: user.id,
             weight_kg: weightInKg,
-            recorded_date: new Date().toISOString().split('T')[0] // Today's date in YYYY-MM-DD format
+            recorded_date: todayDate
           });
         if (entryError) throw entryError;
       }
@@ -205,6 +217,19 @@ const Dashboard = () => {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
 
+            {/* Weight Tracking */}
+            <section>
+              <h2 className="text-2xl font-bold mb-6 flex items-center space-x-2">
+                <Scale className="w-6 h-6 text-accent" />
+                <span>Weight Tracking</span>
+              </h2>
+              
+              <WeightTracker 
+                profile={profile} 
+                onProfileUpdate={fetchProfile}
+              />
+            </section>
+
             {/* Today's Progress */}
             <section>
               <h2 className="text-2xl font-bold mb-6 flex items-center space-x-2">
@@ -291,73 +316,10 @@ const Dashboard = () => {
               </Card>
             </section>
 
-            {/* Weight Tracking */}
-            <section>
-              <h2 className="text-2xl font-bold mb-6 flex items-center space-x-2">
-                <Scale className="w-6 h-6 text-accent" />
-                <span>Weight Tracking</span>
-              </h2>
-              
-              <WeightTracker 
-                profile={profile} 
-                onProfileUpdate={fetchProfile}
-              />
-            </section>
           </div>
 
           {/* Sidebar */}
           <div className="space-y-8">
-            {/* Quick Actions */}
-            <section>
-              <h3 className="text-xl font-bold mb-4 flex items-center space-x-2">
-                <Zap className="w-5 h-5 text-warning" />
-                <span>Quick Actions</span>
-              </h3>
-              
-              <div className="space-y-3">
-                <Button onClick={() => navigate("/quiz")} variant="outline" className="w-full justify-start rounded-2xl py-3 border-2 hover:border-secondary hover:text-secondary transition-all duration-300 hover:scale-105">
-                  <Target className="w-4 h-4 mr-2" />
-                  Take Health Quiz
-                </Button>
-                
-                <Button onClick={() => navigate("/chat")} variant="outline" className="w-full justify-start rounded-2xl py-3 border-2 hover:border-accent hover:text-accent transition-all duration-300 hover:scale-105">
-                  <MessageCircle className="w-4 h-4 mr-2" />
-                  Chat with AI Coach
-                </Button>
-              </div>
-            </section>
-
-            {/* Achievements */}
-            <section>
-              <h3 className="text-xl font-bold mb-4 flex items-center space-x-2">
-                <Award className="w-5 h-5 text-warning" />
-                <span>Recent Achievements</span>
-              </h3>
-              
-              <Card className="rounded-2xl border-2">
-                <CardContent className="p-4 space-y-4">
-                  {achievements.length === 0 ? <div className="text-center py-6">
-                      <Award className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="text-lg font-semibold text-muted-foreground mb-2">No Achievements Yet</h3>
-                      <p className="text-sm text-muted-foreground">Complete activities to unlock achievements.</p>
-                    </div> : achievements.map((achievement, index) => <div key={index} className={`flex items-center space-x-3 p-3 rounded-xl transition-all duration-300 ${achievement.earned ? "bg-success/10 border border-success/20" : "bg-muted/50"}`}>
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${achievement.earned ? "bg-success text-white" : "bg-muted"}`}>
-                          <Award className="w-4 h-4" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="font-semibold text-sm">{achievement.title}</div>
-                          <div className="text-xs text-muted-foreground truncate">
-                            {achievement.description}
-                          </div>
-                        </div>
-                        {achievement.earned && <div className="text-success animate-bounce-gentle">
-                            <Heart className="w-4 h-4" fill="currentColor" />
-                          </div>}
-                      </div>)}
-                </CardContent>
-              </Card>
-            </section>
-
             {/* Health Information */}
             <section>
               <h3 className="text-xl font-bold mb-4 flex items-center space-x-2">
@@ -419,28 +381,57 @@ const Dashboard = () => {
               </Card>
             </section>
 
-            {/* AI Insight */}
+            {/* Quick Actions */}
             <section>
-              <Card className="rounded-2xl border-2 bg-gradient-accent text-white">
-                <CardContent className="p-6">
-                  <div className="flex items-center space-x-3 mb-4">
-                    <div className="w-10 h-10 bg-white/20 rounded-2xl flex items-center justify-center">
-                      <TrendingUp className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <div className="font-bold">AI Insight</div>
-                      <div className="text-sm text-white/80">Personalized tip</div>
-                    </div>
-                  </div>
-                  <p className="text-white/90 mb-4">
-                    Complete some activities to get personalized insights and recommendations!
-                  </p>
-                  <Button onClick={() => navigate("/chat")} variant="outline" size="sm" className="border-white/30 text-white bg-white/10 hover:scale-105 rounded-xl transition-transform">
-                    Chat with AI
-                  </Button>
+              <h3 className="text-xl font-bold mb-4 flex items-center space-x-2">
+                <Zap className="w-5 h-5 text-warning" />
+                <span>Quick Actions</span>
+              </h3>
+              
+              <div className="space-y-3">
+                <Button onClick={() => navigate("/quiz")} variant="outline" className="w-full justify-start rounded-2xl py-3 border-2 hover:border-secondary hover:text-secondary transition-all duration-300 hover:scale-105">
+                  <Target className="w-4 h-4 mr-2" />
+                  Take Health Quiz
+                </Button>
+                
+                <Button onClick={() => navigate("/chat")} variant="outline" className="w-full justify-start rounded-2xl py-3 border-2 hover:border-accent hover:text-accent transition-all duration-300 hover:scale-105">
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  Chat with AI Coach
+                </Button>
+              </div>
+            </section>
+
+            {/* Achievements */}
+            <section>
+              <h3 className="text-xl font-bold mb-4 flex items-center space-x-2">
+                <Award className="w-5 h-5 text-warning" />
+                <span>Recent Achievements</span>
+              </h3>
+              
+              <Card className="rounded-2xl border-2">
+                <CardContent className="p-4 space-y-4">
+                  {achievements.length === 0 ? <div className="text-center py-6">
+                      <Award className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold text-muted-foreground mb-2">No Achievements Yet</h3>
+                      <p className="text-sm text-muted-foreground">Complete activities to unlock achievements.</p>
+                    </div> : achievements.map((achievement, index) => <div key={index} className={`flex items-center space-x-3 p-3 rounded-xl transition-all duration-300 ${achievement.earned ? "bg-success/10 border border-success/20" : "bg-muted/50"}`}>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${achievement.earned ? "bg-success text-white" : "bg-muted"}`}>
+                          <Award className="w-4 h-4" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-semibold text-sm">{achievement.title}</div>
+                          <div className="text-xs text-muted-foreground truncate">
+                            {achievement.description}
+                          </div>
+                        </div>
+                        {achievement.earned && <div className="text-success animate-bounce-gentle">
+                            <Heart className="w-4 h-4" fill="currentColor" />
+                          </div>}
+                      </div>)}
                 </CardContent>
               </Card>
             </section>
+
           </div>
         </div>
 
