@@ -25,6 +25,8 @@ export type Database = {
           preferred_unit_system: string | null
           updated_at: string
           user_id: string
+          weight_goal_amount_kg: number | null
+          weight_goal_type: string | null
           weight_kg: number | null
         }
         Insert: {
@@ -37,6 +39,8 @@ export type Database = {
           preferred_unit_system?: string | null
           updated_at?: string
           user_id: string
+          weight_goal_amount_kg?: number | null
+          weight_goal_type?: string | null
           weight_kg?: number | null
         }
         Update: {
@@ -49,6 +53,8 @@ export type Database = {
           preferred_unit_system?: string | null
           updated_at?: string
           user_id?: string
+          weight_goal_amount_kg?: number | null
+          weight_goal_type?: string | null
           weight_kg?: number | null
         }
         Relationships: []
@@ -83,6 +89,33 @@ export type Database = {
           options?: Json
           question?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      weight_entries: {
+        Row: {
+          created_at: string
+          id: string
+          recorded_date: string
+          updated_at: string
+          user_id: string
+          weight_kg: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          recorded_date?: string
+          updated_at?: string
+          user_id: string
+          weight_kg: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          recorded_date?: string
+          updated_at?: string
+          user_id?: string
+          weight_kg?: number
         }
         Relationships: []
       }

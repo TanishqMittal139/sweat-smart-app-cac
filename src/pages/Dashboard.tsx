@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
+import WeightTracker from "@/components/WeightTracker";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -51,75 +52,82 @@ const Dashboard = () => {
     }
   }, [user, loading, navigate]);
 
-  // Fetch user profile
-  useEffect(() => {
-    const fetchProfile = async () => {
-      if (!user) return;
-      try {
-        const {
-          data,
-          error
-        } = await supabase.from('profiles').select('*').eq('user_id', user.id).single();
-        if (error) {
-          console.error('Error fetching profile:', error);
-          return;
-        }
-        if (data) {
-          setProfile(data);
-          // Set edit data for weight editing
-          const displayWeight = data.weight_kg && data.preferred_unit_system === 'imperial' 
-            ? Math.round(data.weight_kg * 2.20462 * 100) / 100 
-            : data.weight_kg;
-          
-          setEditData({
-            weight: displayWeight ? String(displayWeight) : '',
-            unitSystem: data.preferred_unit_system === 'imperial' ? 'imperial' : 'metric'
-          });
-        }
-      } catch (error) {
+  const fetchProfile = async () => {
+    if (!user) return;
+    try {
+      const {
+        data,
+        error
+      } = await supabase.from('profiles').select('*').eq('user_id', user.id).single();
+      if (error) {
         console.error('Error fetching profile:', error);
+        return;
       }
-    };
+      if (data) {
+        setProfile(data);
+        // Set edit data for weight editing
+        const displayWeight = data.weight_kg && data.preferred_unit_system === 'imperial' 
+          ? Math.round(data.weight_kg * 2.20462 * 100) / 100 
+          : data.weight_kg;
+        
+        setEditData({
+          weight: displayWeight ? String(displayWeight) : '',
+          unitSystem: data.preferred_unit_system === 'imperial' ? 'imperial' : 'metric'
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+    }
+  };
+
+  // Fetch user profile on component mount
+  useEffect(() => {
     fetchProfile();
   }, [user]);
+  
   const handleSaveWeight = async () => {
     if (!user) return;
     setIsSaving(true);
     try {
       const updateData: any = {};
+      let weightInKg: number | null = null;
 
       // Convert and validate weight
       if (editData.weight) {
         const weightValue = parseFloat(editData.weight);
         if (editData.unitSystem === 'imperial') {
           // Convert lbs to kg
-          updateData.weight_kg = Math.round(weightValue * 0.453592 * 100) / 100;
+          weightInKg = Math.round(weightValue * 0.453592 * 100) / 100;
         } else {
-          updateData.weight_kg = Math.round(weightValue * 100) / 100;
+          weightInKg = Math.round(weightValue * 100) / 100;
         }
+        updateData.weight_kg = weightInKg;
       }
 
+      // Update profile
       const {
-        error
+        error: profileError
       } = await supabase.from('profiles').update(updateData).eq('user_id', user.id);
-      if (error) throw error;
+      if (profileError) throw profileError;
+
+      // Create weight entry if weight was updated
+      if (weightInKg) {
+        const { error: entryError } = await supabase
+          .from('weight_entries')
+          .insert({
+            user_id: user.id,
+            weight_kg: weightInKg,
+            recorded_date: new Date().toISOString().split('T')[0] // Today's date in YYYY-MM-DD format
+          });
+        if (entryError) throw entryError;
+      }
 
       // Refetch profile data
-      const {
-        data
-      } = await supabase.from('profiles').select('*').eq('user_id', user.id).single();
-      if (data) {
-        setProfile(data);
-        // Update edit data to reflect new weight
-        const displayWeight = data.weight_kg && data.preferred_unit_system === 'imperial' 
-          ? Math.round(data.weight_kg * 2.20462 * 100) / 100 
-          : data.weight_kg;
-        setEditData(prev => ({ ...prev, weight: displayWeight ? String(displayWeight) : '' }));
-      }
+      await fetchProfile();
       
       toast({
         title: "Weight Updated",
-        description: "Your weight has been updated successfully."
+        description: "Your weight has been updated and recorded successfully."
       });
     } catch (error: any) {
       toast({
@@ -281,6 +289,19 @@ const Dashboard = () => {
                     </div>}
                 </CardContent>
               </Card>
+            </section>
+
+            {/* Weight Tracking */}
+            <section>
+              <h2 className="text-2xl font-bold mb-6 flex items-center space-x-2">
+                <Scale className="w-6 h-6 text-accent" />
+                <span>Weight Tracking</span>
+              </h2>
+              
+              <WeightTracker 
+                profile={profile} 
+                onProfileUpdate={fetchProfile}
+              />
             </section>
           </div>
 
