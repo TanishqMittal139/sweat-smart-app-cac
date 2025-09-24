@@ -7,6 +7,10 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import Navigation from "@/components/Navigation";
 import ReactMarkdown from "react-markdown";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import rehypeHighlight from "rehype-highlight";
+import "katex/dist/katex.min.css";
 
 interface Message {
   id: string;
@@ -23,6 +27,12 @@ const DEFAULT_MESSAGE: Message = {
 };
 
 const STORAGE_KEY = "health-chat-messages";
+
+const preprocessLaTeX = (content: string) => {
+  return content
+    .replace(/\\\[(.*?)\\\]/gs, (_, eq) => `$$${eq}$$`)   // block math
+    .replace(/\\\((.*?)\\\)/gs, (_, eq) => `$${eq}$`);    // inline math
+};
 
 const Chat = () => {
   const { toast } = useToast();
@@ -203,7 +213,15 @@ const Chat = () => {
                         : "bg-muted"
                     }`}>
                       <div className="text-sm leading-relaxed prose prose-sm max-w-none prose-headings:mt-4 prose-headings:mb-2 prose-p:my-2 prose-ul:my-2 prose-ol:my-2 prose-li:my-1">
-                        <ReactMarkdown>{message.content}</ReactMarkdown>
+                        {message.sender === "ai" ? (
+                          <ReactMarkdown
+                            children={preprocessLaTeX(message.content)}
+                            remarkPlugins={[remarkMath]}
+                            rehypePlugins={[rehypeKatex, rehypeHighlight]}
+                          />
+                        ) : (
+                          <ReactMarkdown>{message.content}</ReactMarkdown>
+                        )}
                       </div>
                     </div>
                     <p className="text-xs text-muted-foreground mt-2">
