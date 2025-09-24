@@ -6,8 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Heart, User, Mail, Lock, Scale, Ruler, Activity, Info } from "lucide-react";
+import { Heart, User, Mail, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
@@ -28,12 +27,7 @@ const Auth = () => {
   const [signUpData, setSignUpData] = useState({
     fullName: '',
     email: '',
-    password: '',
-    heightCm: '',
-    weightKg: '',
-    activityLevel: '',
-    unitSystem: 'metric' as 'metric' | 'imperial',
-    biologicalSex: '' as 'male' | 'female' | ''
+    password: ''
   });
   const [signInData, setSignInData] = useState({
     email: '',
@@ -57,36 +51,9 @@ const Auth = () => {
     }
     setIsLoading(true);
 
-    // Prepare optional profile data
-    const profileData: any = {};
-
-    // Convert imperial to metric for storage
-    if (signUpData.heightCm) {
-      const heightValue = parseFloat(signUpData.heightCm);
-      if (signUpData.unitSystem === 'imperial') {
-        // Convert inches to cm
-        profileData.height_cm = Math.round(heightValue * 2.54);
-      } else {
-        profileData.height_cm = Math.round(heightValue);
-      }
-    }
-    if (signUpData.weightKg) {
-      const weightValue = parseFloat(signUpData.weightKg);
-      if (signUpData.unitSystem === 'imperial') {
-        // Convert lbs to kg
-        profileData.weight_kg = Math.round(weightValue * 0.453592 * 100) / 100;
-      } else {
-        profileData.weight_kg = Math.round(weightValue * 100) / 100;
-      }
-    }
-    if (signUpData.activityLevel) profileData.activity_level = signUpData.activityLevel;
-    if (signUpData.biologicalSex) profileData.biological_sex = signUpData.biologicalSex;
-
-    // Store the user's preferred unit system
-    profileData.preferred_unit_system = signUpData.unitSystem;
     const {
       error
-    } = await signUp(signUpData.email, signUpData.password, signUpData.fullName, Object.keys(profileData).length > 0 ? profileData : undefined);
+    } = await signUp(signUpData.email, signUpData.password, signUpData.fullName);
     setIsLoading(false);
     if (error) {
       toast({
@@ -183,114 +150,6 @@ const Auth = () => {
                   </div>
                 </div>
 
-                {/* Health Information */}
-                <div className="border-t pt-6">
-                  <h3 className="font-semibold mb-4 text-center text-muted-foreground">
-                    Optional Health Information (for personalized recommendations)
-                  </h3>
-                  
-                  {/* Unit System Toggle */}
-                  <div className="flex items-center justify-center space-x-4 mb-6 p-4 bg-muted/50 rounded-2xl">
-                    <span className={`text-sm font-medium ${signUpData.unitSystem === 'metric' ? 'text-primary' : 'text-muted-foreground'}`}>
-                      Metric
-                    </span>
-                        <Switch checked={signUpData.unitSystem === 'imperial'} onCheckedChange={checked => setSignUpData(prev => ({
-                    ...prev,
-                    unitSystem: checked ? 'imperial' : 'metric',
-                    heightCm: '',
-                    // Clear values when switching
-                    weightKg: ''
-                  }))} className="bg-primary data-[state=checked]:bg-primary data-[state=unchecked]:bg-primary" />
-                    <span className={`text-sm font-medium ${signUpData.unitSystem === 'imperial' ? 'text-primary' : 'text-muted-foreground'}`}>
-                      Imperial
-                    </span>
-                  </div>
-
-                  {/* Biological Sex Toggle */}
-                  <TooltipProvider>
-                    <div className="space-y-3">
-                      <div className="space-y-2">
-                        <Label className="flex items-center space-x-2">
-                          <User className="w-4 h-4" />
-                          <span>Biological Sex</span>
-                        </Label>
-                        <p className="text-sm text-muted-foreground">
-                          Please select your biological sex for accurate health recommendations
-                        </p>
-                      </div>
-                      <div className="flex items-center justify-center space-x-4 p-4 bg-muted/50 rounded-2xl">
-                        <span className={`text-sm font-medium ${signUpData.biologicalSex === 'female' ? 'text-primary' : 'text-muted-foreground'}`}>
-                          Female
-                        </span>
-                        <Switch checked={signUpData.biologicalSex === 'male'} onCheckedChange={checked => setSignUpData(prev => ({
-                        ...prev,
-                        biologicalSex: checked ? 'male' : 'female'
-                      }))} className="bg-primary data-[state=checked]:bg-primary data-[state=unchecked]:bg-primary" />
-                        <span className={`text-sm font-medium ${signUpData.biologicalSex === 'male' ? 'text-primary' : 'text-muted-foreground'}`}>
-                          Male
-                        </span>
-                      </div>
-                    </div>
-                  </TooltipProvider>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="height" className="flex items-center space-x-2">
-                        <Ruler className="w-4 h-4" />
-                        <span>Height</span>
-                      </Label>
-                      <Input id="height" type="number" placeholder={signUpData.unitSystem === 'metric' ? '170 cm' : '68 in'} value={signUpData.heightCm} onChange={e => {
-                      const value = e.target.value;
-                      // Only allow numbers and decimal points
-                      if (value === '' || /^\d*\.?\d*$/.test(value)) {
-                        setSignUpData(prev => ({
-                          ...prev,
-                          heightCm: value
-                        }));
-                      }
-                    }} className="rounded-xl border-2 focus:border-primary" />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="weight" className="flex items-center space-x-2">
-                        <Scale className="w-4 h-4" />
-                        <span>Weight</span>
-                      </Label>
-                      <Input id="weight" type="number" placeholder={signUpData.unitSystem === 'metric' ? '70 kg' : '154 lbs'} value={signUpData.weightKg} onChange={e => {
-                      const value = e.target.value;
-                      // Only allow numbers and decimal points
-                      if (value === '' || /^\d*\.?\d*$/.test(value)) {
-                        setSignUpData(prev => ({
-                          ...prev,
-                          weightKg: value
-                        }));
-                      }
-                    }} className="rounded-xl border-2 focus:border-primary" />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2 mt-4">
-                    <Label className="flex items-center space-x-2">
-                      <Activity className="w-4 h-4" />
-                      <span>Activity Level</span>
-                    </Label>
-                    <Select value={signUpData.activityLevel} onValueChange={value => setSignUpData(prev => ({
-                    ...prev,
-                    activityLevel: value
-                  }))}>
-                      <SelectTrigger className="rounded-xl border-2 focus:border-primary">
-                        <SelectValue placeholder="Select your activity level" />
-                      </SelectTrigger>
-                      <SelectContent className="rounded-xl">
-                        <SelectItem value="sedentary">Sedentary (little to no exercise)</SelectItem>
-                        <SelectItem value="light">Lightly Active (light exercise 1-3 days/week)</SelectItem>
-                        <SelectItem value="moderate">Moderately Active (moderate exercise 3-5 days/week)</SelectItem>
-                        <SelectItem value="active">Very Active (hard exercise 6-7 days/week)</SelectItem>
-                        <SelectItem value="very_active">Extra Active (very hard exercise, physical job)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
 
                 <Button onClick={handleSignUp} disabled={isLoading} className="w-full bg-gradient-primary hover:shadow-glow rounded-2xl py-3 text-lg font-semibold transition-all duration-300 hover:scale-105">
                   {isLoading ? "Creating Account..." : "Create Account"}

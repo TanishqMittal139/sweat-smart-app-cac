@@ -7,8 +7,6 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { 
   User,
-  Ruler,
-  Scale,
   LogOut
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -32,7 +30,6 @@ const Profile = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [editData, setEditData] = useState({
     height: '',
-    weight: '',
     biologicalSex: '' as 'male' | 'female' | '',
     unitSystem: 'metric' as 'metric' | 'imperial'
   });
@@ -64,10 +61,13 @@ const Profile = () => {
 
         if (data) {
           setProfile(data);
-          // Set edit data for the dialog
+          // Set edit data with height in display units
+          const displayHeight = data.height_cm && data.preferred_unit_system === 'imperial' 
+            ? Math.round(data.height_cm / 2.54) 
+            : data.height_cm;
+          
           setEditData({
-            height: data.height_cm ? String(data.height_cm) : '',
-            weight: data.weight_kg ? String(data.weight_kg) : '',
+            height: displayHeight ? String(displayHeight) : '',
             biologicalSex: (data.biological_sex === 'male' || data.biological_sex === 'female') ? data.biological_sex : '',
             unitSystem: (data.preferred_unit_system === 'imperial') ? 'imperial' : 'metric'
           });
@@ -85,7 +85,9 @@ const Profile = () => {
 
     setIsSaving(true);
     try {
-      const updateData: any = {};
+      const updateData: any = {
+        preferred_unit_system: editData.unitSystem
+      };
       
       // Convert and validate height
       if (editData.height) {
@@ -98,22 +100,9 @@ const Profile = () => {
         }
       }
       
-      // Convert and validate weight
-      if (editData.weight) {
-        const weightValue = parseFloat(editData.weight);
-        if (editData.unitSystem === 'imperial') {
-          // Convert lbs to kg
-          updateData.weight_kg = Math.round(weightValue * 0.453592 * 100) / 100;
-        } else {
-          updateData.weight_kg = Math.round(weightValue * 100) / 100;
-        }
-      }
-      
       if (editData.biologicalSex) {
         updateData.biological_sex = editData.biologicalSex;
       }
-      
-      updateData.preferred_unit_system = editData.unitSystem;
 
       const { error } = await supabase
         .from('profiles')
@@ -131,6 +120,16 @@ const Profile = () => {
 
       if (data) {
         setProfile(data);
+        // Update edit data to reflect new values
+        const displayHeight = data.height_cm && data.preferred_unit_system === 'imperial' 
+          ? Math.round(data.height_cm / 2.54) 
+          : data.height_cm;
+        
+        setEditData({
+          height: displayHeight ? String(displayHeight) : '',
+          biologicalSex: (data.biological_sex === 'male' || data.biological_sex === 'female') ? data.biological_sex : '',
+          unitSystem: (data.preferred_unit_system === 'imperial') ? 'imperial' : 'metric'
+        });
       }
 
       toast({
@@ -222,8 +221,7 @@ const Profile = () => {
                       onCheckedChange={(checked) => setEditData(prev => ({ 
                         ...prev, 
                         unitSystem: checked ? 'imperial' : 'metric',
-                        height: '', // Clear values when switching
-                        weight: ''
+                        height: '' // Clear height when switching
                       }))}
                       className="bg-primary data-[state=checked]:bg-primary data-[state=unchecked]:bg-primary"
                     />
@@ -254,45 +252,31 @@ const Profile = () => {
                   </div>
                 </div>
 
-                {/* Height and Weight */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="height" className="text-sm font-medium text-muted-foreground">Height</Label>
-                    <Input 
-                      id="height" 
-                      type="number"
-                      placeholder={editData.unitSystem === 'metric' ? '170 cm' : '68 in'}
-                      value={editData.height}
-                      onChange={(e) => setEditData(prev => ({ ...prev, height: e.target.value }))}
-                      className="rounded-xl"
-                    />
-                    {profile?.height_cm && (
-                      <p className="text-sm text-muted-foreground">
-                        Current: {profile.preferred_unit_system === 'imperial' 
-                          ? `${Math.round(profile.height_cm / 2.54)}"` 
-                          : `${profile.height_cm}cm`}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="weight" className="text-sm font-medium text-muted-foreground">Weight</Label>
-                    <Input 
-                      id="weight" 
-                      type="number"
-                      placeholder={editData.unitSystem === 'metric' ? '70 kg' : '154 lbs'}
-                      value={editData.weight}
-                      onChange={(e) => setEditData(prev => ({ ...prev, weight: e.target.value }))}
-                      className="rounded-xl"
-                    />
-                    {profile?.weight_kg && (
-                      <p className="text-sm text-muted-foreground">
-                        Current: {profile.preferred_unit_system === 'imperial' 
-                          ? `${Math.round(profile.weight_kg / 0.453592)}lbs` 
-                          : `${profile.weight_kg}kg`}
-                      </p>
-                    )}
-                  </div>
+                {/* Height */}
+                <div className="space-y-2">
+                  <Label htmlFor="height" className="text-sm font-medium text-muted-foreground">
+                    Height {editData.unitSystem === 'imperial' ? '(inches)' : '(cm)'}
+                  </Label>
+                  <Input 
+                    id="height" 
+                    type="number"
+                    placeholder={editData.unitSystem === 'metric' ? 'e.g., 170' : 'e.g., 68'}
+                    value={editData.height}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (value === '' || /^\d*\.?\d*$/.test(value)) {
+                        setEditData(prev => ({ ...prev, height: value }));
+                      }
+                    }}
+                    className="rounded-xl"
+                  />
+                  {profile?.height_cm && (
+                    <p className="text-sm text-muted-foreground">
+                      Current: {profile.preferred_unit_system === 'imperial' 
+                        ? `${Math.round(profile.height_cm / 2.54)}"` 
+                        : `${profile.height_cm}cm`}
+                    </p>
+                  )}
                 </div>
 
                 {/* Action Buttons */}

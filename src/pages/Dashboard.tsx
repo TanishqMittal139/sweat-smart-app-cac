@@ -7,8 +7,6 @@ import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Heart, Target, Calendar, TrendingUp, Award, Zap, Activity, MessageCircle, BarChart3, LogOut, Settings, User, Ruler, Scale } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -35,9 +33,7 @@ const Dashboard = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editData, setEditData] = useState({
-    height: '',
     weight: '',
-    biologicalSex: '' as 'male' | 'female' | '',
     unitSystem: 'metric' as 'metric' | 'imperial'
   });
   const [isSaving, setIsSaving] = useState(false);
@@ -70,11 +66,13 @@ const Dashboard = () => {
         }
         if (data) {
           setProfile(data);
-          // Set edit data for the dialog
+          // Set edit data for weight editing
+          const displayWeight = data.weight_kg && data.preferred_unit_system === 'imperial' 
+            ? Math.round(data.weight_kg * 2.20462 * 100) / 100 
+            : data.weight_kg;
+          
           setEditData({
-            height: data.height_cm ? String(data.height_cm) : '',
-            weight: data.weight_kg ? String(data.weight_kg) : '',
-            biologicalSex: data.biological_sex === 'male' || data.biological_sex === 'female' ? data.biological_sex : '',
+            weight: displayWeight ? String(displayWeight) : '',
             unitSystem: data.preferred_unit_system === 'imperial' ? 'imperial' : 'metric'
           });
         }
@@ -84,22 +82,11 @@ const Dashboard = () => {
     };
     fetchProfile();
   }, [user]);
-  const handleSaveProfile = async () => {
+  const handleSaveWeight = async () => {
     if (!user) return;
     setIsSaving(true);
     try {
       const updateData: any = {};
-
-      // Convert and validate height
-      if (editData.height) {
-        const heightValue = parseFloat(editData.height);
-        if (editData.unitSystem === 'imperial') {
-          // Convert inches to cm
-          updateData.height_cm = Math.round(heightValue * 2.54);
-        } else {
-          updateData.height_cm = Math.round(heightValue);
-        }
-      }
 
       // Convert and validate weight
       if (editData.weight) {
@@ -111,10 +98,7 @@ const Dashboard = () => {
           updateData.weight_kg = Math.round(weightValue * 100) / 100;
         }
       }
-      if (editData.biologicalSex) {
-        updateData.biological_sex = editData.biologicalSex;
-      }
-      updateData.preferred_unit_system = editData.unitSystem;
+
       const {
         error
       } = await supabase.from('profiles').update(updateData).eq('user_id', user.id);
@@ -126,20 +110,51 @@ const Dashboard = () => {
       } = await supabase.from('profiles').select('*').eq('user_id', user.id).single();
       if (data) {
         setProfile(data);
+        // Update edit data to reflect new weight
+        const displayWeight = data.weight_kg && data.preferred_unit_system === 'imperial' 
+          ? Math.round(data.weight_kg * 2.20462 * 100) / 100 
+          : data.weight_kg;
+        setEditData(prev => ({ ...prev, weight: displayWeight ? String(displayWeight) : '' }));
       }
-      setIsEditDialogOpen(false);
+      
       toast({
-        title: "Profile Updated",
-        description: "Your profile has been updated successfully."
+        title: "Weight Updated",
+        description: "Your weight has been updated successfully."
       });
     } catch (error: any) {
       toast({
         title: "Update Failed",
-        description: error.message || "Failed to update profile.",
+        description: error.message || "Failed to update weight.",
         variant: "destructive"
       });
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const updateActivityLevel = async (activityLevel: string) => {
+    if (!user) return;
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ activity_level: activityLevel })
+        .eq('user_id', user.id);
+      
+      if (error) throw error;
+
+      // Update local profile state
+      setProfile(prev => prev ? { ...prev, activity_level: activityLevel } : null);
+      
+      toast({
+        title: "Activity Level Updated",
+        description: "Your activity level has been updated successfully."
+      });
+    } catch (error: any) {
+      toast({
+        title: "Update Failed",
+        description: error.message || "Failed to update activity level.",
+        variant: "destructive"
+      });
     }
   };
   const handleSignOut = async () => {
@@ -318,6 +333,67 @@ const Dashboard = () => {
                             <Heart className="w-4 h-4" fill="currentColor" />
                           </div>}
                       </div>)}
+                </CardContent>
+              </Card>
+            </section>
+
+            {/* Health Information */}
+            <section>
+              <h3 className="text-xl font-bold mb-4 flex items-center space-x-2">
+                <User className="w-5 h-5 text-primary" />
+                <span>Health Information</span>
+              </h3>
+              
+              <Card className="rounded-2xl border-2">
+                <CardContent className="p-6 space-y-6">
+                  <div className="space-y-4">
+                    <Label htmlFor="weight" className="text-sm font-medium">
+                      Weight {editData.unitSystem === 'imperial' ? '(lbs)' : '(kg)'}
+                    </Label>
+                    <Input
+                      id="weight"
+                      type="number"
+                      value={editData.weight}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (value === '' || /^\d*\.?\d*$/.test(value)) {
+                          setEditData(prev => ({ ...prev, weight: value }));
+                        }
+                      }}
+                      className="rounded-xl border-2 text-base"
+                      placeholder={editData.unitSystem === 'imperial' ? 'e.g., 154' : 'e.g., 70'}
+                    />
+                  </div>
+
+                  <div className="space-y-4">
+                    <Label className="text-sm font-medium">Activity Level</Label>
+                    <Select
+                      value={profile?.activity_level || ''}
+                      onValueChange={(value) => {
+                        // Update the profile immediately
+                        updateActivityLevel(value);
+                      }}
+                    >
+                      <SelectTrigger className="rounded-xl border-2 text-base">
+                        <SelectValue placeholder="Select your activity level" />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-xl">
+                        <SelectItem value="sedentary">Sedentary (little to no exercise)</SelectItem>
+                        <SelectItem value="light">Lightly Active (light exercise 1-3 days/week)</SelectItem>
+                        <SelectItem value="moderate">Moderately Active (moderate exercise 3-5 days/week)</SelectItem>
+                        <SelectItem value="active">Very Active (hard exercise 6-7 days/week)</SelectItem>
+                        <SelectItem value="very_active">Extra Active (very hard exercise, physical job)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <Button 
+                    onClick={handleSaveWeight} 
+                    disabled={isSaving} 
+                    className="w-full bg-gradient-primary hover:shadow-glow rounded-2xl py-3 text-lg font-semibold transition-all duration-300 hover:scale-105"
+                  >
+                    {isSaving ? "Saving..." : "Update Weight"}
+                  </Button>
                 </CardContent>
               </Card>
             </section>
