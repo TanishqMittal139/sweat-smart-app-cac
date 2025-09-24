@@ -108,51 +108,83 @@ const WeightTracker = ({ profile, onProfileUpdate }: Props) => {
     }
   };
 
-  // Prepare chart data
-  const chartData = weightEntries.map((entry, index) => {
+  // Prepare chart data with actual calendar days
+  const chartData = weightEntries.map((entry) => {
     const displayWeight = isImperial 
       ? Math.round(entry.weight_kg * 2.20462 * 100) / 100
       : entry.weight_kg;
     
+    // Calculate days from first entry
+    const firstEntryDate = new Date(weightEntries[0]?.recorded_date);
+    const entryDate = new Date(entry.recorded_date);
+    const daysDiff = Math.floor((entryDate.getTime() - firstEntryDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    
     return {
-      day: index + 1,
+      day: daysDiff,
       weight: displayWeight,
       date: entry.recorded_date
     };
   });
 
-  // Calculate progress feedback
+  // Calculate progress feedback based on last 7 days average
   const getProgressFeedback = () => {
-    if (!profile?.weight_goal_type || !profile?.weight_goal_amount_kg || weightEntries.length < 2) {
+    if (!profile?.weight_goal_type || !profile?.weight_goal_amount_kg || weightEntries.length === 0) {
       return null;
     }
 
-    const latestWeight = weightEntries[weightEntries.length - 1]?.weight_kg;
-    const previousWeight = weightEntries[0]?.weight_kg;
+    // Filter entries from the last 7 days
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     
-    if (!latestWeight || !previousWeight) return null;
+    const recentEntries = weightEntries.filter(entry => 
+      new Date(entry.recorded_date) >= sevenDaysAgo
+    );
 
-    const weightChange = previousWeight - latestWeight; // Positive = weight loss, Negative = weight gain
-    const isLosingWeight = weightChange > 0;
+    // Need at least 2 entries in the last 7 days to calculate progress
+    if (recentEntries.length < 2) {
+      return {
+        feedback: "Not enough recent data. Track your weight for at least 2 days in the past week to see personalized advice.",
+        isOnTrack: false
+      };
+    }
+
+    // Calculate average weights for first and second half of the period
+    const midPoint = Math.floor(recentEntries.length / 2);
+    const firstHalf = recentEntries.slice(0, midPoint || 1);
+    const secondHalf = recentEntries.slice(midPoint);
+    
+    const firstHalfAvg = firstHalf.reduce((sum, entry) => sum + entry.weight_kg, 0) / firstHalf.length;
+    const secondHalfAvg = secondHalf.reduce((sum, entry) => sum + entry.weight_kg, 0) / secondHalf.length;
+    
+    const avgWeightChange = firstHalfAvg - secondHalfAvg; // Positive = weight loss, Negative = weight gain
+    const isLosingWeight = avgWeightChange > 0;
     const goalAmount = profile.weight_goal_amount_kg;
+    
+    // Calculate expected weekly rate (goal amount over reasonable timeframe)
+    const expectedWeeklyRate = goalAmount / 12; // Assuming 12 weeks to reach goal
+    const actualWeeklyRate = Math.abs(avgWeightChange);
 
     let feedback = "";
     let isOnTrack = false;
 
     if (profile.weight_goal_type === 'loss') {
-      isOnTrack = isLosingWeight && weightChange >= goalAmount * 0.1; // At least 10% progress
+      isOnTrack = isLosingWeight && actualWeeklyRate >= expectedWeeklyRate * 0.5; // 50% of expected rate
       feedback = isOnTrack 
-        ? "Great job! You're on track with your weight loss goal." 
+        ? `Great progress! You're losing an average of ${actualWeeklyRate.toFixed(1)}kg per week. Keep up the excellent work!`
         : isLosingWeight 
-          ? "You're losing weight, but consider increasing your efforts to reach your goal faster."
-          : "You're gaining weight. Consider adjusting your diet and exercise routine.";
+          ? `You're losing weight (${actualWeeklyRate.toFixed(1)}kg/week), but consider increasing your efforts to reach your ${goalAmount}kg loss goal faster.`
+          : avgWeightChange === 0
+            ? "Your weight has remained stable this week. To lose weight, consider adjusting your diet and exercise routine."
+            : `You've gained an average of ${Math.abs(avgWeightChange).toFixed(1)}kg this week. Focus on your diet and exercise plan to get back on track.`;
     } else {
-      isOnTrack = !isLosingWeight && Math.abs(weightChange) >= goalAmount * 0.1;
+      isOnTrack = !isLosingWeight && actualWeeklyRate >= expectedWeeklyRate * 0.5;
       feedback = isOnTrack
-        ? "Excellent! You're making good progress toward your weight gain goal."
+        ? `Excellent! You're gaining an average of ${actualWeeklyRate.toFixed(1)}kg per week. You're making great progress toward your ${goalAmount}kg gain goal.`
         : !isLosingWeight
-          ? "You're gaining weight, but consider increasing your caloric intake to reach your goal faster."
-          : "You're losing weight. Focus on increasing healthy calories and strength training.";
+          ? `You're gaining weight (${actualWeeklyRate.toFixed(1)}kg/week), but consider increasing your caloric intake and strength training to reach your ${goalAmount}kg goal faster.`
+          : avgWeightChange === 0
+            ? "Your weight has remained stable this week. To gain weight, focus on increasing healthy calories and strength training."
+            : `You've lost an average of ${Math.abs(avgWeightChange).toFixed(1)}kg this week. Increase your caloric intake and focus on strength training.`;
     }
 
     return { feedback, isOnTrack };
