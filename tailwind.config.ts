@@ -116,6 +116,26 @@ export default {
 				'wiggle': {
 					'0%, 100%': { transform: 'rotate(-3deg)' },
 					'50%': { transform: 'rotate(3deg)' }
+				},
+				'fly-up': {
+					'0%': { 
+						transform: 'translateY(0px) translateX(0px)',
+						opacity: '0'
+					},
+					'10%': { 
+						opacity: '1'
+					},
+					'90%': { 
+						opacity: '1'
+					},
+					'100%': { 
+						transform: 'translateY(-100vh) translateX(var(--side-movement, 0px))',
+						opacity: '0'
+					}
+				},
+				'sway': {
+					'0%, 100%': { transform: 'translateX(-20px)' },
+					'50%': { transform: 'translateX(20px)' }
 				}
 			},
 			animation: {
@@ -123,7 +143,9 @@ export default {
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'bounce-gentle': 'bounce-gentle 2s infinite',
 				'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
-				'wiggle': 'wiggle 1s ease-in-out infinite'
+				'wiggle': 'wiggle 1s ease-in-out infinite',
+				'fly-up': 'fly-up linear forwards',
+				'sway': 'sway 3s ease-in-out infinite'
 			}
 		}
 	},
