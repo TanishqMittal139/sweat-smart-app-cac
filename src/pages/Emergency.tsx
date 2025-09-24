@@ -119,32 +119,31 @@ const Emergency = () => {
 
   const addQuotes = useCallback(() => {
     const numberOfQuotes = Math.floor(Math.random() * 6) + 10; // 10-15 quotes
-    const newQuotes: Quote[] = [];
     
     for (let i = 0; i < numberOfQuotes; i++) {
-      const newQuote: Quote = {
-        text: getRandomQuote(),
-        id: nextId + i,
-        x: Math.random() * 80 + 10, // Random horizontal position
-        y: 120, // Start below the viewport
-        color: getRandomColor(),
-        size: getRandomSize(),
-        shape: getRandomShape(),
-        sideMovement: (Math.random() - 0.5) * 40, // Side-to-side movement range
-        animationDuration: Math.random() * 3 + 4, // 4-7 seconds animation
-      };
-      newQuotes.push(newQuote);
-    }
-
-    setQuotes(prev => [...prev, ...newQuotes]);
-    setNextId(prev => prev + numberOfQuotes);
-
-    // Remove quotes after animation completes
-    newQuotes.forEach(quote => {
       setTimeout(() => {
-        setQuotes(prev => prev.filter(q => q.id !== quote.id));
-      }, quote.animationDuration * 1000);
-    });
+        const newQuote: Quote = {
+          text: getRandomQuote(),
+          id: nextId + i,
+          x: Math.random() * 80 + 10, // Random horizontal position
+          y: 120, // Start below the viewport
+          color: getRandomColor(),
+          size: getRandomSize(),
+          shape: getRandomShape(),
+          sideMovement: (Math.random() - 0.5) * 40, // Side-to-side movement range
+          animationDuration: Math.random() * 3 + 8, // 8-11 seconds animation
+        };
+
+        setQuotes(prev => [...prev, newQuote]);
+
+        // Remove quote after animation completes
+        setTimeout(() => {
+          setQuotes(prev => prev.filter(q => q.id !== newQuote.id));
+        }, newQuote.animationDuration * 1000);
+      }, i * 300); // Stagger appearance by 300ms
+    }
+    
+    setNextId(prev => prev + numberOfQuotes);
   }, [nextId]);
 
   return (
@@ -157,25 +156,47 @@ const Emergency = () => {
           const shapeClass = quote.shape === 'round' ? 'rounded-full' : 
                             quote.shape === 'square' ? 'rounded-lg' : 'rounded-[50%]';
           
+          const animationName = `floatUp-${quote.id}`;
+          
           return (
-            <div
-              key={quote.id}
-              className={`fixed pointer-events-none z-10 animate-fly-up animate-sway`}
-              style={{
-                left: `${quote.x}%`,
-                bottom: '0px',
-                color: quote.color,
-                fontSize: `${quote.size}px`,
-                textShadow: "0 2px 10px rgba(0,0,0,0.3)",
-                animationDuration: `${quote.animationDuration}s, ${quote.animationDuration * 0.8}s`,
-                animationDelay: `0s, ${Math.random() * 0.5}s`,
-                '--side-movement': `${quote.sideMovement}px`,
-              } as React.CSSProperties & { '--side-movement': string }}
-            >
-              <div className={`animate-pulse-glow bg-white/20 backdrop-blur-sm ${shapeClass} px-4 py-2 border border-white/30 shadow-bubble whitespace-nowrap`}>
-                {quote.text}
+            <>
+              <style key={`style-${quote.id}`}>
+                {`
+                  @keyframes ${animationName} {
+                    0% {
+                      transform: translateY(100vh) translateX(0px);
+                      opacity: 0;
+                    }
+                    5% {
+                      opacity: 1;
+                    }
+                    95% {
+                      opacity: 1;
+                    }
+                    100% {
+                      transform: translateY(-20vh) translateX(${quote.sideMovement}px);
+                      opacity: 0;
+                    }
+                  }
+                `}
+              </style>
+              <div
+                key={quote.id}
+                className={`fixed pointer-events-none z-10`}
+                style={{
+                  left: `${quote.x}%`,
+                  bottom: '0px',
+                  color: quote.color,
+                  fontSize: `${quote.size}px`,
+                  textShadow: "0 2px 10px rgba(0,0,0,0.3)",
+                  animation: `${animationName} ${quote.animationDuration}s linear forwards`,
+                }}
+              >
+                <div className={`animate-pulse-glow bg-white/20 backdrop-blur-sm ${shapeClass} px-4 py-2 border border-white/30 shadow-bubble whitespace-nowrap`}>
+                  {quote.text}
+                </div>
               </div>
-            </div>
+            </>
           );
         })}
 
