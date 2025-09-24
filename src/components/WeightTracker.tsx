@@ -43,6 +43,32 @@ const WeightTracker = ({ profile, onProfileUpdate }: Props) => {
     fetchWeightEntries();
   }, [user]);
 
+  // Real-time subscription for weight entries
+  useEffect(() => {
+    if (!user) return;
+
+    const channel = supabase
+      .channel('weight-entries-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'weight_entries',
+          filter: `user_id=eq.${user.id}`
+        },
+        (payload) => {
+          console.log('Weight entry changed:', payload);
+          fetchWeightEntries();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user]);
+
   useEffect(() => {
     if (profile?.weight_goal_amount_kg) {
       const displayAmount = isImperial 
