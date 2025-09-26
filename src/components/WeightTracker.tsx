@@ -35,6 +35,7 @@ const WeightTracker = ({ profile, onProfileUpdate }: Props) => {
   const [weightEntries, setWeightEntries] = useState<WeightEntry[]>([]);
   const [goalType, setGoalType] = useState<string>(profile?.weight_goal_type || '');
   const [goalAmount, setGoalAmount] = useState<string>('');
+  const [originalGoalInput, setOriginalGoalInput] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
 
@@ -71,15 +72,48 @@ const WeightTracker = ({ profile, onProfileUpdate }: Props) => {
     };
   }, [user]);
 
+  // Handle unit system changes - convert current input to new unit
   useEffect(() => {
-    if (profile?.weight_goal_amount_kg) {
+    if (goalAmount && originalGoalInput) {
+      // If user has input and we're switching unit systems, convert their input
+      const currentValue = parseFloat(goalAmount);
+      if (!isNaN(currentValue)) {
+        let convertedValue;
+        if (isImperial) {
+          // Converting from kg to lbs
+          convertedValue = Math.round(currentValue * 2.20462 * 100) / 100;
+        } else {
+          // Converting from lbs to kg
+          convertedValue = Math.round(currentValue * 0.453592 * 100) / 100;
+        }
+        const newValue = convertedValue.toString();
+        setGoalAmount(newValue);
+        setOriginalGoalInput(newValue);
+      }
+    } else if (profile?.weight_goal_amount_kg && originalGoalInput === '') {
+      // Only update from profile if user hasn't entered anything
       const displayAmount = isImperial 
         ? Math.round(profile.weight_goal_amount_kg * 2.20462 * 100) / 100
         : profile.weight_goal_amount_kg;
-      setGoalAmount(displayAmount.toString());
+      const displayValue = displayAmount.toString();
+      setGoalAmount(displayValue);
+      setOriginalGoalInput(displayValue);
     }
     setGoalType(profile?.weight_goal_type || '');
-  }, [profile, isImperial]);
+  }, [isImperial]);
+
+  // Initialize from profile on first load
+  useEffect(() => {
+    if (profile?.weight_goal_amount_kg && goalAmount === '' && originalGoalInput === '') {
+      const displayAmount = isImperial 
+        ? Math.round(profile.weight_goal_amount_kg * 2.20462 * 100) / 100
+        : profile.weight_goal_amount_kg;
+      const displayValue = displayAmount.toString();
+      setGoalAmount(displayValue);
+      setOriginalGoalInput(displayValue);
+    }
+    setGoalType(profile?.weight_goal_type || '');
+  }, [profile]);
 
   const fetchWeightEntries = async () => {
     if (!user) return;
@@ -121,6 +155,7 @@ const WeightTracker = ({ profile, onProfileUpdate }: Props) => {
       if (error) throw error;
 
       onProfileUpdate();
+      setOriginalGoalInput(''); // Clear original input to allow database value to be displayed
       toast({
         title: "Goal Updated",
         description: "Your weight goal has been saved successfully."
@@ -316,7 +351,10 @@ const WeightTracker = ({ profile, onProfileUpdate }: Props) => {
               type="number"
               step="0.1"
               value={goalAmount}
-              onChange={(e) => setGoalAmount(e.target.value)}
+              onChange={(e) => {
+                setGoalAmount(e.target.value);
+                setOriginalGoalInput(e.target.value);
+              }}
               className="rounded-xl border-2"
               placeholder={`How many ${weightUnit} to ${goalType === 'loss' ? 'lose' : 'gain'}?`}
             />
