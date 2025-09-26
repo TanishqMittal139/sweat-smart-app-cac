@@ -12,7 +12,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { Heart, Target, TrendingUp, Award, Zap, Activity, MessageCircle, BarChart3, LogOut, Settings, User, Ruler, Scale } from "lucide-react";
+import { Heart, Target, TrendingUp, Award, Zap, Activity, MessageCircle, BarChart3, LogOut, Settings, User, Ruler, Scale, Calendar as CalendarIcon2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -239,7 +239,7 @@ const Dashboard = () => {
             {/* Today's Progress */}
             <section>
               <h2 className="text-2xl font-bold mb-6 flex items-center space-x-2">
-                <Calendar className="w-6 h-6 text-primary" />
+                <CalendarIcon2 className="w-6 h-6 text-primary" />
                 <span>Today's Progress</span>
               </h2>
               
@@ -366,7 +366,7 @@ const Dashboard = () => {
                           {editData.date ? format(editData.date, "PPP") : <span>Pick a date</span>}
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
+                      <PopoverContent className="w-auto p-0 z-50" align="start" side="bottom" sideOffset={4}>
                         <Calendar
                           mode="single"
                           selected={editData.date}
