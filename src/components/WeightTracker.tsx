@@ -222,27 +222,38 @@ const WeightTracker = ({ profile, onProfileUpdate }: Props) => {
     const expectedWeeklyRate = goalAmount / 12; // Assuming 12 weeks to reach goal
     const actualWeeklyRate = Math.abs(avgWeightChange);
 
+    // Convert values to user's preferred unit for display
+    const displayActualWeeklyRate = isImperial 
+      ? Math.round(actualWeeklyRate * 2.20462 * 100) / 100
+      : Math.round(actualWeeklyRate * 100) / 100;
+    const displayGoalAmount = isImperial 
+      ? Math.round(goalAmount * 2.20462 * 100) / 100
+      : Math.round(goalAmount * 100) / 100;
+    const displayAvgWeightChange = isImperial 
+      ? Math.round(Math.abs(avgWeightChange) * 2.20462 * 100) / 100
+      : Math.round(Math.abs(avgWeightChange) * 100) / 100;
+
     let feedback = "";
     let isOnTrack = false;
 
     if (profile.weight_goal_type === 'loss') {
       isOnTrack = isLosingWeight && actualWeeklyRate >= expectedWeeklyRate * 0.5; // 50% of expected rate
       feedback = isOnTrack 
-        ? `Great progress! You're losing an average of ${actualWeeklyRate.toFixed(1)}kg per week. Keep up the excellent work!`
+        ? `Great progress! You're losing an average of ${displayActualWeeklyRate}${weightUnit} per week. Keep up the excellent work!`
         : isLosingWeight 
-          ? `You're losing weight (${actualWeeklyRate.toFixed(1)}kg/week), but consider increasing your efforts to reach your ${goalAmount}kg loss goal faster.`
+          ? `You're losing weight (${displayActualWeeklyRate}${weightUnit}/week), but consider increasing your efforts to reach your ${displayGoalAmount}${weightUnit} loss goal faster.`
           : avgWeightChange === 0
             ? "Your weight has remained stable this week. To lose weight, consider adjusting your diet and exercise routine."
-            : `You've gained an average of ${Math.abs(avgWeightChange).toFixed(1)}kg this week. Focus on your diet and exercise plan to get back on track.`;
+            : `You've gained an average of ${displayAvgWeightChange}${weightUnit} this week. Focus on your diet and exercise plan to get back on track.`;
     } else {
       isOnTrack = !isLosingWeight && actualWeeklyRate >= expectedWeeklyRate * 0.5;
       feedback = isOnTrack
-        ? `Excellent! You're gaining an average of ${actualWeeklyRate.toFixed(1)}kg per week. You're making great progress toward your ${goalAmount}kg gain goal.`
+        ? `Excellent! You're gaining an average of ${displayActualWeeklyRate}${weightUnit} per week. You're making great progress toward your ${displayGoalAmount}${weightUnit} gain goal.`
         : !isLosingWeight
-          ? `You're gaining weight (${actualWeeklyRate.toFixed(1)}kg/week), but consider increasing your caloric intake and strength training to reach your ${goalAmount}kg goal faster.`
+          ? `You're gaining weight (${displayActualWeeklyRate}${weightUnit}/week), but consider increasing your caloric intake and strength training to reach your ${displayGoalAmount}${weightUnit} goal faster.`
           : avgWeightChange === 0
             ? "Your weight has remained stable this week. To gain weight, focus on increasing healthy calories and strength training."
-            : `You've lost an average of ${Math.abs(avgWeightChange).toFixed(1)}kg this week. Increase your caloric intake and focus on strength training.`;
+            : `You've lost an average of ${displayAvgWeightChange}${weightUnit} this week. Increase your caloric intake and focus on strength training.`;
     }
 
     return { feedback, isOnTrack };
