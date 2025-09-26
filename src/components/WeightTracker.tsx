@@ -43,7 +43,7 @@ const WeightTracker = ({ profile, onProfileUpdate }: Props) => {
 
   useEffect(() => {
     fetchWeightEntries();
-  }, [user]);
+  }, [user, profile]); // Add profile as dependency to refetch when profile updates
 
   // Real-time subscription for weight entries
   useEffect(() => {
