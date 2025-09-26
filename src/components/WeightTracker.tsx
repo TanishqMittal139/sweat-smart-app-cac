@@ -184,43 +184,47 @@ const WeightTracker = ({ profile, onProfileUpdate }: Props) => {
     };
   });
 
-  // Calculate progress feedback based on last 7 days average
+  // Calculate progress feedback based on recent entries
   const getProgressFeedback = () => {
     if (!profile?.weight_goal_type || !profile?.weight_goal_amount_kg || weightEntries.length === 0) {
       return null;
     }
 
-    // Filter entries from the last 7 days
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    // Filter entries from the last 30 days to get recent data, but ignore very old data
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     
-    const recentEntries = weightEntries.filter(entry => 
-      new Date(entry.recorded_date) >= sevenDaysAgo
-    );
+    const recentEntries = weightEntries
+      .filter(entry => new Date(entry.recorded_date) >= thirtyDaysAgo)
+      .sort((a, b) => new Date(a.recorded_date).getTime() - new Date(b.recorded_date).getTime());
 
-    // Need at least 2 entries in the last 7 days to calculate progress
+    // Need at least 2 entries to calculate progress
     if (recentEntries.length < 2) {
       return {
-        feedback: "Not enough recent data. Track your weight for at least 2 days in the past week to see personalized advice.",
+        feedback: "Not enough recent data. Track your weight for at least 2 days in the past month to see personalized advice.",
         isOnTrack: false
       };
     }
 
-    // Calculate average weights for first and second half of the period
-    const midPoint = Math.floor(recentEntries.length / 2);
-    const firstHalf = recentEntries.slice(0, midPoint || 1);
-    const secondHalf = recentEntries.slice(midPoint);
+    // Get the earliest and latest entries from recent data
+    const earliestEntry = recentEntries[0];
+    const latestEntry = recentEntries[recentEntries.length - 1];
     
-    const firstHalfAvg = firstHalf.reduce((sum, entry) => sum + entry.weight_kg, 0) / firstHalf.length;
-    const secondHalfAvg = secondHalf.reduce((sum, entry) => sum + entry.weight_kg, 0) / secondHalf.length;
+    // Calculate the actual time difference in days
+    const earliestDate = new Date(earliestEntry.recorded_date);
+    const latestDate = new Date(latestEntry.recorded_date);
+    const daysDifference = Math.max(1, Math.floor((latestDate.getTime() - earliestDate.getTime()) / (1000 * 60 * 60 * 24)));
     
-    const avgWeightChange = firstHalfAvg - secondHalfAvg; // Positive = weight loss, Negative = weight gain
-    const isLosingWeight = avgWeightChange > 0;
+    // Calculate actual weight change and convert to weekly rate
+    const weightChangeKg = earliestEntry.weight_kg - latestEntry.weight_kg; // Positive = weight loss
+    const weeklyRateKg = (weightChangeKg / daysDifference) * 7; // Convert to weekly rate
+    
+    const isLosingWeight = weeklyRateKg > 0;
     const goalAmount = profile.weight_goal_amount_kg;
     
     // Calculate expected weekly rate (goal amount over reasonable timeframe)
     const expectedWeeklyRate = goalAmount / 12; // Assuming 12 weeks to reach goal
-    const actualWeeklyRate = Math.abs(avgWeightChange);
+    const actualWeeklyRate = Math.abs(weeklyRateKg);
 
     // Convert values to user's preferred unit for display
     const displayActualWeeklyRate = isImperial 
@@ -229,9 +233,6 @@ const WeightTracker = ({ profile, onProfileUpdate }: Props) => {
     const displayGoalAmount = isImperial 
       ? Math.round(goalAmount * 2.20462 * 100) / 100
       : Math.round(goalAmount * 100) / 100;
-    const displayAvgWeightChange = isImperial 
-      ? Math.round(Math.abs(avgWeightChange) * 2.20462 * 100) / 100
-      : Math.round(Math.abs(avgWeightChange) * 100) / 100;
 
     let feedback = "";
     let isOnTrack = false;
@@ -242,18 +243,18 @@ const WeightTracker = ({ profile, onProfileUpdate }: Props) => {
         ? `Great progress! You're losing an average of ${displayActualWeeklyRate}${weightUnit} per week. Keep up the excellent work!`
         : isLosingWeight 
           ? `You're losing weight (${displayActualWeeklyRate}${weightUnit}/week), but consider increasing your efforts to reach your ${displayGoalAmount}${weightUnit} loss goal faster.`
-          : avgWeightChange === 0
-            ? "Your weight has remained stable this week. To lose weight, consider adjusting your diet and exercise routine."
-            : `You've gained an average of ${displayAvgWeightChange}${weightUnit} this week. Focus on your diet and exercise plan to get back on track.`;
+          : weeklyRateKg === 0
+            ? "Your weight has remained stable recently. To lose weight, consider adjusting your diet and exercise routine."
+            : `You've been gaining an average of ${displayActualWeeklyRate}${weightUnit} per week. Focus on your diet and exercise plan to get back on track.`;
     } else {
       isOnTrack = !isLosingWeight && actualWeeklyRate >= expectedWeeklyRate * 0.5;
       feedback = isOnTrack
         ? `Excellent! You're gaining an average of ${displayActualWeeklyRate}${weightUnit} per week. You're making great progress toward your ${displayGoalAmount}${weightUnit} gain goal.`
         : !isLosingWeight
           ? `You're gaining weight (${displayActualWeeklyRate}${weightUnit}/week), but consider increasing your caloric intake and strength training to reach your ${displayGoalAmount}${weightUnit} goal faster.`
-          : avgWeightChange === 0
-            ? "Your weight has remained stable this week. To gain weight, focus on increasing healthy calories and strength training."
-            : `You've lost an average of ${displayAvgWeightChange}${weightUnit} this week. Increase your caloric intake and focus on strength training.`;
+          : weeklyRateKg === 0
+            ? "Your weight has remained stable recently. To gain weight, focus on increasing healthy calories and strength training."
+            : `You've been losing an average of ${displayActualWeeklyRate}${weightUnit} per week. Increase your caloric intake and focus on strength training.`;
     }
 
     return { feedback, isOnTrack };
