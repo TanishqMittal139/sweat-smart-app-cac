@@ -8,7 +8,11 @@ import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Heart, Target, Calendar, TrendingUp, Award, Zap, Activity, MessageCircle, BarChart3, LogOut, Settings, User, Ruler, Scale } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { Heart, Target, TrendingUp, Award, Zap, Activity, MessageCircle, BarChart3, LogOut, Settings, User, Ruler, Scale } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -35,7 +39,8 @@ const Dashboard = () => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editData, setEditData] = useState({
     weight: '',
-    unitSystem: 'metric' as 'metric' | 'imperial'
+    unitSystem: 'metric' as 'metric' | 'imperial',
+    date: new Date()
   });
   const [isSaving, setIsSaving] = useState(false);
   const [greeting] = useState(() => {
@@ -72,7 +77,8 @@ const Dashboard = () => {
         
         setEditData({
           weight: displayWeight ? String(displayWeight) : '',
-          unitSystem: data.preferred_unit_system === 'imperial' ? 'imperial' : 'metric'
+          unitSystem: data.preferred_unit_system === 'imperial' ? 'imperial' : 'metric',
+          date: new Date()
         });
       }
     } catch (error) {
@@ -112,14 +118,14 @@ const Dashboard = () => {
 
       // Create or update weight entry if weight was updated
       if (weightInKg) {
-        const todayDate = new Date().toISOString().split('T')[0]; // Today's date in YYYY-MM-DD format
+        const selectedDate = editData.date.toISOString().split('T')[0]; // Selected date in YYYY-MM-DD format
         
-        // First, delete any existing entries for today
+        // First, delete any existing entries for the selected date
         const { error: deleteError } = await supabase
           .from('weight_entries')
           .delete()
           .eq('user_id', user.id)
-          .eq('recorded_date', todayDate);
+          .eq('recorded_date', selectedDate);
         
         if (deleteError) throw deleteError;
         
@@ -129,7 +135,7 @@ const Dashboard = () => {
           .insert({
             user_id: user.id,
             weight_kg: weightInKg,
-            recorded_date: todayDate
+            recorded_date: selectedDate
           });
         if (entryError) throw entryError;
       }
@@ -346,6 +352,35 @@ const Dashboard = () => {
                       className="rounded-xl border-2 text-base"
                       placeholder={editData.unitSystem === 'imperial' ? 'e.g., 154' : 'e.g., 70'}
                     />
+                  </div>
+
+                  <div className="space-y-4">
+                    <Label className="text-sm font-medium">Date</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start text-left font-normal rounded-xl border-2"
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {editData.date ? format(editData.date, "PPP") : <span>Pick a date</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={editData.date}
+                          onSelect={(date) => {
+                            if (date) {
+                              setEditData(prev => ({ ...prev, date }));
+                            }
+                          }}
+                          disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
+                          initialFocus
+                          className="p-3 pointer-events-auto"
+                        />
+                      </PopoverContent>
+                    </Popover>
                   </div>
 
                   <div className="space-y-4">
