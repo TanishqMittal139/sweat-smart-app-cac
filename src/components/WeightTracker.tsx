@@ -5,7 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { Scale, Target, TrendingUp, TrendingDown } from "lucide-react";
+import { Scale, Target, TrendingUp, TrendingDown, RotateCcw } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -35,6 +36,7 @@ const WeightTracker = ({ profile, onProfileUpdate }: Props) => {
   const [goalType, setGoalType] = useState<string>(profile?.weight_goal_type || '');
   const [goalAmount, setGoalAmount] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
 
   const isImperial = profile?.preferred_unit_system === 'imperial';
   const weightUnit = isImperial ? 'lbs' : 'kg';
@@ -131,6 +133,36 @@ const WeightTracker = ({ profile, onProfileUpdate }: Props) => {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleResetData = async () => {
+    if (!user) return;
+    
+    setIsResetting(true);
+    try {
+      const { error } = await supabase
+        .from('weight_entries')
+        .delete()
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      // Clear local state
+      setWeightEntries([]);
+      
+      toast({
+        title: "Data Reset",
+        description: "All weight data has been successfully deleted."
+      });
+    } catch (error: any) {
+      toast({
+        title: "Reset Failed",
+        description: error.message || "Failed to reset weight data.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsResetting(false);
     }
   };
 
@@ -267,9 +299,44 @@ const WeightTracker = ({ profile, onProfileUpdate }: Props) => {
       {/* Weight Trend Chart */}
       <Card className="rounded-2xl border-2">
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Scale className="w-5 h-5 text-secondary" />
-            <span>Weight Trend</span>
+          <CardTitle className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <Scale className="w-5 h-5 text-secondary" />
+              <span>Weight Trend</span>
+            </div>
+            {weightEntries.length > 0 && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="rounded-xl border-2 hover:border-destructive hover:text-destructive"
+                    disabled={isResetting}
+                  >
+                    <RotateCcw className="w-4 h-4 mr-1" />
+                    Reset
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Reset Weight Data</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete all your weight entries and clear your weight trend graph.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleResetData}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      disabled={isResetting}
+                    >
+                      {isResetting ? "Resetting..." : "Reset Data"}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent>
