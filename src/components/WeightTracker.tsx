@@ -275,7 +275,7 @@ const WeightTracker = ({ profile, onProfileUpdate }: Props) => {
           </div>
 
           <div className="space-y-2">
-            <Label>Target Amount ({weightUnit})</Label>
+            <Label>Target Amount per Week ({weightUnit})</Label>
             <Input
               type="number"
               step="0.1"
