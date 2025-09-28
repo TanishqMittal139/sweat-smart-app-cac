@@ -1,6 +1,9 @@
 import { useState } from "react";
 import Navigation from "@/components/Navigation";
 import QuizGame from "@/components/QuizGame";
+import MemoryMatchGame from "@/components/MemoryMatchGame";
+import DailyChallengeGame from "@/components/DailyChallengeGame";
+import FitnessTriviaGame from "@/components/FitnessTriviaGame";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,7 +18,7 @@ import {
   Lock
 } from "lucide-react";
 
-type GameType = 'dashboard' | 'quiz';
+type GameType = 'dashboard' | 'quiz' | 'memory' | 'challenge' | 'trivia';
 
 const Games = () => {
   const [currentGame, setCurrentGame] = useState<GameType>('dashboard');
@@ -41,7 +44,7 @@ const Games = () => {
       difficulty: 'Intermediate',
       estimatedTime: '10-15 min',
       points: '75-150 points',
-      available: false,
+      available: true,
       color: 'text-secondary',
       bgColor: 'bg-secondary/10'
     },
@@ -53,7 +56,7 @@ const Games = () => {
       difficulty: 'Varied',
       estimatedTime: '15-30 min',
       points: '100-300 points',
-      available: false,
+      available: true,
       color: 'text-warning',
       bgColor: 'bg-warning/10'
     },
@@ -65,7 +68,7 @@ const Games = () => {
       difficulty: 'Advanced',
       estimatedTime: '10-20 min',
       points: '200-500 points',
-      available: false,
+      available: true,
       color: 'text-success',
       bgColor: 'bg-success/10'
     }
@@ -77,6 +80,39 @@ const Games = () => {
         <Navigation />
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <QuizGame onBack={() => setCurrentGame('dashboard')} />
+        </div>
+      </div>
+    );
+  }
+
+  if (currentGame === 'memory') {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <MemoryMatchGame onBack={() => setCurrentGame('dashboard')} />
+        </div>
+      </div>
+    );
+  }
+
+  if (currentGame === 'challenge') {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <DailyChallengeGame onBack={() => setCurrentGame('dashboard')} />
+        </div>
+      </div>
+    );
+  }
+
+  if (currentGame === 'trivia') {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <FitnessTriviaGame onBack={() => setCurrentGame('dashboard')} />
         </div>
       </div>
     );
@@ -156,7 +192,7 @@ const Games = () => {
                   </div>
                   
                   <Button
-                    onClick={() => game.available && game.id === 'quiz' && setCurrentGame('quiz')}
+                    onClick={() => game.available && setCurrentGame(game.id as GameType)}
                     disabled={!game.available}
                     className={`w-full rounded-2xl py-3 text-lg font-semibold transition-all duration-300 ${
                       game.available 
