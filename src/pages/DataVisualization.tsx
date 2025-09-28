@@ -6,8 +6,10 @@ import { TrendingUp, AlertTriangle, MapPin, BarChart3, Users, DollarSign, Heart,
 import { useNavigate } from "react-router-dom";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+
 const DataVisualization = () => {
   const navigate = useNavigate();
+
   // Complete CDC 2023 data for all 50 states + DC
   const allStatesData = [
     { state: "West Virginia", rate: 41.0, severity: "critical", region: "South", rank: 1, description: "Highest obesity rate in the nation, significantly impacted by rural poverty and limited healthcare access" },
@@ -79,70 +81,114 @@ const DataVisualization = () => {
     { name: "Moderate (25-29%)", value: 18, fill: "hsl(var(--secondary))" },
     { name: "Lower (<25%)", value: 5, fill: "hsl(var(--primary))" }
   ];
+
   const healthImpacts = [{
     condition: "Type 2 Diabetes",
-    riskIncrease: "400%",
-    affectedPopulation: "37.3M Americans",
+    riskIncrease: "58% Higher Risk",
+    affectedPopulation: "38.4M Americans (11.6%)",
     color: "text-destructive",
-    bgColor: "bg-destructive/10"
+    bgColor: "bg-destructive/10",
+    source: "NIDDK 2021"
   }, {
-    condition: "Heart Disease",
-    riskIncrease: "300%",
-    affectedPopulation: "655K deaths/year",
+    condition: "High Blood Pressure",
+    riskIncrease: "58% of Adults with Obesity",
+    affectedPopulation: "Major heart disease risk factor",
     color: "text-warning",
-    bgColor: "bg-warning/10"
+    bgColor: "bg-warning/10",
+    source: "CDC 2024"
   }, {
-    condition: "Stroke",
-    riskIncrease: "250%",
-    affectedPopulation: "795K Americans/year",
+    condition: "Prediabetes",
+    riskIncrease: "Higher Risk of Progression",
+    affectedPopulation: "97.6M Americans (32.8%)",
     color: "text-secondary",
-    bgColor: "bg-secondary/10"
+    bgColor: "bg-secondary/10",
+    source: "NIDDK 2021"
   }, {
-    condition: "Sleep Apnea",
-    riskIncrease: "700%",
-    affectedPopulation: "22M Americans",
+    condition: "Multiple Chronic Diseases",
+    riskIncrease: "Significantly Increased Risk",
+    affectedPopulation: "Most adults with obesity",
     color: "text-accent",
-    bgColor: "bg-accent/10"
+    bgColor: "bg-accent/10",
+    source: "CDC 2024"
   }];
+
   const economicImpact = [{
-    category: "Medical Costs",
+    category: "Total Medical Costs",
     amount: "$173B",
-    description: "Annual obesity-related healthcare costs",
-    trend: "↑ 12% from 2019"
+    description: "Annual obesity-related healthcare costs (2019 dollars)",
+    trend: "↑ Continuing to rise",
+    source: "CDC 2024"
   }, {
     category: "Individual Cost",
     amount: "$1,861",
-    description: "Extra annual medical costs per obese person",
-    trend: "↑ 8% from 2019"
+    description: "Extra annual medical costs per person with obesity",
+    trend: "↑ $3,097 for severe obesity",
+    source: "CDC 2024"
   }, {
-    category: "Productivity Loss",
-    amount: "$6.4B",
-    description: "Lost due to obesity-related absenteeism",
-    trend: "↑ 15% from 2019"
+    category: "Diabetes Costs",
+    amount: "$412.9B",
+    description: "Total estimated cost of diagnosed diabetes",
+    trend: "$306.6B direct + $106.3B productivity",
+    source: "ADA 2022"
   }, {
-    category: "Medicare/Medicaid",
-    amount: "$87B",
-    description: "Government spending on obesity-related conditions",
-    trend: "↑ 20% from 2019"
+    category: "Population Impact",
+    amount: "100M+",
+    description: "Adults with obesity in the United States",
+    trend: "22M+ with severe obesity",
+    source: "CDC 2024"
   }];
+
   const demographics = [{
     group: "Non-Hispanic Black adults",
     rate: 49.9,
-    population: "49.9%"
+    population: "49.9%",
+    source: "CDC 2017-2020"
   }, {
     group: "Hispanic adults",
     rate: 45.6,
-    population: "45.6%"
+    population: "45.6%",
+    source: "CDC 2017-2020"
   }, {
     group: "Non-Hispanic White adults",
     rate: 41.4,
-    population: "41.4%"
+    population: "41.4%",
+    source: "CDC 2017-2020"
   }, {
     group: "Non-Hispanic Asian adults",
     rate: 16.1,
-    population: "16.1%"
+    population: "16.1%",
+    source: "CDC 2017-2020"
   }];
-  return <div className="min-h-screen bg-background">
+
+  const diabetesDemographics = [{
+    group: "American Indian/Alaska Native",
+    rate: 13.6,
+    population: "13.6%",
+    source: "NIDDK 2019-2021"
+  }, {
+    group: "Non-Hispanic Black adults",
+    rate: 12.1,
+    population: "12.1%",
+    source: "NIDDK 2019-2021"
+  }, {
+    group: "Hispanic adults",
+    rate: 11.7,
+    population: "11.7%",
+    source: "NIDDK 2019-2021"
+  }, {
+    group: "Non-Hispanic Asian adults",
+    rate: 9.1,
+    population: "9.1%",
+    source: "NIDDK 2019-2021"
+  }, {
+    group: "Non-Hispanic White adults",
+    rate: 6.9,
+    population: "6.9%",
+    source: "NIDDK 2019-2021"
+  }];
+
+  return (
+    <div className="min-h-screen bg-background">
       <Navigation />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -153,10 +199,10 @@ const DataVisualization = () => {
             <span className="text-sm font-medium">National Health Crisis</span>
           </div>
           <h1 className="text-3xl md:text-5xl font-bold text-foreground">
-            The Obesity Epidemic: A Data Deep Dive
+            The Obesity & Diabetes Epidemic: Evidence-Based Analysis
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Understanding the scope and impact of obesity in America through comprehensive data analysis
+            Understanding the scope and impact of obesity and chronic diseases in America through comprehensive data from authoritative health organizations
           </p>
         </div>
 
@@ -164,40 +210,40 @@ const DataVisualization = () => {
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           <Card className="rounded-2xl border-2 text-center hover:shadow-bubble transition-all duration-300">
             <CardContent className="p-6">
-              <div className="text-4xl font-bold text-destructive mb-2">36.2%</div>
-              <div className="text-muted-foreground mb-2">US Adults Obese</div>
+              <div className="text-4xl font-bold text-destructive mb-2">41.9%</div>
+              <div className="text-muted-foreground mb-2">US Adults with Obesity</div>
               <Badge variant="destructive" className="rounded-full">
-                ↑ 2.4% from 2017
+                CDC 2017-2020
               </Badge>
             </CardContent>
           </Card>
 
           <Card className="rounded-2xl border-2 text-center hover:shadow-bubble transition-all duration-300">
             <CardContent className="p-6">
-              <div className="text-4xl font-bold text-warning mb-2">73.6%</div>
-              <div className="text-muted-foreground mb-2">Overweight or Obese</div>
+              <div className="text-4xl font-bold text-warning mb-2">100M+</div>
+              <div className="text-muted-foreground mb-2">Adults with Obesity</div>
               <Badge variant="secondary" className="rounded-full text-warning">
-                ↑ Critical Level
+                ↑ from 30.5% in 1999
               </Badge>
             </CardContent>
           </Card>
 
           <Card className="rounded-2xl border-2 text-center hover:shadow-bubble transition-all duration-300">
             <CardContent className="p-6">
-              <div className="text-4xl font-bold text-accent mb-2">78M</div>
-              <div className="text-muted-foreground mb-2">Adults Affected</div>
+              <div className="text-4xl font-bold text-accent mb-2">38.4M</div>
+              <div className="text-muted-foreground mb-2">Americans with Diabetes</div>
               <Badge variant="secondary" className="rounded-full text-accent">
-                1 in 3 Adults
+                11.6% of Population
               </Badge>
             </CardContent>
           </Card>
 
           <Card className="rounded-2xl border-2 text-center hover:shadow-bubble transition-all duration-300">
             <CardContent className="p-6">
-              <div className="text-4xl font-bold text-secondary mb-2">$173B</div>
-              <div className="text-muted-foreground mb-2">Annual Cost</div>
+              <div className="text-4xl font-bold text-secondary mb-2">$413B</div>
+              <div className="text-muted-foreground mb-2">Diabetes Cost 2022</div>
               <Badge variant="secondary" className="rounded-full text-secondary">
-                Healthcare Impact
+                ADA Report
               </Badge>
             </CardContent>
           </Card>
@@ -273,97 +319,14 @@ const DataVisualization = () => {
                   </ResponsiveContainer>
                 </div>
                 <div className="mt-4 text-sm text-muted-foreground text-center">
-                  Only 5 states maintain obesity rates below 25%
+                  Only 5 states have obesity rates below 25%
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Complete State Rankings with Carousel */}
-          <Card className="rounded-2xl border-2">
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <span>Complete State Rankings: All 50 States + DC</span>
-                <Badge variant="secondary" className="rounded-full">
-                  Scroll to View All
-                </Badge>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto">
-                <div className="flex space-x-4 pb-4" style={{ width: 'max-content' }}>
-                  {allStatesData.map((item, index) => {
-                    const getSeverityColor = (severity: string) => {
-                      switch (severity) {
-                        case 'critical': return 'bg-destructive/10 border-destructive/30 text-destructive';
-                        case 'high': return 'bg-warning/10 border-warning/30 text-warning';
-                        case 'moderate': return 'bg-secondary/10 border-secondary/30 text-secondary';
-                        case 'low': return 'bg-primary/10 border-primary/30 text-primary';
-                        default: return 'bg-muted/10 border-muted/30';
-                      }
-                    };
-
-                    return (
-                      <div 
-                        key={index} 
-                        className={`min-w-80 p-4 rounded-xl border-2 hover:shadow-md transition-all duration-300 ${getSeverityColor(item.severity)}`}
-                      >
-                        <div className="flex items-center justify-between mb-3">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-8 h-8 bg-foreground text-background rounded-full flex items-center justify-center text-sm font-bold">
-                              #{item.rank}
-                            </div>
-                            <div>
-                              <div className="font-bold text-lg text-foreground">{item.state}</div>
-                              <div className="text-sm text-muted-foreground">{item.region} Region</div>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-3xl font-bold">{item.rate}%</div>
-                            <Badge 
-                              variant={item.severity === 'critical' ? 'destructive' : 'secondary'} 
-                              className="text-xs"
-                            >
-                              {item.severity.toUpperCase()}
-                            </Badge>
-                          </div>
-                        </div>
-                        <div className="text-sm text-muted-foreground leading-relaxed">
-                          {item.description}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-              <div className="mt-4 text-center">
-                <div className="text-sm text-muted-foreground mb-2">
-                  Scroll horizontally to explore all states →
-                </div>
-                <div className="flex items-center justify-center space-x-4 text-xs">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 bg-destructive rounded-full"></div>
-                    <span>Critical (40%+)</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 bg-warning rounded-full"></div>
-                    <span>High (30-39%)</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 bg-secondary rounded-full"></div>
-                    <span>Moderate (25-29%)</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 bg-primary rounded-full"></div>
-                    <span>Lower (&lt;25%)</span>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Comparison: Highest vs Lowest */}
-          <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* State Rankings */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             <Card className="rounded-2xl border-2">
               <CardHeader>
                 <CardTitle className="text-destructive">Crisis States (40%+ Rate)</CardTitle>
@@ -416,95 +379,152 @@ const DataVisualization = () => {
               </CardContent>
             </Card>
           </div>
-
-          {/* Key Insights */}
-          <Card className="mt-8 rounded-2xl border-2 bg-gradient-to-br from-background to-muted/30">
-            <CardContent className="p-6">
-              <h3 className="text-lg font-semibold mb-4 flex items-center space-x-2">
-                <BarChart3 className="w-5 h-5 text-primary" />
-                <span>Key Geographic Insights</span>
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/20">
-                  <div className="font-semibold text-destructive mb-2">Southern Crisis</div>
-                  <div className="text-muted-foreground">
-                    16 of 50 states in the South, with the region averaging 35.8% obesity rate - highest in the nation
-                  </div>
-                </div>
-                <div className="p-4 rounded-xl bg-secondary/10 border border-secondary/20">
-                  <div className="font-semibold text-secondary mb-2">Rural Challenge</div>
-                  <div className="text-muted-foreground">
-                    States with larger rural populations face higher rates due to food deserts and healthcare access
-                  </div>
-                </div>
-                <div className="p-4 rounded-xl bg-primary/10 border border-primary/20">
-                  <div className="font-semibold text-primary mb-2">Success Models</div>
-                  <div className="text-muted-foreground">
-                    DC (23.5%), Colorado (24.9%), and Hawaii (25.0%) lead with comprehensive health initiatives
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </section>
 
         {/* Health Impact */}
         <section className="mb-12">
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6 flex items-center space-x-2">
-            <Heart className="w-6 h-6 text-destructive" />
-            <span>Health Impact & Disease Risk</span>
+            <Heart className="w-6 h-6 text-primary" />
+            <span>Health Impact & Chronic Diseases</span>
           </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {healthImpacts.map((impact, index) => <Card key={index} className="rounded-2xl border-2 hover:shadow-bubble transition-all duration-300">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            {healthImpacts.map((impact, index) => (
+              <Card key={index} className="rounded-2xl border-2 hover:shadow-bubble transition-all duration-300">
                 <CardContent className="p-6">
-                  <div className="flex items-center space-x-4">
-                    <div className={`w-12 h-12 rounded-2xl ${impact.bgColor} flex items-center justify-center`}>
-                      <Activity className={`w-6 h-6 ${impact.color}`} />
+                  <div className={`rounded-lg p-4 mb-4 ${impact.bgColor}`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-lg font-semibold text-foreground">{impact.condition}</h3>
+                      <Badge variant="outline" className="text-xs">
+                        {impact.source}
+                      </Badge>
                     </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-lg mb-1">{impact.condition}</h3>
-                      <div className="space-y-1">
-                        <div className="flex items-center space-x-2">
-                          <span className="text-sm text-muted-foreground">Risk Increase:</span>
-                          <Badge variant="destructive" className="rounded-full">
-                            +{impact.riskIncrease}
-                          </Badge>
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          Affects: {impact.affectedPopulation}
-                        </div>
-                      </div>
+                    <div className={`text-2xl font-bold mb-2 ${impact.color}`}>
+                      {impact.riskIncrease}
                     </div>
+                    <p className="text-muted-foreground text-sm">
+                      {impact.affectedPopulation}
+                    </p>
                   </div>
                 </CardContent>
-              </Card>)}
+              </Card>
+            ))}
           </div>
+
+          {/* New Prediabetes Section */}
+          <Card className="rounded-2xl border-2 mb-8">
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                <span>Prediabetes Crisis</span>
+                <Badge variant="destructive" className="rounded-full">
+                  NIDDK 2021
+                </Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-warning mb-2">97.6M</div>
+                  <div className="text-muted-foreground">Adults with Prediabetes</div>
+                  <div className="text-sm text-secondary">32.8% of U.S. adults</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-destructive mb-2">1 in 5</div>
+                  <div className="text-muted-foreground">Adolescents (12-18)</div>
+                  <div className="text-sm text-secondary">18% have prediabetes</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-accent mb-2">50%</div>
+                  <div className="text-muted-foreground">Progress to Type 2</div>
+                  <div className="text-sm text-secondary">From gestational diabetes</div>
+                </div>
+              </div>
+              <div className="mt-6 p-4 bg-warning/10 rounded-lg">
+                <p className="text-sm text-muted-foreground">
+                  <strong>Critical Finding:</strong> Most people with prediabetes don't know they have it, 
+                  making early intervention and lifestyle changes crucial for preventing type 2 diabetes.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
         </section>
 
         {/* Economic Impact */}
         <section className="mb-12">
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6 flex items-center space-x-2">
-            <DollarSign className="w-6 h-6 text-warning" />
-            <span>Economic Impact</span>
+            <DollarSign className="w-6 h-6 text-primary" />
+            <span>Economic Impact & Healthcare Costs</span>
           </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {economicImpact.map((item, index) => <Card key={index} className="rounded-2xl border-2 hover:shadow-bubble transition-all duration-300">
-                <CardContent className="p-6 text-center">
-                  <div className="text-3xl font-bold text-foreground mb-2">
-                    {item.amount}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {economicImpact.map((impact, index) => 
+              <Card key={index} className="rounded-2xl border-2 hover:shadow-bubble transition-all duration-300">
+                <CardContent className="p-6">
+                  <div className="mb-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-lg font-semibold text-foreground">{impact.category}</h3>
+                      <Badge variant="outline" className="text-xs">
+                        {impact.source}
+                      </Badge>
+                    </div>
+                    <div className="text-3xl font-bold text-primary mb-2">
+                      {impact.amount}
+                    </div>
+                    <p className="text-muted-foreground text-sm mb-2">
+                      {impact.description}
+                    </p>
+                    <div className="text-xs text-secondary bg-secondary/10 rounded px-2 py-1">
+                      {impact.trend}
+                    </div>
                   </div>
-                  <div className="font-semibold mb-2">{item.category}</div>
-                  <div className="text-sm text-muted-foreground mb-3">
-                    {item.description}
-                  </div>
-                  <Badge variant="secondary" className={`rounded-full text-xs ${item.trend.includes("↑") ? "text-destructive" : "text-success"}`}>
-                    {item.trend}
-                  </Badge>
                 </CardContent>
-              </Card>)}
+              </Card>
+            )}
           </div>
+          
+          {/* Cost Breakdown */}
+          <Card className="rounded-2xl border-2 mt-8">
+            <CardHeader>
+              <CardTitle>Understanding the Financial Burden</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <h4 className="font-semibold text-foreground">Obesity-Related Costs (CDC 2024)</h4>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Per person annually:</span>
+                      <span className="font-semibold">$1,861 extra</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Severe obesity:</span>
+                      <span className="font-semibold">$3,097 extra</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Total annual:</span>
+                      <span className="font-semibold text-destructive">$173 billion</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <h4 className="font-semibold text-foreground">Diabetes Costs (ADA 2022)</h4>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Direct medical:</span>
+                      <span className="font-semibold">$306.6B</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Reduced productivity:</span>
+                      <span className="font-semibold">$106.3B</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Total diabetes cost:</span>
+                      <span className="font-semibold text-destructive">$412.9B</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </section>
 
         {/* Demographics */}
@@ -514,23 +534,104 @@ const DataVisualization = () => {
             <span>Demographic Disparities</span>
           </h2>
           
-          <Card className="rounded-2xl border-2">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <Card className="rounded-2xl border-2">
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <span>Obesity Rates by Ethnicity</span>
+                  <Badge variant="outline" className="text-xs">CDC 2017-2020</Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {demographics.map((demo, index) => (
+                    <div key={index} className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium">{demo.group}</span>
+                        <span className="text-lg font-bold">{demo.rate}%</span>
+                      </div>
+                      <div className="w-full bg-muted rounded-full h-3">
+                        <div 
+                          className="h-full bg-gradient-primary rounded-full transition-all duration-1000" 
+                          style={{ width: `${demo.rate / 50 * 100}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-2xl border-2">
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <span>Diabetes Rates by Ethnicity</span>
+                  <Badge variant="outline" className="text-xs">NIDDK 2019-2021</Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {diabetesDemographics.map((demo, index) => (
+                    <div key={index} className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium">{demo.group}</span>
+                        <span className="text-lg font-bold">{demo.rate}%</span>
+                      </div>
+                      <div className="w-full bg-muted rounded-full h-3">
+                        <div 
+                          className="h-full bg-gradient-secondary rounded-full transition-all duration-1000" 
+                          style={{ width: `${demo.rate / 15 * 100}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* Data Sources */}
+        <section className="mb-12">
+          <Card className="rounded-2xl border-2 bg-gradient-to-br from-background to-muted/30">
             <CardHeader>
-              <CardTitle>Obesity Rates by Ethnicity (Adults 20+)</CardTitle>
+              <CardTitle className="flex items-center space-x-2">
+                <ExternalLink className="w-5 h-5 text-primary" />
+                <span>Data Sources & Methodology</span>
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {demographics.map((demo, index) => <div key={index} className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium">{demo.group}</span>
-                      <span className="text-lg font-bold">{demo.rate}%</span>
-                    </div>
-                    <div className="w-full bg-muted rounded-full h-3">
-                      <div className="h-full bg-gradient-primary rounded-full transition-all duration-1000" style={{
-                    width: `${demo.rate / 50 * 100}%`
-                  }} />
-                    </div>
-                  </div>)}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="space-y-2">
+                  <h4 className="font-semibold text-foreground">Centers for Disease Control (CDC)</h4>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• Adult Obesity Facts (2024)</li>
+                    <li>• NHANES 2017-March 2020</li>
+                    <li>• Behavioral Risk Factor Surveillance</li>
+                  </ul>
+                </div>
+                <div className="space-y-2">
+                  <h4 className="font-semibold text-foreground">NIDDK/NIH</h4>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• Diabetes Statistics (2021)</li>
+                    <li>• Overweight & Obesity Statistics</li>
+                    <li>• National Health Statistics</li>
+                  </ul>
+                </div>
+                <div className="space-y-2">
+                  <h4 className="font-semibold text-foreground">American Diabetes Association</h4>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• Economic Costs Report (2022)</li>
+                    <li>• Statistics About Diabetes</li>
+                    <li>• Demographic Analysis</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="mt-6 p-4 bg-primary/10 rounded-lg">
+                <p className="text-sm text-muted-foreground">
+                  <strong>Note:</strong> All data presented is from official government health agencies and established medical organizations. 
+                  Statistics are the most recent available as of 2024 and represent the best current evidence on obesity and diabetes in America.
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -556,94 +657,12 @@ const DataVisualization = () => {
                 <Heart className="w-5 h-5 mr-2" fill="currentColor" />
                 Start Your Health Journey
               </Button>
-              
-              
             </div>
           </div>
         </section>
-
-        {/* Data Sources */}
-        <section className="mt-12">
-          <Card className="rounded-2xl border bg-muted/30">
-            <CardContent className="p-6">
-              <h3 className="font-semibold mb-4 flex items-center space-x-2">
-                <ExternalLink className="w-5 h-5 text-primary" />
-                <span>Data Sources & References</span>
-              </h3>
-              <div className="text-sm space-y-3">
-                <div className="p-3 rounded-lg bg-background border">
-                  <div className="font-medium text-foreground mb-1">Centers for Disease Control and Prevention (CDC)</div>
-                  <div className="text-muted-foreground mb-2">Adult Obesity Prevalence Maps - 2023 Behavioral Risk Factor Surveillance System (BRFSS)</div>
-                  <a href="https://www.cdc.gov/obesity/data-and-statistics/adult-obesity-prevalence-maps.html" 
-                     target="_blank" 
-                     rel="noopener noreferrer" 
-                     className="text-primary hover:text-primary/80 text-xs flex items-center space-x-1">
-                    <span>cdc.gov/obesity/data-and-statistics/adult-obesity-prevalence-maps.html</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                </div>
-                
-                <div className="p-3 rounded-lg bg-background border">
-                  <div className="font-medium text-foreground mb-1">Trust for America's Health (TFAH)</div>
-                  <div className="text-muted-foreground mb-2">State of Obesity 2024: Better Policies for a Healthier America</div>
-                  <a href="https://www.tfah.org/report-details/state-of-obesity-2024/" 
-                     target="_blank" 
-                     rel="noopener noreferrer" 
-                     className="text-primary hover:text-primary/80 text-xs flex items-center space-x-1">
-                    <span>tfah.org/report-details/state-of-obesity-2024/</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                </div>
-
-                <div className="p-3 rounded-lg bg-background border">
-                  <div className="font-medium text-foreground mb-1">Visual Capitalist</div>
-                  <div className="text-muted-foreground mb-2">Mapped: U.S. Obesity Rates by State - 2024 Analysis</div>
-                  <a href="https://www.visualcapitalist.com/mapped-u-s-obesity-rates-by-state/" 
-                     target="_blank" 
-                     rel="noopener noreferrer" 
-                     className="text-primary hover:text-primary/80 text-xs flex items-center space-x-1">
-                    <span>visualcapitalist.com/mapped-u-s-obesity-rates-by-state/</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                </div>
-
-                <div className="p-3 rounded-lg bg-background border">
-                  <div className="font-medium text-foreground mb-1">USAFacts</div>
-                  <div className="text-muted-foreground mb-2">Obesity Rate Nearly Triples in United States Over Last 50 Years</div>
-                  <a href="https://usafacts.org/articles/obesity-rate-nearly-triples-united-states-over-last-50-years/" 
-                     target="_blank" 
-                     rel="noopener noreferrer" 
-                     className="text-primary hover:text-primary/80 text-xs flex items-center space-x-1">
-                    <span>usafacts.org/articles/obesity-rate-nearly-triples-united-states-over-last-50-years/</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                </div>
-
-                <div className="p-3 rounded-lg bg-background border">
-                  <div className="font-medium text-foreground mb-1">U.S. News & World Report</div>
-                  <div className="text-muted-foreground mb-2">The 10 Most Obese States in America - 2025 Analysis</div>
-                  <a href="https://www.usnews.com/news/best-states/slideshows/the-most-obese-states-in-america" 
-                     target="_blank" 
-                     rel="noopener noreferrer" 
-                     className="text-primary hover:text-primary/80 text-xs flex items-center space-x-1">
-                    <span>usnews.com/news/best-states/slideshows/the-most-obese-states-in-america</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                </div>
-
-                <div className="mt-4 p-3 rounded-lg bg-muted/50 border-l-4 border-primary">
-                  <div className="font-medium text-foreground mb-1">Methodology Note</div>
-                  <div className="text-muted-foreground text-xs leading-relaxed">
-                    All obesity prevalence data is based on self-reported height and weight from the CDC's Behavioral Risk Factor Surveillance System (BRFSS). 
-                    Rates are age-adjusted and represent adults aged 18 and older. Regional averages are population-weighted. 
-                    Data reflects the most recent available statistics as of September 2024.
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default DataVisualization;
