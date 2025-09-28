@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      health_plans: {
+        Row: {
+          created_at: string
+          generated_at: string
+          id: string
+          plan_content: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          generated_at?: string
+          id?: string
+          plan_content: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          generated_at?: string
+          id?: string
+          plan_content?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           activity_level: string | null

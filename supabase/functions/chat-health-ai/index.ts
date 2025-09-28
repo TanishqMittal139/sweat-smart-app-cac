@@ -73,10 +73,11 @@ Remember: You're a wellness coach and health information resource, not a medical
 
   } catch (error) {
     console.error('Error in chat-health-ai function:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
     return new Response(
       JSON.stringify({ 
         error: 'Failed to get AI response',
-        details: error.message 
+        details: errorMessage 
       }), 
       {
         status: 500,

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import WeightTracker from "@/components/WeightTracker";
+import PersonalizedHealthPlan from "@/components/PersonalizedHealthPlan";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -234,6 +235,16 @@ const Dashboard = () => {
                 profile={profile} 
                 onProfileUpdate={fetchProfile}
               />
+            </section>
+
+            {/* Personalized Health Plan */}
+            <section>
+              <h2 className="text-2xl font-bold mb-6 flex items-center space-x-2">
+                <Heart className="w-6 h-6 text-secondary" />
+                <span>Personalized Health Plan</span>
+              </h2>
+              
+              <PersonalizedHealthPlan />
             </section>
 
             {/* Today's Progress */}
