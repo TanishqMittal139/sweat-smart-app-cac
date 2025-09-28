@@ -1,7 +1,9 @@
 import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { AlertTriangle, Heart, Zap } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import { toast } from "sonner";
 
 const motivationalQuotes = [
   "You are stronger than you think! 💪",
@@ -92,6 +94,88 @@ const colors = [
 const Emergency = () => {
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [nextId, setNextId] = useState(0);
+  const [userInput, setUserInput] = useState("");
+  const [questionType, setQuestionType] = useState<"feeling" | "boxer" | "general">("general");
+  const [currentQuestion, setCurrentQuestion] = useState("");
+  const [showInput, setShowInput] = useState(false);
+
+  const personalizedResponses = {
+    sad: [
+      "Even the darkest night will end and the sun will rise 🌅",
+      "Your sadness is valid, but it doesn't define you 💙",
+      "Every storm runs out of rain eventually 🌈",
+      "You're allowed to feel sad, but don't forget you're also allowed to heal ✨"
+    ],
+    anxious: [
+      "Anxiety is temporary, but your strength is permanent 💪",
+      "You've survived every anxious moment so far - you'll survive this one too 🌟",
+      "Breathe in courage, breathe out fear 🌬️",
+      "Your anxiety doesn't control you - you control your response to it 🧠"
+    ],
+    tired: [
+      "Rest when you need to, but don't quit when you're tired 😴",
+      "Even Superman needed to recharge sometimes ⚡",
+      "Your body is asking for rest, not giving up 🛌",
+      "Sometimes the most productive thing you can do is rest 🌙"
+    ],
+    motivated: [
+      "That's the spirit! Channel that energy into action! 🔥",
+      "Your motivation is contagious - keep spreading it! ✨",
+      "Strike while the iron is hot - you've got this! ⚡",
+      "Motivation gets you started, but habit keeps you going! 🚀"
+    ],
+    stressed: [
+      "Stress is temporary, but your resilience is permanent 🌟",
+      "You've handled stress before - you can handle it again 💪",
+      "Take it one breath at a time 🌬️",
+      "Stress is your body's way of saying you care - channel that energy positively ⚡"
+    ]
+  };
+
+  const boxerQuestions = [
+    "What's your favorite boxer?",
+    "Who's your fitness inspiration?",
+    "Which athlete motivates you most?",
+    "Who's your sports hero?"
+  ];
+
+  const generateBoxerResponse = (boxer: string) => {
+    const responses = [
+      `If ${boxer} didn't quit, then why are you? 🥊`,
+      `${boxer} trained when nobody was watching - what's your excuse? 💪`,
+      `${boxer} faced their fears in the ring - time to face yours! 🔥`,
+      `${boxer} got knocked down and got back up - just like you can! ⚡`,
+      `Channel your inner ${boxer} - champions don't quit! 🏆`
+    ];
+    return responses[Math.floor(Math.random() * responses.length)];
+  };
+
+  const generatePersonalizedQuote = (input: string, type: string) => {
+    if (type === "boxer") {
+      return generateBoxerResponse(input);
+    }
+
+    const lowercaseInput = input.toLowerCase();
+    
+    if (lowercaseInput.includes("sad") || lowercaseInput.includes("depressed") || lowercaseInput.includes("down")) {
+      return personalizedResponses.sad[Math.floor(Math.random() * personalizedResponses.sad.length)];
+    }
+    if (lowercaseInput.includes("anxious") || lowercaseInput.includes("worry") || lowercaseInput.includes("nervous")) {
+      return personalizedResponses.anxious[Math.floor(Math.random() * personalizedResponses.anxious.length)];
+    }
+    if (lowercaseInput.includes("tired") || lowercaseInput.includes("exhausted") || lowercaseInput.includes("drained")) {
+      return personalizedResponses.tired[Math.floor(Math.random() * personalizedResponses.tired.length)];
+    }
+    if (lowercaseInput.includes("motivated") || lowercaseInput.includes("excited") || lowercaseInput.includes("pumped")) {
+      return personalizedResponses.motivated[Math.floor(Math.random() * personalizedResponses.motivated.length)];
+    }
+    if (lowercaseInput.includes("stressed") || lowercaseInput.includes("overwhelmed") || lowercaseInput.includes("pressure")) {
+      return personalizedResponses.stressed[Math.floor(Math.random() * personalizedResponses.stressed.length)];
+    }
+
+    // Default motivational response
+    return getRandomQuote();
+  };
 
   const getRandomQuote = () => {
     return motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
@@ -118,20 +202,20 @@ const Emergency = () => {
   };
 
   const addQuotes = useCallback(() => {
-    const numberOfQuotes = Math.floor(Math.random() * 6) + 10; // 10-15 quotes
+    const numberOfQuotes = Math.floor(Math.random() * 8) + 12; // 12-20 quotes
     
     for (let i = 0; i < numberOfQuotes; i++) {
       setTimeout(() => {
         const newQuote: Quote = {
           text: getRandomQuote(),
           id: nextId + i,
-          x: Math.random() * 80 + 10, // Random horizontal position
-          y: 120, // Start below the viewport
+          x: Math.random() * 70 + 15, // Random horizontal position
+          y: 110, // Start below the viewport
           color: getRandomColor(),
           size: getRandomSize(),
           shape: getRandomShape(),
-          sideMovement: (Math.random() - 0.5) * 40, // Side-to-side movement range
-          animationDuration: Math.random() * 3 + 8, // 8-11 seconds animation
+          sideMovement: (Math.random() - 0.5) * 60, // Enhanced side-to-side movement
+          animationDuration: Math.random() * 4 + 6, // 6-10 seconds animation
         };
 
         setQuotes(prev => [...prev, newQuote]);
@@ -140,11 +224,63 @@ const Emergency = () => {
         setTimeout(() => {
           setQuotes(prev => prev.filter(q => q.id !== newQuote.id));
         }, newQuote.animationDuration * 1000);
-      }, i * 300); // Stagger appearance by 300ms
+      }, i * 200); // Stagger appearance by 200ms
     }
     
     setNextId(prev => prev + numberOfQuotes);
+    toast("🌟 Motivation incoming! You've got this!");
   }, [nextId]);
+
+  const addPersonalizedQuote = useCallback((customQuote: string) => {
+    const newQuote: Quote = {
+      text: customQuote,
+      id: nextId,
+      x: Math.random() * 60 + 20,
+      y: 110,
+      color: getRandomColor(),
+      size: Math.random() * 8 + 16, // Slightly larger for personalized quotes
+      shape: getRandomShape(),
+      sideMovement: (Math.random() - 0.5) * 40,
+      animationDuration: Math.random() * 2 + 7,
+    };
+
+    setQuotes(prev => [...prev, newQuote]);
+
+    setTimeout(() => {
+      setQuotes(prev => prev.filter(q => q.id !== newQuote.id));
+    }, newQuote.animationDuration * 1000);
+
+    setNextId(prev => prev + 1);
+  }, [nextId]);
+
+  const handlePersonalizedInput = () => {
+    if (!userInput.trim()) {
+      toast("Please share something with us first! 💭");
+      return;
+    }
+
+    const personalizedQuote = generatePersonalizedQuote(userInput, questionType);
+    addPersonalizedQuote(personalizedQuote);
+    
+    toast("🎯 Here's something just for you!");
+    setUserInput("");
+    setShowInput(false);
+    setQuestionType("general");
+  };
+
+  const showQuestionInput = (type: "feeling" | "boxer") => {
+    setQuestionType(type);
+    setShowInput(true);
+    
+    if (type === "boxer") {
+      const randomQuestion = boxerQuestions[Math.floor(Math.random() * boxerQuestions.length)];
+      setCurrentQuestion(randomQuestion);
+      toast("🥊 " + randomQuestion);
+    } else {
+      setCurrentQuestion("How are you feeling right now?");
+      toast("💭 How are you feeling right now?");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -164,17 +300,18 @@ const Emergency = () => {
                 {`
                   @keyframes ${animationName} {
                     0% {
-                      transform: translateY(100vh) translateX(0px);
+                      transform: translateY(100vh) translateX(0px) scale(0.5);
                       opacity: 0;
                     }
-                    5% {
+                    10% {
                       opacity: 1;
+                      transform: translateY(90vh) translateX(5px) scale(1);
                     }
-                    95% {
+                    90% {
                       opacity: 1;
                     }
                     100% {
-                      transform: translateY(-20vh) translateX(${quote.sideMovement}px);
+                      transform: translateY(-20vh) translateX(${quote.sideMovement}px) scale(0.8);
                       opacity: 0;
                     }
                   }
@@ -188,11 +325,11 @@ const Emergency = () => {
                   bottom: '0px',
                   color: quote.color,
                   fontSize: `${quote.size}px`,
-                  textShadow: "0 2px 10px rgba(0,0,0,0.3)",
-                  animation: `${animationName} ${quote.animationDuration}s linear forwards`,
+                  textShadow: "0 4px 20px rgba(0,0,0,0.4)",
+                  animation: `${animationName} ${quote.animationDuration}s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards`,
                 }}
               >
-                <div className={`animate-pulse-glow bg-white/20 backdrop-blur-sm ${shapeClass} px-4 py-2 border border-white/30 shadow-bubble whitespace-nowrap`}>
+                <div className={`animate-pulse-glow bg-white/25 backdrop-blur-md ${shapeClass} px-6 py-3 border border-white/40 shadow-bubble whitespace-nowrap hover:scale-105 transition-transform`}>
                   {quote.text}
                 </div>
               </div>
@@ -200,36 +337,113 @@ const Emergency = () => {
           );
         })}
 
-        {/* Center button */}
+        {/* Interactive Control Panel */}
+        <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-20">
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-bubble">
+            <h2 className="text-white text-xl font-bold mb-4 text-center">Emergency Motivation Hub 🌟</h2>
+            
+            {!showInput ? (
+              <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                <Button
+                  onClick={addQuotes}
+                  className="bg-gradient-primary text-white hover:scale-105 transition-all duration-300 rounded-full px-6 py-3 font-bold shadow-bubble hover:shadow-glow"
+                >
+                  <AlertTriangle className="w-5 h-5 mr-2" />
+                  General Motivation
+                </Button>
+                
+                <Button
+                  onClick={() => showQuestionInput("feeling")}
+                  className="bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:scale-105 transition-all duration-300 rounded-full px-6 py-3 font-bold shadow-bubble hover:shadow-glow"
+                >
+                  <Heart className="w-5 h-5 mr-2" />
+                  Share Feelings
+                </Button>
+                
+                <Button
+                  onClick={() => showQuestionInput("boxer")}
+                  className="bg-gradient-to-r from-red-500 to-orange-600 text-white hover:scale-105 transition-all duration-300 rounded-full px-6 py-3 font-bold shadow-bubble hover:shadow-glow"
+                >
+                  <Zap className="w-5 h-5 mr-2" />
+                  Hero Inspiration
+                </Button>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-4 min-w-[300px]">
+                <div className="text-white text-center font-medium">
+                  {currentQuestion}
+                </div>
+                <div className="flex gap-2">
+                  <Input
+                    value={userInput}
+                    onChange={(e) => setUserInput(e.target.value)}
+                    placeholder={questionType === "boxer" ? "e.g., Mike Tyson" : "e.g., stressed, excited, tired..."}
+                    className="bg-white/20 border-white/30 text-white placeholder:text-white/70 backdrop-blur-sm"
+                    onKeyPress={(e) => e.key === 'Enter' && handlePersonalizedInput()}
+                  />
+                  <Button
+                    onClick={handlePersonalizedInput}
+                    className="bg-gradient-primary text-white hover:scale-105 transition-all duration-300 rounded-lg px-4 shadow-bubble"
+                  >
+                    Send
+                  </Button>
+                </div>
+                <Button
+                  onClick={() => {
+                    setShowInput(false);
+                    setUserInput("");
+                    setQuestionType("general");
+                  }}
+                  variant="outline"
+                  className="text-white border-white/30 hover:bg-white/10 rounded-lg"
+                >
+                  Back
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Center main button - now more prominent */}
         <div className="absolute inset-0 flex items-center justify-center">
           <Button
             onClick={addQuotes}
             size="lg"
-            className="bg-gradient-primary text-white hover:scale-110 transition-all duration-300 rounded-full w-32 h-32 text-lg font-bold shadow-bubble hover:shadow-glow animate-pulse-glow"
+            className="bg-gradient-primary text-white hover:scale-110 transition-all duration-500 rounded-full w-40 h-40 text-xl font-bold shadow-bubble hover:shadow-glow animate-pulse-glow"
           >
             <div className="flex flex-col items-center">
-              <AlertTriangle className="w-8 h-8 mb-2" fill="currentColor" />
-              <span>Help Me!</span>
+              <AlertTriangle className="w-12 h-12 mb-2 animate-bounce" fill="currentColor" />
+              <span className="text-lg">Help Me!</span>
+              <span className="text-sm opacity-80">Emergency Mode</span>
             </div>
           </Button>
         </div>
 
-        {/* Floating background bubbles */}
+        {/* Enhanced floating background bubbles */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {[...Array(6)].map((_, i) => (
+          {[...Array(8)].map((_, i) => (
             <div
               key={i}
-              className={`absolute rounded-full bg-gradient-to-br from-white/10 to-white/5 animate-bounce-gentle`}
+              className={`absolute rounded-full bg-gradient-to-br from-white/15 to-white/5 animate-bounce-gentle`}
               style={{
-                width: `${Math.random() * 100 + 50}px`,
-                height: `${Math.random() * 100 + 50}px`,
+                width: `${Math.random() * 120 + 60}px`,
+                height: `${Math.random() * 120 + 60}px`,
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 2}s`,
-                animationDuration: `${Math.random() * 3 + 2}s`,
+                animationDelay: `${Math.random() * 3}s`,
+                animationDuration: `${Math.random() * 4 + 3}s`,
               }}
             />
           ))}
+        </div>
+
+        {/* Bottom motivation text */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
+          <div className="bg-white/10 backdrop-blur-md rounded-xl px-6 py-3 border border-white/20">
+            <p className="text-white text-center font-medium">
+              🌟 Motivation is the foundation of health goals! You've got this! 🌟
+            </p>
+          </div>
         </div>
       </div>
     </div>
