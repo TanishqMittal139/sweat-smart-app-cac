@@ -37,16 +37,16 @@ const HeroSection = () => {
             {/* Stats */}
             <div className="grid grid-cols-3 gap-6 py-6">
               <div className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-white">36.2%</div>
+                <div className="text-2xl md:text-3xl font-bold text-white">41.9%</div>
                 <div className="text-white/80 text-sm">US Adults Obese</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-white">2.8M</div>
-                <div className="text-white/80 text-sm">Deaths Annually</div>
+                <div className="text-2xl md:text-3xl font-bold text-white">97.6M</div>
+                <div className="text-white/80 text-sm">Adults Prediabetic</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-white">13x</div>
-                <div className="text-white/80 text-sm">Higher Diabetes Risk</div>
+                <div className="text-2xl md:text-3xl font-bold text-white">38.4M</div>
+                <div className="text-white/80 text-sm">Americans w/ Diabetes</div>
               </div>
             </div>
 

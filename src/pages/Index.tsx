@@ -35,23 +35,23 @@ const Index = () => {
     bgColor: "bg-warning/10"
   }];
   const healthStats = [{
-    stat: "36.2%",
+    stat: "41.9%",
     label: "of US adults are obese",
     trend: "↑ Rising",
     severity: "high"
   }, {
-    stat: "73.6%",
-    label: "of US adults are overweight or obese",
+    stat: "97.6M",
+    label: "adults have prediabetes",
     trend: "↑ Critical",
     severity: "critical"
   }, {
-    stat: "$173B",
-    label: "annual medical costs of obesity",
+    stat: "$413B",
+    label: "annual diabetes costs",
     trend: "↑ Growing",
     severity: "high"
   }, {
-    stat: "2-3x",
-    label: "higher risk of chronic diseases",
+    stat: "38.4M",
+    label: "Americans with diabetes",
     trend: "⚠ Impact",
     severity: "critical"
   }];
