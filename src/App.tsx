@@ -38,6 +38,15 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
+        
+        {/* Embedded Chatbot Widget */}
+        <div className="fixed bottom-5 right-5 w-[350px] h-[500px] rounded-xl overflow-hidden z-[9999] shadow-[0_4px_12px_rgba(0,0,0,0.2)]">
+          <iframe
+            src="https://nextjs-ai-chatbot-git-main-tanishqmittal139s-projects.vercel.app/"
+            className="w-full h-full border-0"
+            title="AI Chatbot"
+          />
+        </div>
       </TooltipProvider>
     </AuthProvider>
   </QueryClientProvider>
