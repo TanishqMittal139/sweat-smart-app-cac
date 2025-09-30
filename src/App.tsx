@@ -4,6 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { MessageCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
@@ -38,6 +40,15 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
+        
+        {/* Floating AI Chatbot Button */}
+        <Button
+          onClick={() => window.open('https://nextjs-ai-chatbot-git-main-tanishqmittal139s-projects.vercel.app/', '_blank')}
+          className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 z-[9999] bg-primary hover:bg-primary/90"
+          aria-label="Open AI Chatbot"
+        >
+          <MessageCircle className="h-6 w-6" />
+        </Button>
       </TooltipProvider>
     </AuthProvider>
   </QueryClientProvider>
