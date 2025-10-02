@@ -8,13 +8,16 @@ const HeroSection = () => {
   const words = ["Health", "Fitness", "Confidence", "Wellness"];
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const longestLen = Math.max(...words.map((w) => w.length));
+  const spanWidthCh = longestLen + 1;
 
   useEffect(() => {
     const interval = setInterval(() => {
       setIsAnimating(true);
       setTimeout(() => {
-        setCurrentWordIndex((prev) => (prev + 1) % words.length);
+        // End animation before switching the word to avoid "next-next" sliding
         setIsAnimating(false);
+        setCurrentWordIndex((prev) => (prev + 1) % words.length);
       }, 1000);
     }, 3000);
 
@@ -38,8 +41,9 @@ const HeroSection = () => {
               </div>
               
               <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
-                Take Control of Your{" "}
-                <span className="inline-block relative overflow-hidden" style={{ minWidth: '280px', height: '1.2em', verticalAlign: 'text-bottom' }}>
+                Take Control of Your
+                <br />
+                <span className="block relative overflow-hidden" style={{ width: `${spanWidthCh}ch`, height: '1.2em' }}>
                   <span
                     key={currentWordIndex}
                     className={`absolute top-0 left-0 w-full bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent transition-transform duration-1000 ${
