@@ -60,7 +60,6 @@ Remember: You're a wellness coach and health information resource, not a medical
       body: JSON.stringify({
         model: 'gpt-4o-mini',
         messages: aiMessages,
-        max_tokens: 500,
         temperature: 0.7,
       }),
     });
