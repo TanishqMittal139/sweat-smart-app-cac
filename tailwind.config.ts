@@ -137,6 +137,22 @@ export default {
 				'sway': {
 					'0%, 100%': { transform: 'translateX(-20px)' },
 					'50%': { transform: 'translateX(20px)' }
+				},
+				'slide-down': {
+					'0%': {
+						transform: 'translateY(-100%)',
+						opacity: '0'
+					},
+					'10%': {
+						opacity: '1'
+					},
+					'90%': {
+						opacity: '1'
+					},
+					'100%': {
+						transform: 'translateY(100%)',
+						opacity: '0'
+					}
 				}
 			},
 			animation: {
@@ -146,7 +162,8 @@ export default {
 				'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
 				'wiggle': 'wiggle 1s ease-in-out infinite',
 				'fly-up': 'fly-up linear forwards',
-				'sway': 'sway 3s ease-in-out infinite'
+				'sway': 'sway 3s ease-in-out infinite',
+				'slide-down': 'slide-down 2s ease-in-out'
 			}
 		}
 	},

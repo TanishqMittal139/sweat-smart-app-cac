@@ -2,8 +2,24 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Play, TrendingUp, Users, Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/health-hero.jpg";
+import { useState, useEffect } from "react";
 const HeroSection = () => {
   const navigate = useNavigate();
+  const words = ["Health", "Fitness", "Confidence", "Wellness"];
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsAnimating(true);
+      setTimeout(() => {
+        setCurrentWordIndex((prev) => (prev + 1) % words.length);
+        setIsAnimating(false);
+      }, 1000);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
   return <div className="relative min-h-screen flex items-center overflow-hidden bg-gradient-hero">
       {/* Background Elements */}
       <div className="absolute inset-0 bg-gradient-hero opacity-90" />
@@ -23,9 +39,17 @@ const HeroSection = () => {
               
               <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
                 Take Control of Your{" "}
-                <span className="bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent">
-                  Health Journey
-                </span>
+                <span className="inline-block relative h-[1.2em] overflow-hidden align-bottom">
+                  <span
+                    key={currentWordIndex}
+                    className={`absolute inset-0 bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent ${
+                      isAnimating ? "animate-slide-down" : ""
+                    }`}
+                  >
+                    {words[currentWordIndex]}
+                  </span>
+                </span>{" "}
+                Journey
               </h1>
               
               <p className="text-xl md:text-2xl text-white/90 leading-relaxed max-w-2xl">
