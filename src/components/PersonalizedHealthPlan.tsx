@@ -7,6 +7,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import ReactMarkdown from 'react-markdown';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import rehypeHighlight from 'rehype-highlight';
+import 'katex/dist/katex.min.css';
+import 'highlight.js/styles/github-dark.css';
 
 interface HealthPlan {
   id: string;
@@ -92,38 +98,6 @@ const PersonalizedHealthPlan = () => {
     }
   };
 
-  const formatHealthPlan = (content: string) => {
-    // Split content into sections and format for better readability
-    const sections = content.split('\n\n');
-    return sections.map((section, index) => {
-      if (section.trim().length === 0) return null;
-      
-      // Check if it's a heading (all caps or starts with specific keywords)
-      const isHeading = section.includes(':') && 
-        (section.toUpperCase() === section || 
-         section.startsWith('PERSONALIZED HEALTH PLAN') ||
-         section.startsWith('CURRENT HEALTH') ||
-         section.startsWith('NUTRITION') ||
-         section.startsWith('EXERCISE') ||
-         section.startsWith('LIFESTYLE') ||
-         section.startsWith('GOAL TRACKING') ||
-         section.startsWith('IMPORTANT NOTES'));
-
-      return (
-        <div key={index} className={`${isHeading ? 'mb-4' : 'mb-6'}`}>
-          {isHeading ? (
-            <h3 className="text-lg font-bold text-primary mb-2 border-b border-border pb-1">
-              {section.replace(':', '')}
-            </h3>
-          ) : (
-            <div className="text-foreground leading-relaxed whitespace-pre-line">
-              {section}
-            </div>
-          )}
-        </div>
-      );
-    }).filter(Boolean);
-  };
 
   if (isLoading) {
     return (
@@ -185,8 +159,13 @@ const PersonalizedHealthPlan = () => {
           <div className="space-y-6">
             <div className="bg-gradient-subtle rounded-2xl p-6 border border-primary/20">
               <div className="max-h-96 overflow-y-auto pr-2 custom-scrollbar">
-                <div className="space-y-4">
-                  {formatHealthPlan(healthPlan.plan_content)}
+                <div className="prose prose-sm max-w-none prose-headings:text-foreground prose-p:text-foreground prose-strong:text-foreground prose-ul:text-foreground prose-ol:text-foreground prose-li:text-foreground prose-h1:text-3xl prose-h1:font-bold prose-h1:mb-4 prose-h2:text-2xl prose-h2:font-bold prose-h2:mb-3 prose-h2:mt-6 prose-h3:text-xl prose-h3:font-bold prose-h3:mb-2 prose-h3:mt-4 prose-p:leading-relaxed prose-li:leading-relaxed">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkMath]}
+                    rehypePlugins={[rehypeKatex, rehypeHighlight]}
+                  >
+                    {healthPlan.plan_content}
+                  </ReactMarkdown>
                 </div>
               </div>
             </div>
