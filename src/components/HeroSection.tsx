@@ -53,8 +53,8 @@ const HeroSection = () => {
                     {words[currentWordIndex]}
                   </span>
                   <span
-                    className={`absolute top-0 left-0 w-full bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent transition-transform duration-1000 ${
-                      isAnimating ? "translate-y-0" : "-translate-y-full"
+                    className={`absolute top-0 left-0 w-full bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent ${
+                      isAnimating ? "translate-y-0 transition-transform duration-1000" : "-translate-y-full"
                     }`}
                   >
                     {words[(currentWordIndex + 1) % words.length]}
