@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import WeightTracker from "@/components/WeightTracker";
 import PersonalizedHealthPlan from "@/components/PersonalizedHealthPlan";
+import { SleepTracker } from "@/components/SleepTracker";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +14,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { Heart, Target, TrendingUp, Award, Zap, Activity, MessageCircle, BarChart3, LogOut, Settings, User, Ruler, Scale, Calendar as CalendarIcon2 } from "lucide-react";
+import { Heart, Target, TrendingUp, Award, Zap, Activity, MessageCircle, BarChart3, LogOut, Settings, User, Ruler, Scale, Calendar as CalendarIcon2, Moon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -245,6 +246,16 @@ const Dashboard = () => {
               </h2>
               
               <PersonalizedHealthPlan />
+            </section>
+
+            {/* Sleep Tracking */}
+            <section>
+              <h2 className="text-2xl font-bold mb-6 flex items-center space-x-2">
+                <Moon className="w-6 h-6 text-accent" />
+                <span>Sleep Tracking</span>
+              </h2>
+              
+              <SleepTracker userId={user.id} />
             </section>
 
             {/* Today's Progress */}
