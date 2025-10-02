@@ -39,14 +39,21 @@ const HeroSection = () => {
               
               <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
                 Take Control of Your{" "}
-                <span className="inline-block relative h-[1.2em] overflow-hidden align-bottom">
+                <span className="inline-block relative overflow-hidden" style={{ minWidth: '280px', height: '1.2em', verticalAlign: 'text-bottom' }}>
                   <span
                     key={currentWordIndex}
-                    className={`absolute inset-0 bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent ${
-                      isAnimating ? "animate-slide-down" : ""
+                    className={`absolute top-0 left-0 w-full bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent transition-transform duration-1000 ${
+                      isAnimating ? "translate-y-full" : "translate-y-0"
                     }`}
                   >
                     {words[currentWordIndex]}
+                  </span>
+                  <span
+                    className={`absolute top-0 left-0 w-full bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent transition-transform duration-1000 ${
+                      isAnimating ? "translate-y-0" : "-translate-y-full"
+                    }`}
+                  >
+                    {words[(currentWordIndex + 1) % words.length]}
                   </span>
                 </span>{" "}
                 Journey
