@@ -212,7 +212,7 @@ const Chat = () => {
                         ? "bg-primary text-primary-foreground"
                         : "bg-muted"
                     }`}>
-                      <div className="text-sm leading-relaxed prose prose-sm max-w-none prose-headings:mt-4 prose-headings:mb-2 prose-p:my-2 prose-ul:my-2 prose-ol:my-2 prose-li:my-1">
+                      <div className="leading-relaxed prose prose-sm max-w-none prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-headings:mt-4 prose-headings:mb-2 prose-p:my-2 prose-p:text-sm prose-ul:my-2 prose-ol:my-2 prose-li:my-1 prose-li:text-sm prose-strong:text-current">
                         {message.sender === "ai" ? (
                           <ReactMarkdown
                             children={preprocessLaTeX(message.content)}
