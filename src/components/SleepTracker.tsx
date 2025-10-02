@@ -120,6 +120,7 @@ export const SleepTracker = ({ userId }: Props) => {
       });
       setHours("");
       setDate(new Date());
+      fetchSleepEntries(); // Refresh the graph immediately
     } catch (error: any) {
       toast({
         title: "Failed",
