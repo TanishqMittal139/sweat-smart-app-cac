@@ -41,6 +41,7 @@ const Dashboard = () => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editData, setEditData] = useState({
     weight: '',
+    sleep: '',
     unitSystem: 'metric' as 'metric' | 'imperial',
     date: new Date()
   });
@@ -79,6 +80,7 @@ const Dashboard = () => {
         
         setEditData({
           weight: displayWeight ? String(displayWeight) : '',
+          sleep: '',
           unitSystem: data.preferred_unit_system === 'imperial' ? 'imperial' : 'metric',
           date: new Date()
         });
@@ -93,12 +95,13 @@ const Dashboard = () => {
     fetchProfile();
   }, [user]);
   
-  const handleSaveWeight = async () => {
+  const handleSaveHealthData = async () => {
     if (!user) return;
     setIsSaving(true);
     try {
       const updateData: any = {};
       let weightInKg: number | null = null;
+      let sleepHours: number | null = null;
 
       // Convert and validate weight
       if (editData.weight) {
@@ -112,16 +115,32 @@ const Dashboard = () => {
         updateData.weight_kg = weightInKg;
       }
 
-      // Update profile
-      const {
-        error: profileError
-      } = await supabase.from('profiles').update(updateData).eq('user_id', user.id);
-      if (profileError) throw profileError;
+      // Validate sleep hours
+      if (editData.sleep) {
+        sleepHours = parseFloat(editData.sleep);
+        if (sleepHours <= 0 || sleepHours > 24) {
+          toast({
+            title: "Invalid Input",
+            description: "Please enter valid sleep hours (0-24)",
+            variant: "destructive",
+          });
+          setIsSaving(false);
+          return;
+        }
+      }
+
+      // Update profile if weight was changed
+      if (Object.keys(updateData).length > 0) {
+        const {
+          error: profileError
+        } = await supabase.from('profiles').update(updateData).eq('user_id', user.id);
+        if (profileError) throw profileError;
+      }
+
+      const selectedDate = editData.date.toISOString().split('T')[0]; // Selected date in YYYY-MM-DD format
 
       // Create or update weight entry if weight was updated
       if (weightInKg) {
-        const selectedDate = editData.date.toISOString().split('T')[0]; // Selected date in YYYY-MM-DD format
-        
         // First, delete any existing entries for the selected date
         const { error: deleteError } = await supabase
           .from('weight_entries')
@@ -142,17 +161,53 @@ const Dashboard = () => {
         if (entryError) throw entryError;
       }
 
+      // Create or update sleep entry if sleep was updated
+      if (sleepHours) {
+        // First, delete any existing entries for the selected date
+        const { error: deleteSleepError } = await supabase
+          .from('sleep_entries')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('recorded_date', selectedDate);
+        
+        if (deleteSleepError) throw deleteSleepError;
+        
+        // Then insert the new entry
+        const { error: sleepEntryError } = await supabase
+          .from('sleep_entries')
+          .insert({
+            user_id: user.id,
+            hours: sleepHours,
+            recorded_date: selectedDate
+          });
+        if (sleepEntryError) throw sleepEntryError;
+      }
+
       // Refetch profile data
       await fetchProfile();
       
-      toast({
-        title: "Weight Updated",
-        description: "Your weight has been updated and recorded successfully."
-      });
+      // Clear sleep input after successful save
+      setEditData(prev => ({ ...prev, sleep: '' }));
+      
+      let successMessage = "";
+      if (weightInKg && sleepHours) {
+        successMessage = "Your weight and sleep have been updated and recorded successfully.";
+      } else if (weightInKg) {
+        successMessage = "Your weight has been updated and recorded successfully.";
+      } else if (sleepHours) {
+        successMessage = "Your sleep has been recorded successfully.";
+      }
+
+      if (successMessage) {
+        toast({
+          title: "Data Updated",
+          description: successMessage
+        });
+      }
     } catch (error: any) {
       toast({
         title: "Update Failed",
-        description: error.message || "Failed to update weight.",
+        description: error.message || "Failed to update data.",
         variant: "destructive"
       });
     } finally {
@@ -377,6 +432,28 @@ const Dashboard = () => {
                   </div>
 
                   <div className="space-y-4">
+                    <Label htmlFor="sleep" className="text-sm font-medium">
+                      Hours of Sleep
+                    </Label>
+                    <Input
+                      id="sleep"
+                      type="number"
+                      value={editData.sleep}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (value === '' || /^\d*\.?\d*$/.test(value)) {
+                          setEditData(prev => ({ ...prev, sleep: value }));
+                        }
+                      }}
+                      className="rounded-xl border-2 text-base"
+                      placeholder="e.g., 8"
+                      step="0.5"
+                      min="0"
+                      max="24"
+                    />
+                  </div>
+
+                  <div className="space-y-4">
                     <Label className="text-sm font-medium">Date</Label>
                     <Popover>
                       <PopoverTrigger asChild>
@@ -428,7 +505,7 @@ const Dashboard = () => {
                   </div>
 
                   <Button 
-                    onClick={handleSaveWeight} 
+                    onClick={handleSaveHealthData} 
                     disabled={isSaving} 
                     className="w-full bg-gradient-primary hover:shadow-glow rounded-2xl py-3 text-lg font-semibold transition-all duration-300 hover:scale-105"
                   >
