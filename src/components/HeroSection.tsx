@@ -8,19 +8,17 @@ const HeroSection = () => {
   const words = ["Health", "Fitness", "Confidence", "Wellness"];
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-  const longestLen = Math.max(...words.map((w) => w.length));
+  const longestLen = Math.max(...words.map(w => w.length));
   const spanWidthCh = longestLen + 1;
-
   useEffect(() => {
     const interval = setInterval(() => {
       setIsAnimating(true);
       setTimeout(() => {
         // End animation before switching the word to avoid "next-next" sliding
         setIsAnimating(false);
-        setCurrentWordIndex((prev) => (prev + 1) % words.length);
+        setCurrentWordIndex(prev => (prev + 1) % words.length);
       }, 1000);
     }, 3000);
-
     return () => clearInterval(interval);
   }, []);
   return <div className="relative min-h-screen flex items-center overflow-hidden bg-gradient-hero">
@@ -43,30 +41,21 @@ const HeroSection = () => {
               <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
                 Take Control of Your
                 <br />
-                <span className="block relative overflow-hidden flex items-center" style={{ width: `${spanWidthCh}ch`, height: '1.2em' }}>
-                  <span
-                    key={currentWordIndex}
-                    className={`absolute inset-0 flex items-center bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent transition-transform duration-1000 ${
-                      isAnimating ? "translate-y-full" : "translate-y-0"
-                    }`}
-                  >
+                <span className="block relative overflow-hidden flex items-center" style={{
+                width: `${spanWidthCh}ch`,
+                height: '1.2em'
+              }}>
+                  <span key={currentWordIndex} className={`absolute inset-0 flex items-center bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent transition-transform duration-1000 ${isAnimating ? "translate-y-full" : "translate-y-0"}`}>
                     {words[currentWordIndex]}
                   </span>
-                  <span
-                    className={`absolute inset-0 flex items-center bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent ${
-                      isAnimating ? "translate-y-0 transition-transform duration-1000" : "-translate-y-full"
-                    }`}
-                  >
+                  <span className={`absolute inset-0 flex items-center bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent ${isAnimating ? "translate-y-0 transition-transform duration-1000" : "-translate-y-full"}`}>
                     {words[(currentWordIndex + 1) % words.length]}
                   </span>
                 </span>{" "}
                 Journey
               </h1>
               
-              <p className="text-xl md:text-2xl text-white/90 leading-relaxed max-w-2xl">
-                Join thousands transforming their lives through AI-powered guidance, 
-                habit tracking, and community support. Your healthiest self awaits!
-              </p>
+              <p className="text-xl md:text-2xl text-white/90 leading-relaxed max-w-2xl">With intelligent tracking and personalized insights, SweatSmart helps you stay consistent, build healthy habits, and achieve your wellness goals.</p>
             </div>
 
             {/* Stats */}
