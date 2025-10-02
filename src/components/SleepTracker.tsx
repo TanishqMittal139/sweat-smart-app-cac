@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Moon, TrendingUp, TrendingDown, RotateCcw } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
@@ -22,6 +28,9 @@ interface Props {
 export const SleepTracker = ({ userId }: Props) => {
   const { toast } = useToast();
   const [sleepEntries, setSleepEntries] = useState<SleepEntry[]>([]);
+  const [hours, setHours] = useState("");
+  const [date, setDate] = useState<Date>(new Date());
+  const [isSaving, setIsSaving] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
 
   useEffect(() => {
@@ -68,6 +77,57 @@ export const SleepTracker = ({ userId }: Props) => {
       setSleepEntries(data || []);
     } catch (error) {
       console.error('Error fetching sleep entries:', error);
+    }
+  };
+
+  const handleAddEntry = async () => {
+    if (!hours || parseFloat(hours) <= 0 || parseFloat(hours) > 24) {
+      toast({
+        title: "Invalid Input",
+        description: "Please enter valid sleep hours (0-24)",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const selectedDate = date.toISOString().split('T')[0];
+      
+      // First, delete any existing entries for the selected date
+      const { error: deleteError } = await supabase
+        .from('sleep_entries')
+        .delete()
+        .eq('user_id', userId)
+        .eq('recorded_date', selectedDate);
+      
+      if (deleteError) throw deleteError;
+      
+      // Then insert the new entry
+      const { error } = await supabase
+        .from('sleep_entries')
+        .insert({
+          user_id: userId,
+          hours: parseFloat(hours),
+          recorded_date: selectedDate,
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Sleep Recorded",
+        description: "Your sleep has been recorded successfully."
+      });
+      setHours("");
+      setDate(new Date());
+    } catch (error: any) {
+      toast({
+        title: "Failed",
+        description: error.message || "Failed to record sleep.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -167,6 +227,64 @@ export const SleepTracker = ({ userId }: Props) => {
 
   return (
     <div className="space-y-6">
+      {/* Sleep Entry Form */}
+      <Card className="rounded-2xl border-2">
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Moon className="w-5 h-5 text-primary" />
+            <span>Log Sleep</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label>Hours of Sleep</Label>
+            <Input
+              type="number"
+              step="0.5"
+              value={hours}
+              onChange={(e) => setHours(e.target.value)}
+              className="rounded-xl border-2"
+              placeholder="e.g., 8"
+              min="0"
+              max="24"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Date</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start text-left font-normal rounded-xl border-2"
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date ? format(date, "PPP") : <span>Pick a date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0 z-50" align="start" side="bottom" sideOffset={4}>
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={(newDate) => newDate && setDate(newDate)}
+                  disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
+                  initialFocus
+                  className="p-3 pointer-events-auto"
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+
+          <Button 
+            onClick={handleAddEntry}
+            disabled={isSaving}
+            className="w-full bg-gradient-primary hover:shadow-glow rounded-2xl py-3"
+          >
+            {isSaving ? "Saving..." : "Log Sleep"}
+          </Button>
+        </CardContent>
+      </Card>
+
       {/* Sleep Trend Chart */}
       <Card className="rounded-2xl border-2">
         <CardHeader>
