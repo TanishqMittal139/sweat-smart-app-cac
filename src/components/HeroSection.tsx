@@ -1,26 +1,82 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Play, TrendingUp, Users, Zap } from "lucide-react";
+import { ArrowRight, Play, TrendingUp, AlertTriangle, DollarSign, Heart, Activity } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import heroImage from "@/assets/health-hero.jpg";
 import { useState, useEffect } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Carousel, CarouselContent, CarouselItem, CarouselApi } from "@/components/ui/carousel";
 const HeroSection = () => {
   const navigate = useNavigate();
   const words = ["Health", "Fitness", "Confidence", "Wellness"];
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [carouselApi, setCarouselApi] = useState<CarouselApi>();
+  
   const longestLen = Math.max(...words.map(w => w.length));
   const spanWidthCh = longestLen + 1;
+  
+  const impactfulStats = [
+    {
+      icon: AlertTriangle,
+      value: "41.9%",
+      label: "US Adults with Obesity",
+      description: "An alarming national health crisis affecting over 100 million Americans",
+      color: "text-destructive",
+      bgColor: "bg-destructive/10"
+    },
+    {
+      icon: DollarSign,
+      value: "$413B",
+      label: "Annual Diabetes Cost",
+      description: "Total estimated cost in 2022 - $306.6B direct medical costs + $106.3B productivity losses",
+      color: "text-warning",
+      bgColor: "bg-warning/10"
+    },
+    {
+      icon: Heart,
+      value: "38.4M",
+      label: "Americans with Diabetes",
+      description: "11.6% of the US population living with diagnosed diabetes",
+      color: "text-accent",
+      bgColor: "bg-accent/10"
+    },
+    {
+      icon: Activity,
+      value: "97.6M",
+      label: "Adults Prediabetic",
+      description: "32.8% of Americans at high risk of developing type 2 diabetes",
+      color: "text-secondary",
+      bgColor: "bg-secondary/10"
+    },
+    {
+      icon: TrendingUp,
+      value: "58%",
+      label: "Higher Diabetes Risk",
+      description: "Adults with obesity face dramatically increased risk of type 2 diabetes",
+      color: "text-destructive",
+      bgColor: "bg-destructive/10"
+    }
+  ];
+  
   useEffect(() => {
     const interval = setInterval(() => {
       setIsAnimating(true);
       setTimeout(() => {
-        // End animation before switching the word to avoid "next-next" sliding
         setIsAnimating(false);
         setCurrentWordIndex(prev => (prev + 1) % words.length);
       }, 1000);
     }, 3000);
     return () => clearInterval(interval);
   }, []);
+  
+  useEffect(() => {
+    if (!carouselApi) return;
+    
+    const interval = setInterval(() => {
+      carouselApi.scrollNext();
+    }, 4000);
+    
+    return () => clearInterval(interval);
+  }, [carouselApi]);
   return <div className="relative min-h-screen flex items-center overflow-hidden bg-gradient-hero">
       {/* Background Elements */}
       <div className="absolute inset-0 bg-gradient-hero opacity-90" />
@@ -91,32 +147,59 @@ const HeroSection = () => {
             
           </div>
 
-          {/* Hero Image */}
+          {/* Data Carousel */}
           <div className="relative">
-            <div className="relative z-10 rounded-3xl overflow-hidden shadow-float bg-white/10 backdrop-blur-sm p-6">
-              <img src={heroImage} alt="Healthy lifestyle illustration with fruits, exercise, and wellness elements" className="w-full h-auto rounded-2xl shadow-lg" />
-            </div>
-            
-            {/* Floating Elements */}
-            <div className="absolute -top-4 -right-4 bg-white rounded-2xl p-4 shadow-bubble animate-bounce-gentle">
-              <div className="flex items-center space-x-2">
-                <Zap className="w-6 h-6 text-warning" />
-                <div>
-                  <div className="font-bold text-sm">85% Success Rate</div>
-                  <div className="text-xs text-muted-foreground">Goal Achievement</div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="absolute -bottom-4 -left-4 bg-white rounded-2xl p-4 shadow-bubble animate-bounce-gentle delay-700">
-              <div className="flex items-center space-x-2">
-                <Users className="w-6 h-6 text-info" />
-                <div>
-                  <div className="font-bold text-sm">Community</div>
-                  <div className="text-xs text-muted-foreground">Support & Tips</div>
-                </div>
-              </div>
-            </div>
+            <Carousel 
+              setApi={setCarouselApi}
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+              className="w-full"
+            >
+              <CarouselContent>
+                {impactfulStats.map((stat, index) => {
+                  const Icon = stat.icon;
+                  return (
+                    <CarouselItem key={index}>
+                      <Card className="rounded-3xl border-2 border-white/20 bg-white/10 backdrop-blur-md shadow-float hover:shadow-glow transition-all duration-500">
+                        <CardContent className="p-8 space-y-6">
+                          <div className={`w-16 h-16 rounded-2xl ${stat.bgColor} flex items-center justify-center`}>
+                            <Icon className={`w-8 h-8 ${stat.color}`} />
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <div className="text-5xl md:text-6xl font-bold text-white">
+                              {stat.value}
+                            </div>
+                            <div className="text-xl font-semibold text-white/90">
+                              {stat.label}
+                            </div>
+                          </div>
+                          
+                          <p className="text-white/80 leading-relaxed text-base">
+                            {stat.description}
+                          </p>
+                          
+                          <div className="flex items-center space-x-2 pt-2">
+                            <div className="flex space-x-1">
+                              {impactfulStats.map((_, i) => (
+                                <div 
+                                  key={i} 
+                                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                                    i === index ? 'w-8 bg-white' : 'w-1.5 bg-white/40'
+                                  }`}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </CarouselItem>
+                  );
+                })}
+              </CarouselContent>
+            </Carousel>
           </div>
         </div>
       </div>
