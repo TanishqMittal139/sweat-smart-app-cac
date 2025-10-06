@@ -11,6 +11,7 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import rehypeHighlight from "rehype-highlight";
 import "katex/dist/katex.min.css";
+import { KnowledgeBaseStatus } from "@/components/KnowledgeBaseStatus";
 
 interface Message {
   id: string;
@@ -160,7 +161,7 @@ const Chat = () => {
       <div className="max-w-4xl mx-auto p-4 h-[calc(100vh-4rem)]">
         <div className="bg-card/80 backdrop-blur-lg rounded-3xl shadow-bubble border border-border h-full flex flex-col">
           {/* Header */}
-          <div className="p-6 border-b border-border">
+          <div className="p-6 border-b border-border space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gradient-primary rounded-2xl flex items-center justify-center animate-pulse-glow">
@@ -181,6 +182,7 @@ const Chat = () => {
                 <RotateCcw className="w-4 h-4" />
               </Button>
             </div>
+            <KnowledgeBaseStatus />
           </div>
 
           {/* Chat Messages */}

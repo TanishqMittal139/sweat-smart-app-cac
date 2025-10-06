@@ -1,7 +1,10 @@
 project_id = "mvooedbkmmjoabmkchow"
 
 [functions.chat-health-ai]
-verify_jwt = true
+verify_jwt = false
 
 [functions.generate-health-plan]
 verify_jwt = true
+
+[functions.parse-knowledge-sources]
+verify_jwt = false
