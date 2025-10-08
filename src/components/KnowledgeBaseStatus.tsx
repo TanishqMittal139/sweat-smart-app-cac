@@ -1,9 +1,8 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Database, Loader2, CheckCircle2, XCircle } from "lucide-react";
+import { Database, Loader2, CheckCircle2 } from "lucide-react";
 
 export const KnowledgeBaseStatus = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -35,23 +34,30 @@ export const KnowledgeBaseStatus = () => {
 
       if (error) throw error;
 
-      toast({
-        title: "Knowledge base updated",
-        description: data.message,
-      });
-
       await checkStatus();
     } catch (error: any) {
       console.error('Error parsing knowledge:', error);
       toast({
         title: "Error",
-        description: error.message || "Failed to parse knowledge sources",
+        description: "Failed to parse knowledge sources",
         variant: "destructive",
       });
     } finally {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    const initializeKnowledge = async () => {
+      await checkStatus();
+      // Auto-parse if no sources exist
+      if (status?.count === 0) {
+        await parseKnowledge();
+      }
+    };
+    
+    initializeKnowledge();
+  }, []);
 
   return (
     <Card>
@@ -61,59 +67,25 @@ export const KnowledgeBaseStatus = () => {
           AI Knowledge Base
         </CardTitle>
         <CardDescription>
-          Manage the health data sources used to train the AI chatbot
+          Health data sources powering the AI chatbot
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm text-muted-foreground">Status</p>
-            {status ? (
-              <div className="flex items-center gap-2 mt-1">
-                <CheckCircle2 className="h-4 w-4 text-green-600" />
-                <p className="text-sm font-medium">
-                  {status.count} sources loaded
-                </p>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2 mt-1">
-                <XCircle className="h-4 w-4 text-muted-foreground" />
-                <p className="text-sm">Not checked</p>
-              </div>
-            )}
+      <CardContent>
+        {isLoading ? (
+          <div className="flex items-center gap-2">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            <p className="text-sm text-muted-foreground">Loading health data sources...</p>
           </div>
-          <Button
-            onClick={checkStatus}
-            variant="outline"
-            size="sm"
-            disabled={isLoading}
-          >
-            Check Status
-          </Button>
-        </div>
-
-        <div className="pt-4 border-t">
-          <Button
-            onClick={parseKnowledge}
-            disabled={isLoading}
-            className="w-full"
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Parsing 30 sources...
-              </>
-            ) : (
-              <>
-                <Database className="mr-2 h-4 w-4" />
-                Update Knowledge Base
-              </>
-            )}
-          </Button>
-          <p className="text-xs text-muted-foreground mt-2 text-center">
-            This will fetch and parse all 30 health data sources
-          </p>
-        </div>
+        ) : status && status.count > 0 ? (
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="h-4 w-4 text-green-600" />
+            <p className="text-sm font-medium">
+              {status.count} sources available
+            </p>
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground">Initializing knowledge base...</p>
+        )}
       </CardContent>
     </Card>
   );
