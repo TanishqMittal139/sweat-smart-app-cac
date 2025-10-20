@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Database, Loader2, CheckCircle2 } from "lucide-react";
+import { Database, Loader2, CheckCircle2, RefreshCw } from "lucide-react";
 
 export const KnowledgeBaseStatus = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -30,11 +31,21 @@ export const KnowledgeBaseStatus = () => {
   const parseKnowledge = async () => {
     setIsLoading(true);
     try {
+      toast({
+        title: "Refreshing Knowledge Base",
+        description: "Fetching and parsing health data sources...",
+      });
+
       const { data, error } = await supabase.functions.invoke('parse-knowledge-sources');
 
       if (error) throw error;
 
       await checkStatus();
+      
+      toast({
+        title: "Success",
+        description: "Knowledge base updated successfully",
+      });
     } catch (error: any) {
       console.error('Error parsing knowledge:', error);
       toast({
@@ -70,18 +81,29 @@ export const KnowledgeBaseStatus = () => {
           Health data sources powering the AI chatbot
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
         {isLoading ? (
           <div className="flex items-center gap-2">
             <Loader2 className="h-4 w-4 animate-spin" />
             <p className="text-sm text-muted-foreground">Loading health data sources...</p>
           </div>
         ) : status && status.count > 0 ? (
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-4 w-4 text-green-600" />
-            <p className="text-sm font-medium">
-              {status.count} sources available
-            </p>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 text-green-600" />
+              <p className="text-sm font-medium">
+                {status.count} sources available
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={parseKnowledge}
+              disabled={isLoading}
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Refresh
+            </Button>
           </div>
         ) : (
           <p className="text-sm text-muted-foreground">Initializing knowledge base...</p>
