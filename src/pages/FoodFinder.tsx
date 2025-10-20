@@ -7,8 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { MapPin, Loader2, Apple, ShoppingBag, Utensils, Leaf } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
-// Replace with your Google Maps API key
-const GOOGLE_MAPS_API_KEY = "YOUR_GOOGLE_MAPS_API_KEY";
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 const mapContainerStyle = {
   width: "100%",
@@ -192,7 +191,7 @@ const FoodFinder = () => {
           </p>
         </div>
 
-        {GOOGLE_MAPS_API_KEY === "YOUR_GOOGLE_MAPS_API_KEY" && (
+        {!GOOGLE_MAPS_API_KEY && (
           <Card className="p-6 mb-6 border-warning bg-warning/10">
             <h3 className="font-semibold text-warning mb-2">Google Maps API Key Required</h3>
             <p className="text-sm text-muted-foreground">
@@ -205,7 +204,7 @@ const FoodFinder = () => {
               >
                 Google Cloud Console
               </a>{" "}
-              and update the GOOGLE_MAPS_API_KEY constant in FoodFinder.tsx.
+              and add it to your environment variables.
             </p>
           </Card>
         )}
