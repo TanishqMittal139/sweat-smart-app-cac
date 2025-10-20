@@ -259,7 +259,7 @@ const Emergency = () => {
         setTimeout(() => {
           setQuotes(prev => prev.filter(q => q.id !== newQuote.id));
         }, newQuote.animationDuration * 1000);
-      }, i * 600); // Longer stagger (600ms) to prevent overlap
+      }, i * 100); // Short stagger (100ms) so all appear together quickly
     }
     
     setNextId(prev => prev + numberOfQuotes);
