@@ -233,19 +233,23 @@ const Emergency = () => {
   };
 
   const addQuotes = useCallback(() => {
-    const numberOfQuotes = Math.floor(Math.random() * 8) + 12; // 12-20 quotes
+    const numberOfQuotes = Math.floor(Math.random() * 2) + 5; // 5-6 quotes
+    const basePositions = [15, 30, 45, 60, 75]; // Evenly spaced horizontal positions
     
     for (let i = 0; i < numberOfQuotes; i++) {
       setTimeout(() => {
+        // Use evenly spaced positions to prevent overlap
+        const xPosition = basePositions[i % basePositions.length] + (Math.random() * 5 - 2.5);
+        
         const newQuote: Quote = {
           text: getRandomQuote(),
           id: nextId + i,
-          x: 45 + Math.random() * 10, // Start from bottom center (45-55%)
+          x: xPosition,
           y: 110, // Start below the viewport
           color: getRandomColor(),
           size: getConsistentSize(),
           shape: getRandomShape(),
-          sideMovement: (Math.random() - 0.5) * 30, // Slight side-to-side movement
+          sideMovement: (Math.random() - 0.5) * 20, // Slight side-to-side movement
           animationDuration: Math.random() * 2 + 7, // 7-9 seconds animation
         };
 
@@ -255,7 +259,7 @@ const Emergency = () => {
         setTimeout(() => {
           setQuotes(prev => prev.filter(q => q.id !== newQuote.id));
         }, newQuote.animationDuration * 1000);
-      }, i * 200); // Stagger appearance by 200ms
+      }, i * 600); // Longer stagger (600ms) to prevent overlap
     }
     
     setNextId(prev => prev + numberOfQuotes);
@@ -266,12 +270,12 @@ const Emergency = () => {
     const newQuote: Quote = {
       text: customQuote,
       id: nextId,
-      x: 45 + Math.random() * 10, // Start from bottom center (45-55%)
+      x: 40 + Math.random() * 20, // Center area with some variation
       y: 110,
       color: getRandomColor(),
       size: getConsistentSize(), // Same consistent size
       shape: getRandomShape(),
-      sideMovement: (Math.random() - 0.5) * 30,
+      sideMovement: (Math.random() - 0.5) * 20,
       animationDuration: Math.random() * 2 + 7,
     };
 
