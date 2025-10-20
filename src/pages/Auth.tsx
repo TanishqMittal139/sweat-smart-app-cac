@@ -37,7 +37,7 @@ const Auth = () => {
   // Redirect if already logged in
   useEffect(() => {
     if (user && !loading) {
-      navigate('/dashboard');
+      navigate('/');
     }
   }, [user, loading, navigate]);
   const handleSignUp = async () => {
