@@ -9,6 +9,9 @@ import { toast } from "@/hooks/use-toast";
 
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
+// Define libraries as a constant to prevent reloading
+const libraries: ("places")[] = ["places"];
+
 const mapContainerStyle = {
   width: "100%",
   height: "600px",
@@ -64,7 +67,7 @@ const FoodFinder = () => {
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: GOOGLE_MAPS_API_KEY,
-    libraries: ["places"],
+    libraries,
   });
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
@@ -123,7 +126,16 @@ const FoodFinder = () => {
     const allPlaces: google.maps.places.PlaceResult[] = [];
 
     const selectedFilters = filterOptions.filter((f) => activeFilters.includes(f.id));
+    
+    // Calculate total number of searches needed
+    const totalSearches = selectedFilters.reduce((sum, filter) => sum + filter.types.length, 0);
     let completedSearches = 0;
+
+    if (totalSearches === 0) {
+      setPlaces([]);
+      setLoading(false);
+      return;
+    }
 
     selectedFilters.forEach((filter) => {
       filter.types.forEach((type) => {
@@ -135,25 +147,43 @@ const FoodFinder = () => {
 
         service.nearbySearch(request, (results, status) => {
           if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-            // Filter results by keywords
+            // Filter results by keywords - use OR logic (any keyword match)
             const filtered = results.filter((place) => {
               const name = place.name?.toLowerCase() || "";
               const types = place.types?.join(" ").toLowerCase() || "";
-              return filter.keywords.some(
-                (keyword) => name.includes(keyword.toLowerCase()) || types.includes(keyword.toLowerCase())
-              );
+              const vicinity = place.vicinity?.toLowerCase() || "";
+              
+              // If no keywords, include all results of this type
+              if (filter.keywords.length === 0) return true;
+              
+              // Check if any keyword matches
+              return filter.keywords.some((keyword) => {
+                const lowerKeyword = keyword.toLowerCase();
+                return name.includes(lowerKeyword) || 
+                       types.includes(lowerKeyword) || 
+                       vicinity.includes(lowerKeyword);
+              });
             });
             allPlaces.push(...filtered);
           }
 
           completedSearches++;
-          if (completedSearches === selectedFilters.length * selectedFilters[0].types.length) {
+          
+          // When all searches complete, update places
+          if (completedSearches === totalSearches) {
             // Remove duplicates by place_id
             const uniquePlaces = Array.from(
               new Map(allPlaces.map((place) => [place.place_id, place])).values()
             );
             setPlaces(uniquePlaces);
             setLoading(false);
+            
+            if (uniquePlaces.length === 0) {
+              toast({
+                title: "No places found",
+                description: "Try adjusting your filters or searching a different area.",
+              });
+            }
           }
         });
       });
