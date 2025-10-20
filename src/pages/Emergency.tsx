@@ -66,7 +66,38 @@ const motivationalQuotes = [
   "Your journey is unique 🛤️",
   "You are wonderfully made 🎨",
   "Tomorrow brings new possibilities 🌅",
-  "You have the power to heal 🩹"
+  "You have the power to heal 🩹",
+  "Stars can't shine without darkness 🌟",
+  "You are a work in progress and that's beautiful 🎨",
+  "Fall seven times, stand up eight 🥋",
+  "Your potential is limitless 🚀",
+  "Every setback is a setup for a comeback 💪",
+  "You are the author of your story 📝",
+  "Difficult roads lead to beautiful destinations 🛣️",
+  "Your best days are ahead of you 🌅",
+  "You are braver than you believe 🦁",
+  "Embrace the journey, trust the process 🌀",
+  "You are creating your own sunshine ☀️",
+  "Growth happens outside your comfort zone 🌱",
+  "You are meant for great things 🌟",
+  "Keep your face toward the sunshine 🌻",
+  "You are unstoppable 🔥",
+  "Today is your day to shine ✨",
+  "You inspire others more than you know 💫",
+  "Your mindset is everything 🧠",
+  "You are capable of amazing things 🎯",
+  "Never give up on yourself 💪",
+  "You have everything you need within you 💎",
+  "Rise above the storm and you will find sunshine 🌈",
+  "You are a champion 🏆",
+  "Believe in the magic within you ✨",
+  "You are destined for greatness 🌟",
+  "Keep pushing forward 🚀",
+  "You are a warrior, not a worrier ⚔️",
+  "Your comeback will be stronger than your setback 💪",
+  "You light up the world 🌍",
+  "You are making a difference 🌟",
+  "Stay positive, work hard, make it happen 💫"
 ];
 
 interface Quote {
@@ -192,8 +223,8 @@ const Emergency = () => {
     return colors[Math.floor(Math.random() * colors.length)];
   };
 
-  const getRandomSize = () => {
-    return Math.random() * 20 + 12; // 12px to 32px
+  const getConsistentSize = () => {
+    return 28; // Consistent larger size for all quotes
   };
 
   const getRandomShape = () => {
@@ -209,13 +240,13 @@ const Emergency = () => {
         const newQuote: Quote = {
           text: getRandomQuote(),
           id: nextId + i,
-          x: Math.random() * 70 + 15, // Random horizontal position
+          x: 45 + Math.random() * 10, // Start from bottom center (45-55%)
           y: 110, // Start below the viewport
           color: getRandomColor(),
-          size: getRandomSize(),
+          size: getConsistentSize(),
           shape: getRandomShape(),
-          sideMovement: (Math.random() - 0.5) * 60, // Enhanced side-to-side movement
-          animationDuration: Math.random() * 4 + 6, // 6-10 seconds animation
+          sideMovement: (Math.random() - 0.5) * 30, // Slight side-to-side movement
+          animationDuration: Math.random() * 2 + 7, // 7-9 seconds animation
         };
 
         setQuotes(prev => [...prev, newQuote]);
@@ -235,12 +266,12 @@ const Emergency = () => {
     const newQuote: Quote = {
       text: customQuote,
       id: nextId,
-      x: Math.random() * 60 + 20,
+      x: 45 + Math.random() * 10, // Start from bottom center (45-55%)
       y: 110,
       color: getRandomColor(),
-      size: Math.random() * 8 + 16, // Slightly larger for personalized quotes
+      size: getConsistentSize(), // Same consistent size
       shape: getRandomShape(),
-      sideMovement: (Math.random() - 0.5) * 40,
+      sideMovement: (Math.random() - 0.5) * 30,
       animationDuration: Math.random() * 2 + 7,
     };
 
@@ -300,18 +331,18 @@ const Emergency = () => {
                 {`
                   @keyframes ${animationName} {
                     0% {
-                      transform: translateY(100vh) translateX(0px) scale(0.5);
+                      transform: translateY(0vh) translateX(0px) scale(0.8);
                       opacity: 0;
                     }
-                    10% {
+                    5% {
                       opacity: 1;
-                      transform: translateY(90vh) translateX(5px) scale(1);
+                      transform: translateY(-5vh) translateX(${quote.sideMovement * 0.1}px) scale(1);
                     }
-                    90% {
+                    85% {
                       opacity: 1;
                     }
                     100% {
-                      transform: translateY(-20vh) translateX(${quote.sideMovement}px) scale(0.8);
+                      transform: translateY(-85vh) translateX(${quote.sideMovement}px) scale(0.7);
                       opacity: 0;
                     }
                   }
