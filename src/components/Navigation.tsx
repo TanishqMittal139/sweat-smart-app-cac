@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Heart, Menu, X, Activity, Target, TrendingUp, User, Bot, Gamepad2, AlertTriangle, MapPin } from "lucide-react";
+import { Menu, X, Activity, Target, TrendingUp, User, Bot, Gamepad2, AlertTriangle, MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import logo from "@/assets/logo.png";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,9 +25,7 @@ const Navigation = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate("/")}>
-            <div className="w-8 h-8 bg-gradient-primary rounded-xl flex items-center justify-center animate-pulse-glow">
-              <Heart className="w-5 h-5 text-white" fill="currentColor" />
-            </div>
+            <img src={logo} alt="SweatSmart Logo" className="w-8 h-8 object-contain" />
             <span className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
               SweatSmart
             </span>
