@@ -14,7 +14,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { Heart, Target, TrendingUp, Award, Zap, Activity, MessageCircle, BarChart3, LogOut, Settings, User, Ruler, Scale, Calendar as CalendarIcon2, Moon } from "lucide-react";
+import { Heart, Target, TrendingUp, Zap, Activity, MessageCircle, BarChart3, LogOut, Settings, User, Ruler, Scale, Calendar as CalendarIcon2, Moon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -205,7 +205,6 @@ const Dashboard = () => {
   }
   const todayStats: any[] = [];
   const weeklyProgress: any[] = [];
-  const achievements: any[] = [];
   const firstName = profile?.full_name?.split(' ')[0] || 'there';
   return <div className="min-h-screen bg-background">
       <Navigation />
@@ -456,37 +455,6 @@ const Dashboard = () => {
                   Chat with AI Coach
                 </Button>
               </div>
-            </section>
-
-            {/* Achievements */}
-            <section>
-              <h3 className="text-xl font-bold mb-4 flex items-center space-x-2">
-                <Award className="w-5 h-5 text-warning" />
-                <span>Recent Achievements</span>
-              </h3>
-              
-              <Card className="rounded-2xl border-2">
-                <CardContent className="p-4 space-y-4">
-                  {achievements.length === 0 ? <div className="text-center py-6">
-                      <Award className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="text-lg font-semibold text-muted-foreground mb-2">No Achievements Yet</h3>
-                      <p className="text-sm text-muted-foreground">Complete activities to unlock achievements.</p>
-                    </div> : achievements.map((achievement, index) => <div key={index} className={`flex items-center space-x-3 p-3 rounded-xl transition-all duration-300 ${achievement.earned ? "bg-success/10 border border-success/20" : "bg-muted/50"}`}>
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${achievement.earned ? "bg-success text-white" : "bg-muted"}`}>
-                          <Award className="w-4 h-4" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="font-semibold text-sm">{achievement.title}</div>
-                          <div className="text-xs text-muted-foreground truncate">
-                            {achievement.description}
-                          </div>
-                        </div>
-                        {achievement.earned && <div className="text-success animate-bounce-gentle">
-                            <Heart className="w-4 h-4" fill="currentColor" />
-                          </div>}
-                      </div>)}
-                </CardContent>
-              </Card>
             </section>
 
           </div>
