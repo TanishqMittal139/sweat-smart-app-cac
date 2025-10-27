@@ -127,7 +127,7 @@ const FoodFinder = () => {
 
     const selectedFilters = filterOptions.filter((f) => activeFilters.includes(f.id));
     
-    // Calculate total number of searches needed
+    // Calculate total number of searches needed (including pagination)
     const totalSearches = selectedFilters.reduce((sum, filter) => sum + filter.types.length, 0);
     let completedSearches = 0;
 
@@ -137,41 +137,75 @@ const FoodFinder = () => {
       return;
     }
 
-    selectedFilters.forEach((filter) => {
-      filter.types.forEach((type) => {
-        const request = {
-          location: center,
-          radius: 5000,
-          type: type,
-        };
-
-        service.nearbySearch(request, (results, status) => {
-          if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-            // Filter results by keywords - use OR logic (any keyword match)
-            const filtered = results.filter((place) => {
-              const name = place.name?.toLowerCase() || "";
-              const types = place.types?.join(" ").toLowerCase() || "";
-              const vicinity = place.vicinity?.toLowerCase() || "";
-              
-              // If no keywords, include all results of this type
-              if (filter.keywords.length === 0) return true;
-              
-              // Check if any keyword matches
-              return filter.keywords.some((keyword) => {
-                const lowerKeyword = keyword.toLowerCase();
-                return name.includes(lowerKeyword) || 
-                       types.includes(lowerKeyword) || 
-                       vicinity.includes(lowerKeyword);
-              });
+    // Helper function to fetch paginated results
+    const fetchResults = (
+      request: google.maps.places.PlaceSearchRequest,
+      filter: FilterOption,
+      accumulatedResults: google.maps.places.PlaceResult[] = []
+    ) => {
+      service.nearbySearch(request, (results, status, pagination) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+          // Filter results by keywords - use OR logic (any keyword match)
+          const filtered = results.filter((place) => {
+            const name = place.name?.toLowerCase() || "";
+            const types = place.types?.join(" ").toLowerCase() || "";
+            const vicinity = place.vicinity?.toLowerCase() || "";
+            
+            // If no keywords, include all results of this type
+            if (filter.keywords.length === 0) return true;
+            
+            // Check if any keyword matches
+            return filter.keywords.some((keyword) => {
+              const lowerKeyword = keyword.toLowerCase();
+              return name.includes(lowerKeyword) || 
+                     types.includes(lowerKeyword) || 
+                     vicinity.includes(lowerKeyword);
             });
-            allPlaces.push(...filtered);
+          });
+          
+          const newResults = [...accumulatedResults, ...filtered];
+          
+          // Check if we should get more results (max 60 total per search type)
+          if (pagination && pagination.hasNextPage && newResults.length < 60) {
+            // Wait a bit before requesting next page (required by Google)
+            setTimeout(() => {
+              pagination.nextPage();
+            }, 200);
+            
+            // Continue accumulating results
+            fetchResults(request, filter, newResults);
+          } else {
+            // Done with this search type
+            allPlaces.push(...newResults);
+            completedSearches++;
+            
+            // When all searches complete, update places
+            if (completedSearches === totalSearches) {
+              // Remove duplicates by place_id
+              const uniquePlaces = Array.from(
+                new Map(allPlaces.map((place) => [place.place_id, place])).values()
+              );
+              setPlaces(uniquePlaces);
+              setLoading(false);
+              
+              if (uniquePlaces.length === 0) {
+                toast({
+                  title: "No places found",
+                  description: "Try adjusting your filters or searching a different area.",
+                });
+              } else {
+                toast({
+                  title: "Search complete",
+                  description: `Found ${uniquePlaces.length} healthy food locations within 20 miles`,
+                });
+              }
+            }
           }
-
+        } else {
+          // Search failed or no results
           completedSearches++;
           
-          // When all searches complete, update places
           if (completedSearches === totalSearches) {
-            // Remove duplicates by place_id
             const uniquePlaces = Array.from(
               new Map(allPlaces.map((place) => [place.place_id, place])).values()
             );
@@ -185,7 +219,19 @@ const FoodFinder = () => {
               });
             }
           }
-        });
+        }
+      });
+    };
+
+    selectedFilters.forEach((filter) => {
+      filter.types.forEach((type) => {
+        const request = {
+          location: center,
+          radius: 32187, // 20 miles in meters
+          type: type,
+        };
+
+        fetchResults(request, filter);
       });
     });
   };
@@ -295,7 +341,7 @@ const FoodFinder = () => {
               <GoogleMap
                 mapContainerStyle={mapContainerStyle}
                 center={center}
-                zoom={13}
+                zoom={11}
                 onLoad={onLoad}
                 onUnmount={onUnmount}
                 options={{
@@ -370,7 +416,10 @@ const FoodFinder = () => {
 
             {/* Results list */}
             <div className="mt-6 space-y-3">
-              {places.slice(0, 10).map((place) => (
+              <h2 className="text-xl font-semibold mb-4">
+                All Locations ({places.length} found)
+              </h2>
+              {places.map((place) => (
                 <Card
                   key={place.place_id}
                   className="p-4 hover:shadow-md transition-shadow cursor-pointer"
