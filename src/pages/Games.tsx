@@ -45,8 +45,8 @@ const Games = () => {
       estimatedTime: '10-15 min',
       points: '75-150 points',
       available: true,
-      color: 'text-secondary',
-      bgColor: 'bg-secondary/10'
+      color: 'text-primary',
+      bgColor: 'bg-primary/10'
     },
     {
       id: 'challenge',
@@ -57,8 +57,8 @@ const Games = () => {
       estimatedTime: '15-30 min',
       points: '100-300 points',
       available: true,
-      color: 'text-warning',
-      bgColor: 'bg-warning/10'
+      color: 'text-primary',
+      bgColor: 'bg-primary/10'
     },
     {
       id: 'trivia',
@@ -69,8 +69,8 @@ const Games = () => {
       estimatedTime: '10-20 min',
       points: '200-500 points',
       available: true,
-      color: 'text-success',
-      bgColor: 'bg-success/10'
+      color: 'text-primary',
+      bgColor: 'bg-primary/10'
     }
   ];
 

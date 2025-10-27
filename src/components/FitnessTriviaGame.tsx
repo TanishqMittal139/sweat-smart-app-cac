@@ -170,9 +170,9 @@ const FitnessTriviaGame = ({ onBack }: FitnessTriviaGameProps) => {
     const correctCount = questionResults.filter(r => r.isCorrect).length;
     const percentage = (correctCount / questions.length) * 100;
     
-    if (percentage >= 95 && perfectAnswers >= 10) return { text: "Trivia Master!", color: "text-warning", icon: Trophy };
-    if (percentage >= 90) return { text: "Expert Level!", color: "text-warning", icon: Star };
-    if (percentage >= 80) return { text: "Advanced Knowledge!", color: "text-success", icon: Brain };
+    if (percentage >= 95 && perfectAnswers >= 10) return { text: "Trivia Master!", color: "text-primary", icon: Trophy };
+    if (percentage >= 90) return { text: "Expert Level!", color: "text-primary", icon: Star };
+    if (percentage >= 80) return { text: "Advanced Knowledge!", color: "text-primary", icon: Brain };
     if (percentage >= 70) return { text: "Good Performance!", color: "text-primary", icon: Target };
     return { text: "Keep Learning!", color: "text-muted-foreground", icon: Brain };
   };
@@ -330,11 +330,11 @@ const FitnessTriviaGame = ({ onBack }: FitnessTriviaGameProps) => {
                 <Trophy className="w-4 h-4" />
                 <span className="text-sm font-medium">{score} Points</span>
               </div>
-              <div className="flex items-center space-x-2 bg-warning/10 text-warning rounded-full px-4 py-2">
+              <div className="flex items-center space-x-2 bg-secondary/10 text-secondary rounded-full px-4 py-2">
                 <Star className="w-4 h-4" />
                 <span className="text-sm font-medium">{perfectAnswers} Perfect</span>
               </div>
-              <Badge variant="outline" className="rounded-full border-destructive/20 text-destructive">
+              <Badge variant="outline" className="rounded-full border-primary/20 text-primary">
                 Advanced
               </Badge>
             </div>
@@ -406,7 +406,7 @@ const FitnessTriviaGame = ({ onBack }: FitnessTriviaGameProps) => {
                       <p className="text-sm text-muted-foreground">
                         +{questionResults[questionResults.length - 1]?.pointsEarned || 0} points
                         {formatTime(Date.now() - questionStartTime) < '5.0s' && (
-                          <span className="text-warning font-medium"> (Perfect timing!)</span>
+                          <span className="text-primary font-medium"> (Perfect timing!)</span>
                         )}
                       </p>
                     </>

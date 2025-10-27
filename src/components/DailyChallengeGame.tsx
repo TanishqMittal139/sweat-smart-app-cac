@@ -191,17 +191,17 @@ const DailyChallengeGame = ({ onBack }: DailyChallengeGameProps) => {
 
   const getScoreRating = () => {
     const percentage = (correctAnswers / challenges.length) * 100;
-    if (percentage >= 90) return { text: "Challenge Master!", color: "text-warning", icon: Trophy };
-    if (percentage >= 75) return { text: "Excellent Performance!", color: "text-success", icon: CheckCircle };
+    if (percentage >= 90) return { text: "Challenge Master!", color: "text-primary", icon: Trophy };
+    if (percentage >= 75) return { text: "Excellent Performance!", color: "text-primary", icon: CheckCircle };
     if (percentage >= 60) return { text: "Good Effort!", color: "text-primary", icon: Target };
     return { text: "Keep Challenging Yourself!", color: "text-muted-foreground", icon: Zap };
   };
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case 'Easy': return 'bg-success/10 text-success';
-      case 'Medium': return 'bg-warning/10 text-warning';
-      case 'Hard': return 'bg-destructive/10 text-destructive';
+      case 'Easy': return 'bg-primary/10 text-primary';
+      case 'Medium': return 'bg-primary/20 text-primary';
+      case 'Hard': return 'bg-primary/30 text-primary';
       default: return 'bg-muted/10 text-muted-foreground';
     }
   };
@@ -311,7 +311,7 @@ const DailyChallengeGame = ({ onBack }: DailyChallengeGameProps) => {
                 <Trophy className="w-4 h-4" />
                 <span className="text-sm font-medium">{score} Points</span>
               </div>
-              <div className="flex items-center space-x-2 bg-warning/10 text-warning rounded-full px-4 py-2">
+              <div className="flex items-center space-x-2 bg-secondary/10 text-secondary rounded-full px-4 py-2">
                 <Zap className="w-4 h-4" />
                 <span className="text-sm font-medium">{streak} Streak</span>
               </div>

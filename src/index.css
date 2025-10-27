@@ -8,115 +8,117 @@ All colors MUST be HSL for consistent theming.
 
 @layer base {
   :root {
-    /* Core Brand Colors - Vibrant Health Theme */
-    --background: 180 100% 97%;
-    --foreground: 160 15% 15%;
+    /* Core Brand Colors - Professional Health Theme */
+    --background: 0 0% 100%;
+    --foreground: 222.2 47.4% 11.2%;
 
     --card: 0 0% 100%;
-    --card-foreground: 160 15% 15%;
+    --card-foreground: 222.2 47.4% 11.2%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 160 15% 15%;
+    --popover-foreground: 222.2 47.4% 11.2%;
 
-    /* Primary - Energetic Mint Green */
-    --primary: 150 75% 45%;
-    --primary-foreground: 0 0% 100%;
-    --primary-glow: 150 85% 65%;
+    /* Primary - Professional Blue */
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --primary-glow: 221.2 83.2% 63.3%;
     
-    /* Secondary - Warm Coral */
-    --secondary: 15 85% 65%;
-    --secondary-foreground: 0 0% 100%;
+    /* Secondary - Refined Navy */
+    --secondary: 215 25% 27%;
+    --secondary-foreground: 210 40% 98%;
 
-    /* Accent - Vibrant Sky Blue */
-    --accent: 200 85% 60%;
-    --accent-foreground: 0 0% 100%;
+    /* Accent - Subtle Blue Accent */
+    --accent: 221.2 83.2% 53.3%;
+    --accent-foreground: 210 40% 98%;
 
-    /* Muted - Soft Neutrals */
-    --muted: 180 25% 95%;
-    --muted-foreground: 160 15% 45%;
+    /* Muted - Clean Neutrals */
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive-foreground: 210 40% 98%;
 
     /* UI Elements */
-    --border: 180 30% 88%;
-    --input: 180 30% 95%;
-    --ring: 150 75% 45%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
     
-    /* Success & Warning */
-    --success: 120 75% 50%;
-    --warning: 45 95% 55%;
-    --info: 210 85% 60%;
+    /* Success & Warning (used sparingly) */
+    --success: 142 71% 45%;
+    --warning: 38 92% 50%;
+    --info: 221.2 83.2% 53.3%;
 
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(150 75% 45%), hsl(150 85% 65%));
-    --gradient-secondary: linear-gradient(135deg, hsl(15 85% 65%), hsl(25 90% 70%));
-    --gradient-accent: linear-gradient(135deg, hsl(200 85% 60%), hsl(220 85% 65%));
-    --gradient-hero: linear-gradient(135deg, hsl(150 75% 45%) 0%, hsl(200 85% 60%) 50%, hsl(15 85% 65%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(var(--background)), hsl(var(--muted)));
+    /* Gradients - Professional & Subtle */
+    --gradient-primary: linear-gradient(135deg, hsl(221.2 83.2% 53.3%), hsl(221.2 83.2% 63.3%));
+    --gradient-secondary: linear-gradient(135deg, hsl(215 25% 27%), hsl(215 25% 37%));
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(210 40% 98%));
+    --gradient-hero: linear-gradient(135deg, hsl(221.2 83.2% 53.3%), hsl(221.2 83.2% 63.3%));
 
-    /* Shadows & Glows */
-    --shadow-sm: 0 2px 8px -2px hsl(150 75% 45% / 0.1);
-    --shadow-md: 0 8px 25px -5px hsl(150 75% 45% / 0.15);
-    --shadow-lg: 0 20px 40px -10px hsl(150 75% 45% / 0.2);
-    --shadow-glow: 0 0 40px hsl(150 85% 65% / 0.3);
+    /* Shadows - Elegant & Professional */
+    --shadow-sm: 0 2px 8px -2px hsl(221.2 83.2% 53.3% / 0.08);
+    --shadow-md: 0 8px 25px -5px hsl(221.2 83.2% 53.3% / 0.1);
+    --shadow-float: 0 10px 30px -10px hsl(221.2 83.2% 53.3% / 0.15);
+    --shadow-bubble: 0 20px 60px -10px hsl(221.2 83.2% 53.3% / 0.2);
+    --shadow-glow: 0 0 30px hsl(221.2 83.2% 53.3% / 0.3);
 
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
-    /* Dark Mode - Softer Health Theme */
-    --background: 160 25% 8%;
-    --foreground: 180 25% 90%;
+    /* Dark Mode - Professional & Modern */
+    --background: 222.2 47.4% 11.2%;
+    --foreground: 210 40% 98%;
 
-    --card: 160 20% 12%;
-    --card-foreground: 180 25% 90%;
+    --card: 222.2 47.4% 11.2%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 160 20% 12%;
-    --popover-foreground: 180 25% 90%;
+    --popover: 222.2 47.4% 11.2%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 150 85% 65%;
-    --primary-foreground: 160 25% 8%;
-    --primary-glow: 150 75% 75%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary-glow: 217.2 91.2% 69.8%;
 
-    --secondary: 15 75% 55%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 210 40% 98%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --accent: 200 75% 55%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 217.2 91.2% 59.8%;
+    --accent-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 160 15% 18%;
-    --muted-foreground: 180 15% 65%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
 
-    --destructive: 0 75% 55%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 160 15% 22%;
-    --input: 160 15% 18%;
-    --ring: 150 85% 65%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
     
-    /* Updated gradients for dark mode */
-    --gradient-primary: linear-gradient(135deg, hsl(150 85% 65%), hsl(150 75% 75%));
-    --gradient-secondary: linear-gradient(135deg, hsl(15 75% 55%), hsl(25 80% 60%));
-    --gradient-accent: linear-gradient(135deg, hsl(200 75% 55%), hsl(220 75% 60%));
-    --gradient-hero: linear-gradient(135deg, hsl(150 85% 65%) 0%, hsl(200 75% 55%) 50%, hsl(15 75% 55%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(var(--background)), hsl(var(--muted)));
+    /* Success & Warning - Dark Mode Variants */
+    --success: 142 71% 45%;
+    --warning: 38 92% 50%;
+    
+    /* Gradients - Professional Dark Mode */
+    --gradient-primary: linear-gradient(135deg, hsl(217.2 91.2% 59.8%), hsl(217.2 91.2% 69.8%));
+    --gradient-secondary: linear-gradient(135deg, hsl(217.2 32.6% 17.5%), hsl(217.2 32.6% 27.5%));
+    --gradient-subtle: linear-gradient(180deg, hsl(222.2 47.4% 11.2%), hsl(217.2 32.6% 15%));
+    --gradient-hero: linear-gradient(135deg, hsl(217.2 91.2% 59.8%), hsl(217.2 91.2% 69.8%));
+
+    /* Shadows - Modern Dark Mode */
+    --shadow-float: 0 10px 30px -10px hsl(217.2 91.2% 59.8% / 0.25);
+    --shadow-bubble: 0 20px 60px -10px hsl(217.2 91.2% 59.8% / 0.3);
+    --shadow-glow: 0 0 40px hsl(217.2 91.2% 59.8% / 0.4);
+
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
