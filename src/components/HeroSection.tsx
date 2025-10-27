@@ -4,8 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselApi } from "@/components/ui/carousel";
+import { useAuth } from "@/contexts/AuthContext";
+
 const HeroSection = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const words = ["Health", "Fitness", "Confidence", "Wellness"];
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -132,7 +135,7 @@ const HeroSection = () => {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Button size="lg" onClick={() => navigate("/auth")} className="bg-white text-primary hover:bg-white/90 rounded-2xl px-8 py-4 text-lg font-semibold shadow-float hover:shadow-glow transition-all duration-300 hover:scale-105">
+              <Button size="lg" onClick={() => navigate(user ? "/dashboard" : "/auth")} className="bg-white text-primary hover:bg-white/90 rounded-2xl px-8 py-4 text-lg font-semibold shadow-float hover:shadow-glow transition-all duration-300 hover:scale-105">
                 Start Your Journey
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
