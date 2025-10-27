@@ -137,13 +137,12 @@ const FoodFinder = () => {
       return;
     }
 
-    // Helper function to fetch paginated results
-    const fetchResults = (
+    // Simplified search without pagination for faster results
+    const performSearch = (
       request: google.maps.places.PlaceSearchRequest,
-      filter: FilterOption,
-      accumulatedResults: google.maps.places.PlaceResult[] = []
+      filter: FilterOption
     ) => {
-      service.nearbySearch(request, (results, status, pagination) => {
+      service.nearbySearch(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK && results) {
           // Filter results by keywords - use OR logic (any keyword match)
           const filtered = results.filter((place) => {
@@ -163,61 +162,30 @@ const FoodFinder = () => {
             });
           });
           
-          const newResults = [...accumulatedResults, ...filtered];
+          allPlaces.push(...filtered);
+        }
+        
+        completedSearches++;
+        
+        // When all searches complete, update places
+        if (completedSearches === totalSearches) {
+          // Remove duplicates by place_id
+          const uniquePlaces = Array.from(
+            new Map(allPlaces.map((place) => [place.place_id, place])).values()
+          );
+          setPlaces(uniquePlaces);
+          setLoading(false);
           
-          // Check if we should get more results (max 60 total per search type)
-          if (pagination && pagination.hasNextPage && newResults.length < 60) {
-            // Wait a bit before requesting next page (required by Google)
-            setTimeout(() => {
-              pagination.nextPage();
-            }, 200);
-            
-            // Continue accumulating results
-            fetchResults(request, filter, newResults);
+          if (uniquePlaces.length === 0) {
+            toast({
+              title: "No places found",
+              description: "Try adjusting your filters or searching a different area.",
+            });
           } else {
-            // Done with this search type
-            allPlaces.push(...newResults);
-            completedSearches++;
-            
-            // When all searches complete, update places
-            if (completedSearches === totalSearches) {
-              // Remove duplicates by place_id
-              const uniquePlaces = Array.from(
-                new Map(allPlaces.map((place) => [place.place_id, place])).values()
-              );
-              setPlaces(uniquePlaces);
-              setLoading(false);
-              
-              if (uniquePlaces.length === 0) {
-                toast({
-                  title: "No places found",
-                  description: "Try adjusting your filters or searching a different area.",
-                });
-              } else {
-                toast({
-                  title: "Search complete",
-                  description: `Found ${uniquePlaces.length} healthy food locations within 20 miles`,
-                });
-              }
-            }
-          }
-        } else {
-          // Search failed or no results
-          completedSearches++;
-          
-          if (completedSearches === totalSearches) {
-            const uniquePlaces = Array.from(
-              new Map(allPlaces.map((place) => [place.place_id, place])).values()
-            );
-            setPlaces(uniquePlaces);
-            setLoading(false);
-            
-            if (uniquePlaces.length === 0) {
-              toast({
-                title: "No places found",
-                description: "Try adjusting your filters or searching a different area.",
-              });
-            }
+            toast({
+              title: "Search complete",
+              description: `Found ${uniquePlaces.length} healthy food locations within 5 miles`,
+            });
           }
         }
       });
@@ -227,11 +195,11 @@ const FoodFinder = () => {
       filter.types.forEach((type) => {
         const request = {
           location: center,
-          radius: 32187, // 20 miles in meters
+          radius: 8047, // 5 miles in meters (reduced for faster, more relevant results)
           type: type,
         };
 
-        fetchResults(request, filter);
+        performSearch(request, filter);
       });
     });
   };
@@ -341,7 +309,7 @@ const FoodFinder = () => {
               <GoogleMap
                 mapContainerStyle={mapContainerStyle}
                 center={center}
-                zoom={11}
+                zoom={13}
                 onLoad={onLoad}
                 onUnmount={onUnmount}
                 options={{
