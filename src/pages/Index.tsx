@@ -3,7 +3,7 @@ import HeroSection from "@/components/HeroSection";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Heart, Brain, Target, TrendingUp, Users, Shield, Sparkles, ArrowRight, AlertTriangle, Activity } from "lucide-react";
+import { Heart, Brain, Target, TrendingUp, Users, Shield, Sparkles, ArrowRight, AlertTriangle, Activity, MapPin, Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 const Index = () => {
@@ -35,6 +35,18 @@ const Index = () => {
     description: "Understand obesity trends and health disparities",
     color: "text-warning",
     bgColor: "bg-warning/10"
+  }, {
+    icon: MapPin,
+    title: "Food Finder",
+    description: "Discover healthy food options near you with our interactive map",
+    color: "text-primary",
+    bgColor: "bg-primary/10"
+  }, {
+    icon: Zap,
+    title: "Emergency Motivation",
+    description: "Get instant encouragement and support when you need it most",
+    color: "text-accent",
+    bgColor: "bg-accent/10"
   }];
   const healthStats = [{
     stat: "41.9%",
@@ -115,7 +127,7 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => <Card key={index} className="rounded-2xl border-2 hover:shadow-bubble transition-all duration-300 hover:scale-105 group">
                 <CardHeader className="space-y-4">
                   <div className={`w-12 h-12 rounded-2xl ${feature.bgColor} flex items-center justify-center group-hover:animate-bounce-gentle`}>
