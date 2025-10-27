@@ -159,7 +159,7 @@ const PersonalizedHealthPlan = () => {
           <div className="space-y-6">
             <div className="bg-gradient-subtle rounded-2xl p-6 border border-primary/20">
               <div className="max-h-96 overflow-y-auto pr-2 custom-scrollbar">
-                <div className="prose prose-sm max-w-none prose-headings:text-foreground prose-p:text-foreground prose-strong:text-foreground prose-ul:text-foreground prose-ol:text-foreground prose-li:text-foreground prose-h1:text-3xl prose-h1:font-bold prose-h1:mb-4 prose-h2:text-2xl prose-h2:font-bold prose-h2:mb-3 prose-h2:mt-6 prose-h3:text-xl prose-h3:font-bold prose-h3:mb-2 prose-h3:mt-4 prose-p:leading-relaxed prose-li:leading-relaxed prose-li:block prose-li:mb-2 prose-ul:space-y-2 prose-ul:my-4">
+                <div className="leading-relaxed prose prose-sm max-w-none prose-headings:font-bold prose-headings:text-foreground prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-headings:mt-4 prose-headings:mb-2 prose-p:my-2 prose-p:text-sm prose-p:text-foreground prose-ul:my-2 prose-ol:my-2 prose-li:my-1 prose-li:text-sm prose-strong:text-foreground">
                   <ReactMarkdown
                     remarkPlugins={[remarkMath]}
                     rehypePlugins={[rehypeKatex, rehypeHighlight]}
