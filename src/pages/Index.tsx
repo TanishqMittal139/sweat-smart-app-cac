@@ -20,7 +20,7 @@ const Index = () => {
   }, {
     icon: Target,
     title: "Smart Habit Tracking",
-    description: "Track weight, sleep, activity with actionable insights",
+    description: "Track weight and sleep activity with actionable insights",
     color: "text-secondary",
     bgColor: "bg-secondary/10"
   }, {
