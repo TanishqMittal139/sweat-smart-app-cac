@@ -141,30 +141,7 @@ const Index = () => {
       </section>
 
       {/* CTA Section - Only show when user is not signed in */}
-      {!user && <section className="py-20 bg-gradient-accent">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div className="space-y-8">
-              <h2 className="text-3xl md:text-5xl font-bold text-white">
-                Ready to Transform Your Health?
-              </h2>
-              
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <Button size="lg" onClick={() => navigate("/auth")} className="bg-white text-accent hover:bg-white/90 rounded-2xl px-8 py-4 text-lg font-semibold shadow-float hover:shadow-glow transition-all duration-300 hover:scale-105">
-                  Get Started Free
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-                
-                <div className="flex items-center space-x-2 text-white/90">
-                  <Shield className="w-5 h-5" />
-                  <span className="text-sm">No credit card required</span>
-                </div>
-              </div>
-
-              
-            </div>
-          </div>
-        </section>}
+      {!user}
     </div>;
 };
 export default Index;
