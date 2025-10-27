@@ -84,37 +84,41 @@ serve(async (req) => {
 
     const systemPrompt = `You are a certified health and fitness expert creating a personalized health plan. Generate a comprehensive, actionable health plan based on the user's data.
 
-    IMPORTANT: Format your response as structured text with clear sections and bullet points. Do not use markdown formatting like # ## * - etc. Use plain text with clear headings and proper spacing.
+    CRITICAL: Format your response using proper Markdown syntax:
+    - Use # for the main title
+    - Use ## for section headers
+    - Use - for bullet points
+    - Use **bold** for emphasis
 
     Structure your response exactly like this format:
 
-    PERSONALIZED HEALTH PLAN FOR [NAME]
+    # Personalized Health Plan for [NAME]
 
-    CURRENT HEALTH ASSESSMENT:
-    • [Assessment points based on provided data]
-    • [Note any missing data and its impact]
+    ## Current Health Assessment
+    - [Assessment points based on provided data]
+    - [Note any missing data and its impact]
 
-    NUTRITION RECOMMENDATIONS:
-    • [Specific dietary advice]
-    • [Calorie targets if applicable]
-    • [Meal timing suggestions]
+    ## Nutrition Recommendations
+    - [Specific dietary advice]
+    - [Calorie targets if applicable]
+    - [Meal timing suggestions]
 
-    EXERCISE PLAN:
-    • [Specific workout recommendations]
-    • [Frequency and duration]
-    • [Progressive suggestions]
+    ## Exercise Plan
+    - [Specific workout recommendations]
+    - [Frequency and duration]
+    - [Progressive suggestions]
 
-    LIFESTYLE RECOMMENDATIONS:
-    • [Sleep, stress, hydration advice]
-    • [Daily habit suggestions]
+    ## Lifestyle Recommendations
+    - [Sleep, stress, hydration advice]
+    - [Daily habit suggestions]
 
-    GOAL TRACKING:
-    • [Specific metrics to monitor]
-    • [Expected timeline for results]
+    ## Goal Tracking
+    - [Specific metrics to monitor]
+    - [Expected timeline for results]
 
-    IMPORTANT NOTES:
-    • [Any safety considerations]
-    • [When to consult healthcare providers]
+    ## Important Notes
+    - [Any safety considerations]
+    - [When to consult healthcare providers]
 
     Make the plan specific, actionable, and encouraging. If data is missing, acknowledge it but still provide valuable general recommendations.`;
 
