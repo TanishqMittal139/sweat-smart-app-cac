@@ -14,7 +14,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { Heart, Target, TrendingUp, Zap, Activity, MessageCircle, BarChart3, LogOut, Settings, User, Ruler, Scale, Calendar as CalendarIcon2, Moon } from "lucide-react";
+import { Heart, Target, Zap, MessageCircle, User, Scale, Moon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -203,8 +203,6 @@ const Dashboard = () => {
   if (!user) {
     return null;
   }
-  const todayStats: any[] = [];
-  const weeklyProgress: any[] = [];
   const firstName = profile?.full_name?.split(' ')[0] || 'there';
   return <div className="min-h-screen bg-background">
       <Navigation />
@@ -255,92 +253,6 @@ const Dashboard = () => {
               </h2>
               
               <SleepTracker userId={user.id} />
-            </section>
-
-            {/* Today's Progress */}
-            <section>
-              <h2 className="text-2xl font-bold mb-6 flex items-center space-x-2">
-                <CalendarIcon2 className="w-6 h-6 text-primary" />
-                <span>Today's Progress</span>
-              </h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
-                {todayStats.length === 0 ? <Card className="rounded-2xl border-2">
-                    <CardContent className="p-8 text-center">
-                      <Activity className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="text-lg font-semibold text-muted-foreground mb-2">No Data Yet</h3>
-                      <p className="text-sm text-muted-foreground">Start tracking your activities to see progress here.</p>
-                    </CardContent>
-                  </Card> : todayStats.map((stat, index) => <Card key={index} className="rounded-2xl border-2 hover:shadow-bubble transition-all duration-300">
-                      <CardContent className="p-6">
-                        <div className="flex items-center justify-between mb-4">
-                          <div className={`w-12 h-12 rounded-2xl ${stat.bgColor} flex items-center justify-center`}>
-                            <stat.icon className={`w-6 h-6 ${stat.color}`} />
-                          </div>
-                          <div className="text-right">
-                            <div className="text-2xl font-bold text-foreground">
-                              {stat.value}
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              of {stat.target}
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <span className="font-medium">{stat.label}</span>
-                            <span className="text-muted-foreground">
-                              {Math.round(stat.value / stat.target * 100)}%
-                            </span>
-                          </div>
-                          <Progress value={stat.value / stat.target * 100} className="h-2 rounded-full" />
-                        </div>
-                      </CardContent>
-                    </Card>)}
-              </div>
-            </section>
-
-            {/* Weekly Overview */}
-            <section>
-              <h2 className="text-2xl font-bold mb-6 flex items-center space-x-2">
-                <BarChart3 className="w-6 h-6 text-secondary" />
-                <span>Weekly Overview</span>
-              </h2>
-              
-              <Card className="rounded-2xl border-2">
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <span>Habit Completion Rate</span>
-                    <Badge variant="secondary" className="rounded-full">
-                      This Week
-                    </Badge>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {weeklyProgress.length === 0 ? <div className="text-center py-8">
-                      <BarChart3 className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="text-lg font-semibold text-muted-foreground mb-2">No Weekly Data</h3>
-                      <p className="text-sm text-muted-foreground">Complete some activities this week to see your progress.</p>
-                    </div> : <div className="grid grid-cols-7 gap-4">
-                      {weeklyProgress.map((day, index) => <div key={index} className="text-center space-y-2">
-                          <div className="text-sm font-medium text-muted-foreground">
-                            {day.day}
-                          </div>
-                          <div className="relative">
-                            <div className="w-12 h-32 bg-muted rounded-2xl mx-auto overflow-hidden">
-                              <div className="w-full bg-gradient-primary rounded-2xl transition-all duration-500" style={{
-                          height: `${day.completed}%`
-                        }} />
-                            </div>
-                            <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-sm font-semibold">
-                              {day.completed}%
-                            </div>
-                          </div>
-                        </div>)}
-                    </div>}
-                </CardContent>
-              </Card>
             </section>
 
           </div>
