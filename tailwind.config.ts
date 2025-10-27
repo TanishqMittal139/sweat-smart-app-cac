@@ -84,8 +84,8 @@ export default {
 			boxShadow: {
 				'glow': 'var(--shadow-glow)',
 				'soft': 'var(--shadow-sm)',
-				'bubble': 'var(--shadow-bubble)',
-				'float': 'var(--shadow-float)'
+				'bubble': 'var(--shadow-md)',
+				'float': 'var(--shadow-lg)'
 			},
 			keyframes: {
 				'accordion-down': {
