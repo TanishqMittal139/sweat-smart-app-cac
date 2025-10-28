@@ -166,7 +166,7 @@ const HeroSection = () => {
                   return (
                     <CarouselItem key={index}>
                       <Card className="rounded-3xl border-2 border-white/20 bg-white/10 backdrop-blur-md shadow-float hover:shadow-glow transition-all duration-500">
-                        <CardContent className="p-8 space-y-6">
+                        <CardContent className="p-8 space-y-6 min-h-[400px] flex flex-col justify-between">
                           <div className={`w-16 h-16 rounded-2xl ${stat.bgColor} flex items-center justify-center`}>
                             <Icon className={`w-8 h-8 ${stat.color}`} />
                           </div>

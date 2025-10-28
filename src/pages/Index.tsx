@@ -79,10 +79,6 @@ const Index = () => {
       <section className="py-20 bg-muted/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-6 mb-16">
-            <div className="inline-flex items-center space-x-2 bg-warning/10 text-warning rounded-full px-4 py-2">
-              <AlertTriangle className="w-4 h-4" />
-              <span className="text-sm font-medium">Health Crisis Alert</span>
-            </div>
             <h2 className="text-3xl md:text-5xl font-bold text-foreground">
               The Obesity Epidemic in America
             </h2>
@@ -94,12 +90,15 @@ const Index = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             {healthStats.map((item, index) => <Card key={index} className="rounded-2xl border-2 hover:shadow-bubble transition-all duration-300 hover:scale-105">
-                <CardContent className="p-6 text-center">
+                <CardContent className="p-6 text-center min-h-[180px] flex flex-col justify-center">
                   <div className="text-3xl md:text-4xl font-bold text-foreground mb-2">
                     {item.stat}
                   </div>
                   <div className="text-muted-foreground mb-3">{item.label}</div>
-                  <Badge variant={item.severity === "critical" ? "destructive" : "secondary"} className="rounded-full">
+                  <Badge 
+                    variant={item.severity === "critical" ? "destructive" : "secondary"} 
+                    className={`rounded-full ${item.trend.includes("Rising") || item.trend.includes("Growing") ? "bg-destructive text-destructive-foreground hover:bg-destructive/80" : ""}`}
+                  >
                     {item.trend}
                   </Badge>
                 </CardContent>
