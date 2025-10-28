@@ -94,13 +94,7 @@ const Index = () => {
                   <div className="text-3xl md:text-4xl font-bold text-foreground mb-2">
                     {item.stat}
                   </div>
-                  <div className="text-muted-foreground mb-3">{item.label}</div>
-                  <Badge 
-                    variant={item.severity === "critical" ? "destructive" : "secondary"} 
-                    className={`rounded-full ${item.trend.includes("Rising") || item.trend.includes("Growing") ? "bg-destructive text-destructive-foreground hover:bg-destructive/80" : ""}`}
-                  >
-                    {item.trend}
-                  </Badge>
+                  <div className="text-muted-foreground">{item.label}</div>
                 </CardContent>
               </Card>)}
           </div>
