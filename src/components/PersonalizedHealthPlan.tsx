@@ -171,12 +171,12 @@ const PersonalizedHealthPlan = () => {
             </div>
             
             <div className="flex justify-center pt-4">
-              <Button
-                onClick={generateHealthPlan}
-                disabled={isGenerating}
-                variant="outline"
-                className="rounded-2xl border-2 hover:border-primary hover:text-primary transition-all duration-300 hover:scale-105"
-              >
+            <Button
+              onClick={generateHealthPlan}
+              disabled={isGenerating}
+              variant="outline"
+              className="rounded-2xl border-2 hover:border-primary hover:text-primary hover:bg-transparent transition-all duration-300 hover:scale-105"
+            >
                 {isGenerating ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
