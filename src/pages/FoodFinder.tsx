@@ -42,9 +42,8 @@ const filterOptions: FilterOption[] = [
     icon: ShoppingBag,
     types: ["grocery_or_supermarket", "store"],
     includeKeywords: [
-      "organic", "health food", "natural market", "farmers market", 
-      "whole foods", "nutrition", "vitamin store", "fresh market",
-      "trader joe", "sprouts", "natural grocers"
+      "organic", "health", "natural", "farmers market", 
+      "whole foods", "trader joe", "sprouts"
     ],
     excludeKeywords: [
       "walmart", "costco", "dollar", "7-eleven", "circle k", 
@@ -58,12 +57,12 @@ const filterOptions: FilterOption[] = [
     types: ["restaurant"],
     includeKeywords: [
       "healthy", "salad", "vegetarian", "vegan", "organic", 
-      "farm-to-table", "poke", "smoothie", "fresh", "juice bar",
-      "bowl", "mediterranean", "sushi", "acai", "grain", "plant-based"
+      "poke", "smoothie", "juice", "bowl", "mediterranean", 
+      "sushi", "acai"
     ],
     excludeKeywords: [
-      "fast food", "fried", "burger", "pizza", "bbq", "buffet",
-      "mcdonalds", "burger king", "taco bell", "kfc", "wendy"
+      "fast food", "burger king", "mcdonalds", "taco bell", 
+      "kfc", "wendy", "pizza hut", "domino"
     ],
   },
   {
@@ -72,13 +71,11 @@ const filterOptions: FilterOption[] = [
     icon: Leaf,
     types: ["health", "store"],
     includeKeywords: [
-      "organic", "vitamin", "supplement", "health products", 
-      "natural", "nutrition shop", "wellness", "gnc", "vitamin shoppe",
-      "health food"
+      "organic", "vitamin", "supplement", "health", 
+      "natural", "wellness", "gnc", "nutrition"
     ],
     excludeKeywords: [
-      "pharmacy", "convenience store", "smoke shop", "liquor",
-      "cvs", "walgreens", "rite aid"
+      "convenience", "smoke", "liquor", "gas station"
     ],
   },
 ];
@@ -166,14 +163,14 @@ const FoodFinder = () => {
     ) => {
       service.nearbySearch(request, (results, status, pagination) => {
         if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-          // Apply advanced filtering for healthy locations
+          // Apply filtering for healthy locations with lenient include logic
           const filtered = results.filter((place) => {
             const name = place.name?.toLowerCase() || "";
             const types = place.types?.join(" ").toLowerCase() || "";
             const vicinity = place.vicinity?.toLowerCase() || "";
             const searchText = `${name} ${types} ${vicinity}`;
             
-            // First check: Exclude places that match exclusion keywords
+            // First check: Exclude places that match exclusion keywords (strict)
             const hasExcludedKeyword = filter.excludeKeywords.some((keyword) => {
               return searchText.includes(keyword.toLowerCase());
             });
@@ -182,18 +179,22 @@ const FoodFinder = () => {
               return false; // Exclude this place
             }
             
-            // Second check: Include only places that match include keywords
-            // If no include keywords specified, include all (except excluded ones)
+            // Second check: Include places with keywords OR high ratings (lenient)
             if (filter.includeKeywords.length === 0) {
-              return true;
+              return true; // No keyword requirements, include all non-excluded
             }
+            
+            // Allow highly-rated places (4.0+) to pass even without keywords
+            const rating = place.rating || 0;
+            const hasGoodRating = rating >= 4.0 && (place.user_ratings_total || 0) >= 10;
             
             // Check if any include keyword matches
             const hasIncludedKeyword = filter.includeKeywords.some((keyword) => {
               return searchText.includes(keyword.toLowerCase());
             });
             
-            return hasIncludedKeyword;
+            // Pass if has keyword OR has good rating
+            return hasIncludedKeyword || hasGoodRating;
           });
           
           allPlaces.push(...filtered);
