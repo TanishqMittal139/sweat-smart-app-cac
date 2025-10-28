@@ -371,8 +371,11 @@ const FoodFinder = () => {
                       lng: selectedPlace.geometry.location.lng(),
                     }}
                     onCloseClick={() => setSelectedPlace(null)}
+                    options={{
+                      pixelOffset: new google.maps.Size(0, -10),
+                    }}
                   >
-                    <div className="p-2">
+                    <div className="food-finder-info-window pt-1 pb-8 px-2">
                       <h3 className="font-semibold text-lg mb-1">{selectedPlace.name}</h3>
                       {selectedPlace.vicinity && (
                         <p className="text-sm text-gray-600 mb-2">{selectedPlace.vicinity}</p>

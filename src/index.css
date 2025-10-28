@@ -182,3 +182,10 @@ All colors MUST be HSL for consistent theming.
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--primary) / 0.8);
 }
+
+/* Google Maps InfoWindow customization for Food Finder */
+.food-finder-info-window + div button {
+  top: auto !important;
+  bottom: 4px !important;
+  right: 4px !important;
+}
