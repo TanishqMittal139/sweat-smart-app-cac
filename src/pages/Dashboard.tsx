@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
 import WeightTracker from "@/components/WeightTracker";
 import PersonalizedHealthPlan from "@/components/PersonalizedHealthPlan";
 import { SleepTracker } from "@/components/SleepTracker";
@@ -377,6 +378,8 @@ const Dashboard = () => {
           
         </div>
       </div>
+      
+      <Footer />
     </div>;
 };
 export default Dashboard;

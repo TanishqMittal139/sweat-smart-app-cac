@@ -6,6 +6,7 @@ import { Send, Bot, User, RotateCcw } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
@@ -275,6 +276,8 @@ const Chat = () => {
           </div>
         </div>
       </div>
+      
+      <Footer />
     </div>
   );
 };

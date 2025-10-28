@@ -1,4 +1,5 @@
 import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
 import HeroSection from "@/components/HeroSection";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -147,6 +148,8 @@ const Index = () => {
 
       {/* CTA Section - Only show when user is not signed in */}
       {!user}
+      
+      <Footer />
     </div>;
 };
 export default Index;

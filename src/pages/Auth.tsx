@@ -10,6 +10,7 @@ import { Heart, User, Mail, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import Footer from "@/components/Footer";
 const Auth = () => {
   const navigate = useNavigate();
   const {
@@ -191,6 +192,8 @@ const Auth = () => {
           </Button>
         </div>
       </div>
+      
+      <Footer />
     </div>;
 };
 export default Auth;

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
 import QuizGame from "@/components/QuizGame";
 import MemoryMatchGame from "@/components/MemoryMatchGame";
 import DailyChallengeGame from "@/components/DailyChallengeGame";
@@ -244,6 +245,8 @@ const Games = () => {
           </div>
         </div>
       </div>
+      
+      <Footer />
     </div>
   );
 };

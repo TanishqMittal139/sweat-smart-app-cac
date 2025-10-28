@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from "@react-google-maps/api";
 import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -435,6 +436,8 @@ const FoodFinder = () => {
           </div>
         </div>
       </main>
+      
+      <Footer />
     </div>
   );
 };
