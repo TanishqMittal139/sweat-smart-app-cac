@@ -255,10 +255,8 @@ const Emergency = () => {
 
         setQuotes(prev => [...prev, newQuote]);
 
-        // Remove quote slightly after animation completes to prevent flash
-        setTimeout(() => {
-          setQuotes(prev => prev.filter(q => q.id !== newQuote.id));
-        }, (newQuote.animationDuration * 1000) + 100);
+        // Cleanup handled via onAnimationEnd to avoid flashes
+        // (no timeout removal here)
       }, i * 100); // Short stagger (100ms) so all appear together quickly
     }
     
@@ -281,10 +279,8 @@ const Emergency = () => {
 
     setQuotes(prev => [...prev, newQuote]);
 
-    // Remove quote slightly after animation completes to prevent flash
-    setTimeout(() => {
-      setQuotes(prev => prev.filter(q => q.id !== newQuote.id));
-    }, (newQuote.animationDuration * 1000) + 100);
+    // Cleanup handled via onAnimationEnd to avoid flashes
+    // (no timeout removal here)
 
     setNextId(prev => prev + 1);
   }, [nextId]);
@@ -356,6 +352,11 @@ const Emergency = () => {
               <div
                 key={quote.id}
                 className={`fixed pointer-events-none z-10`}
+                onAnimationEnd={(e) => {
+                  // Hide immediately to prevent any flash at bottom, then remove from state
+                  e.currentTarget.style.display = 'none';
+                  setQuotes(prev => prev.filter(q => q.id !== quote.id));
+                }}
                 style={{
                   left: `${quote.x}%`,
                   bottom: '0px',
