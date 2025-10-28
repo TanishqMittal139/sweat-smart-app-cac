@@ -324,54 +324,32 @@ const Emergency = () => {
           const shapeClass = quote.shape === 'round' ? 'rounded-full' : 
                             quote.shape === 'square' ? 'rounded-lg' : 'rounded-[50%]';
           
-          const animationName = `floatUp-${quote.id}`;
-          
           return (
-            <>
-              <style key={`style-${quote.id}`}>
-                {`
-                  @keyframes ${animationName} {
-                    0% {
-                      transform: translateY(0vh) translateX(0px) scale(0.8);
-                      opacity: 0;
-                    }
-                    5% {
-                      opacity: 1;
-                      transform: translateY(-5vh) translateX(${quote.sideMovement * 0.1}px) scale(1);
-                    }
-                    85% {
-                      opacity: 1;
-                    }
-                    100% {
-                      transform: translateY(-85vh) translateX(${quote.sideMovement}px) scale(0.7);
-                      opacity: 0;
-                    }
-                  }
-                `}
-              </style>
-              <div
-                key={quote.id}
-                className={`fixed pointer-events-none z-10`}
-                onAnimationEnd={(e) => {
-                  // Hide immediately to prevent any flash at bottom, then remove from state
-                  e.currentTarget.style.display = 'none';
-                  setQuotes(prev => prev.filter(q => q.id !== quote.id));
-                }}
-                style={{
-                  left: `${quote.x}%`,
-                  bottom: '0px',
-                  color: quote.color,
-                  fontSize: `${quote.size}px`,
-                  textShadow: "0 4px 20px rgba(0,0,0,0.4)",
-                  opacity: 0,
-                  animation: `${animationName} ${quote.animationDuration}s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards`,
-                }}
-              >
-                <div className={`animate-pulse-glow bg-white/25 backdrop-blur-md ${shapeClass} px-6 py-3 border border-white/40 shadow-bubble whitespace-nowrap hover:scale-105 transition-transform`}>
-                  {quote.text}
-                </div>
+            <div
+              key={quote.id}
+              className="fixed pointer-events-none z-10 quote-float"
+              onAnimationEnd={(e) => {
+                // Guard against bubbled events from child elements
+                if (e.target !== e.currentTarget) return;
+                if (e.animationName !== 'floatUp') return;
+                
+                // Remove from state immediately
+                setQuotes(prev => prev.filter(q => q.id !== quote.id));
+              }}
+              style={{
+                left: `${quote.x}%`,
+                bottom: '0px',
+                color: quote.color,
+                fontSize: `${quote.size}px`,
+                textShadow: "0 4px 20px rgba(0,0,0,0.4)",
+                '--side-move': `${quote.sideMovement}px`,
+                '--duration': `${quote.animationDuration}s`,
+              } as React.CSSProperties}
+            >
+              <div className={`bg-white/25 backdrop-blur-md ${shapeClass} px-6 py-3 border border-white/40 shadow-bubble whitespace-nowrap hover:scale-105 transition-transform`}>
+                {quote.text}
               </div>
-            </>
+            </div>
           );
         })}
 
