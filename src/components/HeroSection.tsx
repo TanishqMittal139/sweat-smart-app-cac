@@ -97,13 +97,12 @@ const HeroSection = () => {
                 <span className="text-sm font-medium">Obesity Crisis in America</span>
               </div>
               
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
-                Take Control of Your
-                <br />
-                <span className="inline-block relative overflow-hidden align-middle" style={{
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight text-center lg:text-left">
+                Take Control of Your{" "}
+                <span className="relative overflow-hidden" style={{
                 minWidth: `${spanWidthCh}ch`,
                 height: '1.2em',
-                verticalAlign: 'baseline'
+                display: 'inline-block'
               }}>
                   <span key={currentWordIndex} className={`absolute left-0 top-0 bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent transition-transform duration-1000 ${isAnimating ? "translate-y-full" : "translate-y-0"}`}>
                     {words[currentWordIndex]}
