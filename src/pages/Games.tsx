@@ -143,10 +143,7 @@ const Games = () => {
                       <Target className="w-4 h-4" />
                       <span>{game.estimatedTime}</span>
                     </div>
-                    <div className="flex items-center space-x-1">
-                      <Star className="w-4 h-4" />
-                      <span>{game.points}</span>
-                    </div>
+                    
                   </div>
                   
                   <Button onClick={() => game.available && setCurrentGame(game.id as GameType)} disabled={!game.available} className={`w-full rounded-2xl py-3 text-lg font-semibold transition-all duration-300 ${game.available ? 'bg-gradient-primary hover:shadow-glow hover:scale-105' : 'bg-muted text-muted-foreground cursor-not-allowed'}`}>
