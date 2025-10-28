@@ -158,7 +158,7 @@ const Games = () => {
                     <div className="flex items-center space-x-2">
                       <Badge 
                         variant="secondary" 
-                        className={`rounded-full ${game.color}`}
+                        className={`rounded-full bg-white border-2 ${game.color} ${game.color.replace('text-', 'border-')}`}
                       >
                         {game.difficulty}
                       </Badge>
