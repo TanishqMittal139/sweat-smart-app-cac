@@ -255,10 +255,10 @@ const Emergency = () => {
 
         setQuotes(prev => [...prev, newQuote]);
 
-        // Remove quote slightly before animation completes to prevent flash
+        // Remove quote slightly after animation completes to prevent flash
         setTimeout(() => {
           setQuotes(prev => prev.filter(q => q.id !== newQuote.id));
-        }, (newQuote.animationDuration * 1000) - 200);
+        }, (newQuote.animationDuration * 1000) + 100);
       }, i * 100); // Short stagger (100ms) so all appear together quickly
     }
     
@@ -281,10 +281,10 @@ const Emergency = () => {
 
     setQuotes(prev => [...prev, newQuote]);
 
-    // Remove quote slightly before animation completes to prevent flash
+    // Remove quote slightly after animation completes to prevent flash
     setTimeout(() => {
       setQuotes(prev => prev.filter(q => q.id !== newQuote.id));
-    }, (newQuote.animationDuration * 1000) - 200);
+    }, (newQuote.animationDuration * 1000) + 100);
 
     setNextId(prev => prev + 1);
   }, [nextId]);
@@ -362,6 +362,7 @@ const Emergency = () => {
                   color: quote.color,
                   fontSize: `${quote.size}px`,
                   textShadow: "0 4px 20px rgba(0,0,0,0.4)",
+                  opacity: 0,
                   animation: `${animationName} ${quote.animationDuration}s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards`,
                 }}
               >
