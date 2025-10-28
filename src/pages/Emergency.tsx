@@ -394,14 +394,6 @@ const Emergency = () => {
                   <Heart className="w-5 h-5 mr-2" />
                   Share Feelings
                 </Button>
-                
-                <Button
-                  onClick={() => showQuestionInput("boxer")}
-                  className="bg-gradient-to-r from-red-500 to-orange-600 text-white hover:scale-105 transition-all duration-300 rounded-full px-6 py-3 font-bold shadow-bubble hover:shadow-glow"
-                >
-                  <Zap className="w-5 h-5 mr-2" />
-                  Hero Inspiration
-                </Button>
               </div>
             ) : (
               <div className="flex flex-col gap-4 min-w-[300px]">
