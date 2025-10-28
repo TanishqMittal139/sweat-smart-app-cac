@@ -31,7 +31,8 @@ interface FilterOption {
   label: string;
   icon: any;
   types: PlaceType[];
-  keywords: string[];
+  includeKeywords: string[];
+  excludeKeywords: string[];
 }
 
 const filterOptions: FilterOption[] = [
@@ -40,21 +41,45 @@ const filterOptions: FilterOption[] = [
     label: "Healthy Grocery Stores",
     icon: ShoppingBag,
     types: ["grocery_or_supermarket", "store"],
-    keywords: [], // Show all grocery stores, let users decide what's healthy
+    includeKeywords: [
+      "organic", "health food", "natural market", "farmers market", 
+      "whole foods", "nutrition", "vitamin store", "fresh market",
+      "trader joe", "sprouts", "natural grocers"
+    ],
+    excludeKeywords: [
+      "walmart", "costco", "dollar", "7-eleven", "circle k", 
+      "gas station", "convenience"
+    ],
   },
   {
     id: "restaurants",
     label: "Healthy Restaurants",
     icon: Utensils,
     types: ["restaurant"],
-    keywords: [], // Show all restaurants, let users filter
+    includeKeywords: [
+      "healthy", "salad", "vegetarian", "vegan", "organic", 
+      "farm-to-table", "poke", "smoothie", "fresh", "juice bar",
+      "bowl", "mediterranean", "sushi", "acai", "grain", "plant-based"
+    ],
+    excludeKeywords: [
+      "fast food", "fried", "burger", "pizza", "bbq", "buffet",
+      "mcdonalds", "burger king", "taco bell", "kfc", "wendy"
+    ],
   },
   {
     id: "organic",
     label: "Organic/Health Stores",
     icon: Leaf,
     types: ["health", "store"],
-    keywords: ["organic", "health food", "natural", "vitamin", "supplement", "wellness"],
+    includeKeywords: [
+      "organic", "vitamin", "supplement", "health products", 
+      "natural", "nutrition shop", "wellness", "gnc", "vitamin shoppe",
+      "health food"
+    ],
+    excludeKeywords: [
+      "pharmacy", "convenience store", "smoke shop", "liquor",
+      "cvs", "walgreens", "rite aid"
+    ],
   },
 ];
 
@@ -141,22 +166,34 @@ const FoodFinder = () => {
     ) => {
       service.nearbySearch(request, (results, status, pagination) => {
         if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-          // Filter results by keywords - use OR logic (any keyword match)
+          // Apply advanced filtering for healthy locations
           const filtered = results.filter((place) => {
             const name = place.name?.toLowerCase() || "";
             const types = place.types?.join(" ").toLowerCase() || "";
             const vicinity = place.vicinity?.toLowerCase() || "";
+            const searchText = `${name} ${types} ${vicinity}`;
             
-            // If no keywords, include all results of this type
-            if (filter.keywords.length === 0) return true;
-            
-            // Check if any keyword matches
-            return filter.keywords.some((keyword) => {
-              const lowerKeyword = keyword.toLowerCase();
-              return name.includes(lowerKeyword) || 
-                     types.includes(lowerKeyword) || 
-                     vicinity.includes(lowerKeyword);
+            // First check: Exclude places that match exclusion keywords
+            const hasExcludedKeyword = filter.excludeKeywords.some((keyword) => {
+              return searchText.includes(keyword.toLowerCase());
             });
+            
+            if (hasExcludedKeyword) {
+              return false; // Exclude this place
+            }
+            
+            // Second check: Include only places that match include keywords
+            // If no include keywords specified, include all (except excluded ones)
+            if (filter.includeKeywords.length === 0) {
+              return true;
+            }
+            
+            // Check if any include keyword matches
+            const hasIncludedKeyword = filter.includeKeywords.some((keyword) => {
+              return searchText.includes(keyword.toLowerCase());
+            });
+            
+            return hasIncludedKeyword;
           });
           
           allPlaces.push(...filtered);
@@ -175,23 +212,43 @@ const FoodFinder = () => {
         
         // When all searches complete, update places
         if (completedSearches === totalSearches) {
-          // Remove duplicates by place_id and sort by rating
+          // Remove duplicates by place_id
           const uniquePlaces = Array.from(
             new Map(allPlaces.map((place) => [place.place_id, place])).values()
-          ).sort((a, b) => (b.rating || 0) - (a.rating || 0));
+          );
           
-          setPlaces(uniquePlaces);
+          // Sort by rating > user_ratings_total > proximity (implicit via search)
+          const sortedPlaces = uniquePlaces.sort((a, b) => {
+            // First priority: Rating (higher is better)
+            const ratingDiff = (b.rating || 0) - (a.rating || 0);
+            if (Math.abs(ratingDiff) >= 0.1) return ratingDiff;
+            
+            // Second priority: Number of ratings (more ratings = more reliable)
+            const ratingCountDiff = (b.user_ratings_total || 0) - (a.user_ratings_total || 0);
+            if (ratingCountDiff !== 0) return ratingCountDiff;
+            
+            // Third priority: Implicit proximity (already sorted by API)
+            return 0;
+          });
+          
+          setPlaces(sortedPlaces);
           setLoading(false);
           
-          if (uniquePlaces.length === 0) {
+          if (sortedPlaces.length === 0) {
+            const filterNames = activeFilters
+              .map(id => filterOptions.find(f => f.id === id)?.label)
+              .filter(Boolean)
+              .join(", ");
+            
             toast({
-              title: "No places found",
-              description: "Try adjusting your filters or searching a different area.",
+              title: "No verified healthy locations found",
+              description: `No ${filterNames.toLowerCase()} found within 5 miles. Try adjusting your filters or searching a different area.`,
+              variant: "destructive",
             });
           } else {
             toast({
               title: "Search complete",
-              description: `Found ${uniquePlaces.length} healthy food locations within 5 miles`,
+              description: `Found ${sortedPlaces.length} verified healthy food locations within 5 miles`,
             });
           }
         }
