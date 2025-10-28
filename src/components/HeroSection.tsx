@@ -90,7 +90,7 @@ const HeroSection = () => {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Content */}
-          <div className="text-center lg:text-left space-y-8">
+          <div className="text-left space-y-8">
             <div className="space-y-6">
               <div className="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-white">
                 <TrendingUp className="w-4 h-4" />
@@ -114,34 +114,34 @@ const HeroSection = () => {
                 Journey
               </h1>
               
-              <p className="text-xl md:text-2xl text-white/90 leading-relaxed max-w-2xl">With intelligent tracking and personalized insights, SweatSmart helps you stay consistent, build healthy habits, and achieve your wellness goals.</p>
+              <p className="text-xl md:text-2xl text-white/90 leading-relaxed max-w-2xl mx-0">With intelligent tracking and personalized insights, SweatSmart helps you stay consistent, build healthy habits, and achieve your wellness goals.</p>
             </div>
 
             {/* Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 py-6">
-              <div className="text-center">
+              <div className="text-left">
                 <div className="text-2xl md:text-3xl font-bold text-white">41.9%</div>
                 <div className="text-white/80 text-sm">US Adults Obese</div>
               </div>
-              <div className="text-center">
+              <div className="text-left">
                 <div className="text-2xl md:text-3xl font-bold text-white">97.6M</div>
                 <div className="text-white/80 text-sm">Adults Prediabetic</div>
               </div>
-              <div className="text-center">
+              <div className="text-left">
                 <div className="text-2xl md:text-3xl font-bold text-white">38.4M</div>
                 <div className="text-white/80 text-sm">Americans w/ Diabetes</div>
               </div>
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Button size="lg" onClick={() => navigate(user ? "/dashboard" : "/auth")} className="bg-white text-primary hover:bg-white/90 rounded-2xl px-8 py-4 text-lg font-semibold shadow-float hover:shadow-glow transition-all duration-300 hover:scale-105">
+            <div className="flex flex-col sm:flex-row gap-4 justify-start">
+              <Button size="lg" onClick={() => navigate(user ? "/dashboard" : "/auth")} className="bg-white text-primary hover:bg-white/90 rounded-2xl px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold shadow-float hover:shadow-glow transition-all duration-300 hover:scale-105 w-full sm:w-auto">
                 Start Your Journey
-                <ArrowRight className="w-5 h-5 ml-2" />
+                <ArrowRight className="w-4 sm:w-5 h-4 sm:h-5 ml-2" />
               </Button>
               
-              <Button variant="outline" size="lg" onClick={() => navigate("/data")} className="border-2 border-white/30 bg-accent text-accent-foreground rounded-2xl px-8 py-4 text-lg font-semibold backdrop-blur-sm transition-all duration-300 hover:scale-105">
-                <Play className="w-5 h-5 mr-2" />
+              <Button variant="outline" size="lg" onClick={() => navigate("/data")} className="border-2 border-white/30 bg-accent text-accent-foreground rounded-2xl px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold backdrop-blur-sm transition-all duration-300 hover:scale-105 w-full sm:w-auto">
+                <Play className="w-4 sm:w-5 h-4 sm:h-5 mr-2" />
                 View The Data
               </Button>
             </div>
