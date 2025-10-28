@@ -656,12 +656,6 @@ const DataVisualization = () => {
                   </ul>
                 </div>
               </div>
-              <div className="mt-6 p-4 bg-primary/10 rounded-lg">
-                <p className="text-sm text-muted-foreground">
-                  <strong>Note:</strong> All data presented is from official government health agencies and established medical organizations. 
-                  Statistics are the most recent available as of 2024 and represent the best current evidence on obesity and diabetes in America.
-                </p>
-              </div>
             </CardContent>
           </Card>
         </section>
