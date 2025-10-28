@@ -42,13 +42,6 @@ const filterOptions: FilterOption[] = [
     keywords: [], // Show all grocery stores, let users decide what's healthy
   },
   {
-    id: "farmers",
-    label: "Farmers Markets",
-    icon: Apple,
-    types: ["store"],
-    keywords: ["farmers market", "farm market", "fresh produce", "farmers"],
-  },
-  {
     id: "restaurants",
     label: "Healthy Restaurants",
     icon: Utensils,
@@ -75,7 +68,7 @@ const FoodFinder = () => {
   const [center, setCenter] = useState(defaultCenter);
   const [places, setPlaces] = useState<google.maps.places.PlaceResult[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<google.maps.places.PlaceResult | null>(null);
-  const [activeFilters, setActiveFilters] = useState<string[]>(["grocery", "farmers", "restaurants", "organic"]);
+  const [activeFilters, setActiveFilters] = useState<string[]>(["grocery", "restaurants", "organic"]);
   const [loading, setLoading] = useState(false);
 
   const onLoad = useCallback((map: google.maps.Map) => {
@@ -249,7 +242,7 @@ const FoodFinder = () => {
             Food Finder
           </h1>
           <p className="text-muted-foreground">
-            Discover healthy food stores, farmers markets, and restaurants near you
+            Discover healthy food stores and restaurants near you
           </p>
         </div>
 
