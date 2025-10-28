@@ -100,14 +100,15 @@ const HeroSection = () => {
               <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
                 Take Control of Your
                 <br />
-                <span className="block relative overflow-hidden flex items-center" style={{
-                width: `${spanWidthCh}ch`,
-                height: '1.2em'
+                <span className="inline-block relative overflow-hidden align-middle" style={{
+                minWidth: `${spanWidthCh}ch`,
+                height: '1.2em',
+                verticalAlign: 'baseline'
               }}>
-                  <span key={currentWordIndex} className={`absolute inset-0 flex items-center bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent transition-transform duration-1000 ${isAnimating ? "translate-y-full" : "translate-y-0"}`}>
+                  <span key={currentWordIndex} className={`absolute left-0 top-0 bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent transition-transform duration-1000 ${isAnimating ? "translate-y-full" : "translate-y-0"}`}>
                     {words[currentWordIndex]}
                   </span>
-                  <span className={`absolute inset-0 flex items-center bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent ${isAnimating ? "translate-y-0 transition-transform duration-1000" : "-translate-y-full"}`}>
+                  <span className={`absolute left-0 top-0 bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent ${isAnimating ? "translate-y-0 transition-transform duration-1000" : "-translate-y-full"}`}>
                     {words[(currentWordIndex + 1) % words.length]}
                   </span>
                 </span>{" "}
