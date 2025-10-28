@@ -101,7 +101,7 @@ const HeroSection = () => {
                 Take Control of Your{" "}
                 <span className="relative overflow-hidden" style={{
                 minWidth: `${spanWidthCh}ch`,
-                height: '1.2em',
+                height: '1em',
                 display: 'inline-block'
               }}>
                   <span key={currentWordIndex} className={`absolute left-0 top-0 bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent transition-transform duration-1000 ${isAnimating ? "translate-y-full" : "translate-y-0"}`}>
