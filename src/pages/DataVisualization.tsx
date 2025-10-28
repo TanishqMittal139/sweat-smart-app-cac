@@ -607,16 +607,6 @@ const DataVisualization = () => {
                   <h4 className="font-semibold text-foreground">Centers for Disease Control (CDC)</h4>
                   <ul className="text-sm text-muted-foreground space-y-1">
                     <li>
-                      <a href="https://www.cdc.gov/obesity/data/adult.html" target="_blank" rel="noopener noreferrer" className="hover:text-primary hover:underline flex items-center gap-1">
-                        • Adult Obesity Facts (2024) <ExternalLink className="w-3 h-3" />
-                      </a>
-                    </li>
-                    <li>
-                      <a href="https://www.cdc.gov/nchs/nhanes/index.htm" target="_blank" rel="noopener noreferrer" className="hover:text-primary hover:underline flex items-center gap-1">
-                        • NHANES 2017-March 2020 <ExternalLink className="w-3 h-3" />
-                      </a>
-                    </li>
-                    <li>
                       <a href="https://www.cdc.gov/brfss/index.html" target="_blank" rel="noopener noreferrer" className="hover:text-primary hover:underline flex items-center gap-1">
                         • Behavioral Risk Factor Surveillance <ExternalLink className="w-3 h-3" />
                       </a>
