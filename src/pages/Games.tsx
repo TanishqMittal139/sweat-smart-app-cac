@@ -157,8 +157,14 @@ const Games = () => {
                     </div>
                     <div className="flex items-center space-x-2">
                       <Badge 
-                        variant="secondary" 
-                        className={`rounded-full bg-white border-2 ${game.color} ${game.color.replace('text-', 'border-')}`}
+                        variant="outline" 
+                        className={`rounded-full bg-white border-2 ${game.color}`}
+                        style={{ 
+                          borderColor: game.id === 'quiz' ? 'hsl(var(--primary))' : 
+                                      game.id === 'memory' ? 'hsl(var(--secondary))' :
+                                      game.id === 'challenge' ? 'hsl(var(--warning))' :
+                                      'hsl(var(--success))'
+                        }}
                       >
                         {game.difficulty}
                       </Badge>
