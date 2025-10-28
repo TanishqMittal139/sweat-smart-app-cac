@@ -219,9 +219,9 @@ const Dashboard = () => {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-6 lg:space-y-8">
 
             {/* Weight Tracking */}
             <section>
@@ -259,7 +259,7 @@ const Dashboard = () => {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-8">
+          <div className="space-y-6 lg:space-y-8">
             {/* Health Information */}
             <section>
               <h3 className="text-xl font-bold mb-4 flex items-center space-x-2">

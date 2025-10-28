@@ -119,7 +119,7 @@ const HeroSection = () => {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-6 py-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 py-6">
               <div className="text-center">
                 <div className="text-2xl md:text-3xl font-bold text-white">41.9%</div>
                 <div className="text-white/80 text-sm">US Adults Obese</div>
@@ -167,7 +167,7 @@ const HeroSection = () => {
                   return (
                     <CarouselItem key={index}>
                       <Card className="rounded-3xl border-2 border-white/20 bg-white/10 backdrop-blur-md shadow-float hover:shadow-glow transition-all duration-500">
-                        <CardContent className="p-8 space-y-6 min-h-[400px] flex flex-col justify-between">
+                        <CardContent className="p-4 sm:p-8 space-y-4 sm:space-y-6 min-h-[320px] sm:min-h-[400px] flex flex-col justify-between">
                           <div className={`w-16 h-16 rounded-2xl ${stat.bgColor} flex items-center justify-center`}>
                             <Icon className={`w-8 h-8 ${stat.color}`} />
                           </div>

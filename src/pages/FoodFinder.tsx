@@ -15,7 +15,8 @@ const libraries: ("places")[] = ["places"];
 
 const mapContainerStyle = {
   width: "100%",
-  height: "600px",
+  height: "100%",
+  minHeight: "400px",
 };
 
 const defaultCenter = {
@@ -316,7 +317,7 @@ const FoodFinder = () => {
 
           {/* Map */}
           <div className="lg:col-span-3">
-            <Card className="overflow-hidden">
+            <Card className="overflow-hidden h-[400px] sm:h-[500px] lg:h-[600px]">
               <GoogleMap
                 mapContainerStyle={mapContainerStyle}
                 center={center}
