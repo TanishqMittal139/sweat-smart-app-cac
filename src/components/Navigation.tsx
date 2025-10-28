@@ -32,7 +32,7 @@ const Navigation = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center space-x-8">
             {navItems.map((item) => (
               <button
                 key={item.name}
@@ -68,7 +68,7 @@ const Navigation = () => {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <Button
               variant="ghost"
               size="sm"
@@ -82,7 +82,7 @@ const Navigation = () => {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden absolute left-0 right-0 top-16 bg-card/95 backdrop-blur-lg border-b border-border shadow-bubble rounded-b-2xl">
+          <div className="lg:hidden absolute left-0 right-0 top-16 bg-card/95 backdrop-blur-lg border-b border-border shadow-bubble rounded-b-2xl">
             <div className="px-4 py-6 space-y-4">
               {navItems.map((item) => (
                 <button
