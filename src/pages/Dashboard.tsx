@@ -358,12 +358,12 @@ const Dashboard = () => {
               </h3>
               
               <div className="space-y-3">
-                <Button onClick={() => navigate("/quiz")} variant="outline" className="w-full justify-start rounded-2xl py-3 border-2 hover:border-secondary hover:text-secondary transition-all duration-300 hover:scale-105">
+                <Button onClick={() => navigate("/quiz")} variant="outline" className="w-full justify-start rounded-2xl py-3 border-2 hover:border-secondary hover:text-secondary hover:bg-transparent transition-all duration-300 hover:scale-105">
                   <Target className="w-4 h-4 mr-2" />
                   Take Health Quiz
                 </Button>
                 
-                <Button onClick={() => navigate("/chat")} variant="outline" className="w-full justify-start rounded-2xl py-3 border-2 hover:border-accent hover:text-accent transition-all duration-300 hover:scale-105">
+                <Button onClick={() => navigate("/chat")} variant="outline" className="w-full justify-start rounded-2xl py-3 border-2 hover:border-accent hover:text-accent hover:bg-transparent transition-all duration-300 hover:scale-105">
                   <MessageCircle className="w-4 h-4 mr-2" />
                   Chat with AI Coach
                 </Button>
