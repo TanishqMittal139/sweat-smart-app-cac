@@ -194,10 +194,6 @@ const DataVisualization = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="text-center space-y-6 mb-12">
-          <div className="inline-flex items-center space-x-2 bg-warning/10 text-warning rounded-full px-4 py-2">
-            <AlertTriangle className="w-4 h-4" />
-            <span className="text-sm font-medium">National Health Crisis</span>
-          </div>
           <h1 className="text-3xl md:text-5xl font-bold text-foreground">
             The Obesity & Diabetes Epidemic: Evidence-Based Analysis
           </h1>
@@ -222,8 +218,8 @@ const DataVisualization = () => {
             <CardContent className="p-6">
               <div className="text-4xl font-bold text-warning mb-2">100M+</div>
               <div className="text-muted-foreground mb-2">Adults with Obesity</div>
-              <Badge variant="secondary" className="rounded-full text-warning">
-                ↑ from 30.5% in 1999
+              <Badge className="rounded-full bg-warning text-white hover:bg-warning/90">
+                from 30.5% in 1999
               </Badge>
             </CardContent>
           </Card>
@@ -232,7 +228,7 @@ const DataVisualization = () => {
             <CardContent className="p-6">
               <div className="text-4xl font-bold text-accent mb-2">38.4M</div>
               <div className="text-muted-foreground mb-2">Americans with Diabetes</div>
-              <Badge variant="secondary" className="rounded-full text-accent">
+              <Badge className="rounded-full bg-accent text-white hover:bg-accent/90">
                 11.6% of Population
               </Badge>
             </CardContent>
@@ -242,7 +238,7 @@ const DataVisualization = () => {
             <CardContent className="p-6">
               <div className="text-4xl font-bold text-secondary mb-2">$413B</div>
               <div className="text-muted-foreground mb-2">Diabetes Cost 2022</div>
-              <Badge variant="secondary" className="rounded-full text-secondary">
+              <Badge variant="secondary" className="rounded-full text-white">
                 ADA Report
               </Badge>
             </CardContent>
@@ -260,12 +256,7 @@ const DataVisualization = () => {
             {/* Regional Comparison Bar Chart */}
             <Card className="rounded-2xl border-2">
               <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span>Obesity Rates by Region</span>
-                  <Badge variant="destructive" className="rounded-full">
-                    CDC 2023
-                  </Badge>
-                </CardTitle>
+                <CardTitle>Obesity Rates by Region</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="h-80">
@@ -306,7 +297,17 @@ const DataVisualization = () => {
                         cy="50%"
                         outerRadius={80}
                         dataKey="value"
-                        label={({ name, value }) => `${name}: ${value}`}
+                        label={({ name, value, cx, cy, midAngle, innerRadius, outerRadius }) => {
+                          const RADIAN = Math.PI / 180;
+                          const radius = outerRadius + 25;
+                          const x = cx + radius * Math.cos(-midAngle * RADIAN);
+                          const y = cy + radius * Math.sin(-midAngle * RADIAN);
+                          return (
+                            <text x={x} y={y} fill="black" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+                              {`${name}: ${value}`}
+                            </text>
+                          );
+                        }}
                       >
                         {severityBreakdown.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.fill} />
@@ -637,29 +638,6 @@ const DataVisualization = () => {
           </Card>
         </section>
 
-        {/* Call to Action */}
-        <section className="text-center space-y-8 py-12 bg-gradient-accent rounded-3xl">
-          <div className="px-8">
-            <h2 className="text-2xl md:text-4xl font-bold text-white mb-4">
-              Be Part of the Solution
-            </h2>
-            <p className="text-xl text-white/90 max-w-3xl mx-auto mb-8">
-              These statistics represent real people and real families. Every healthy choice you make 
-              contributes to changing these numbers. Your journey matters.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                size="lg" 
-                onClick={() => navigate('/dashboard')}
-                className="bg-white text-accent hover:bg-white/90 rounded-2xl px-8 py-4 text-lg font-semibold shadow-float hover:shadow-glow transition-all duration-300 hover:scale-105"
-              >
-                <Heart className="w-5 h-5 mr-2" fill="currentColor" />
-                Start Your Health Journey
-              </Button>
-            </div>
-          </div>
-        </section>
       </div>
     </div>
   );
