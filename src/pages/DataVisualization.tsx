@@ -606,25 +606,61 @@ const DataVisualization = () => {
                 <div className="space-y-2">
                   <h4 className="font-semibold text-foreground">Centers for Disease Control (CDC)</h4>
                   <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• Adult Obesity Facts (2024)</li>
-                    <li>• NHANES 2017-March 2020</li>
-                    <li>• Behavioral Risk Factor Surveillance</li>
+                    <li>
+                      <a href="https://www.cdc.gov/obesity/data/adult.html" target="_blank" rel="noopener noreferrer" className="hover:text-primary hover:underline flex items-center gap-1">
+                        • Adult Obesity Facts (2024) <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </li>
+                    <li>
+                      <a href="https://www.cdc.gov/nchs/nhanes/index.htm" target="_blank" rel="noopener noreferrer" className="hover:text-primary hover:underline flex items-center gap-1">
+                        • NHANES 2017-March 2020 <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </li>
+                    <li>
+                      <a href="https://www.cdc.gov/brfss/index.html" target="_blank" rel="noopener noreferrer" className="hover:text-primary hover:underline flex items-center gap-1">
+                        • Behavioral Risk Factor Surveillance <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </li>
                   </ul>
                 </div>
                 <div className="space-y-2">
                   <h4 className="font-semibold text-foreground">NIDDK/NIH</h4>
                   <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• Diabetes Statistics (2021)</li>
-                    <li>• Overweight & Obesity Statistics</li>
-                    <li>• National Health Statistics</li>
+                    <li>
+                      <a href="https://www.niddk.nih.gov/health-information/health-statistics/diabetes-statistics" target="_blank" rel="noopener noreferrer" className="hover:text-primary hover:underline flex items-center gap-1">
+                        • Diabetes Statistics (2021) <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </li>
+                    <li>
+                      <a href="https://www.niddk.nih.gov/health-information/health-statistics/overweight-obesity" target="_blank" rel="noopener noreferrer" className="hover:text-primary hover:underline flex items-center gap-1">
+                        • Overweight & Obesity Statistics <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </li>
+                    <li>
+                      <a href="https://www.nih.gov/about-nih/what-we-do/nih-almanac/national-institute-diabetes-digestive-kidney-diseases-niddk" target="_blank" rel="noopener noreferrer" className="hover:text-primary hover:underline flex items-center gap-1">
+                        • National Health Statistics <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </li>
                   </ul>
                 </div>
                 <div className="space-y-2">
                   <h4 className="font-semibold text-foreground">American Diabetes Association</h4>
                   <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• Economic Costs Report (2022)</li>
-                    <li>• Statistics About Diabetes</li>
-                    <li>• Demographic Analysis</li>
+                    <li>
+                      <a href="https://diabetesjournals.org/care/article/47/1/26/153343/Economic-Costs-of-Diabetes-in-the-U-S-in-2022" target="_blank" rel="noopener noreferrer" className="hover:text-primary hover:underline flex items-center gap-1">
+                        • Economic Costs Report (2022) <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </li>
+                    <li>
+                      <a href="https://diabetes.org/about-diabetes/statistics/about-diabetes" target="_blank" rel="noopener noreferrer" className="hover:text-primary hover:underline flex items-center gap-1">
+                        • Statistics About Diabetes <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </li>
+                    <li>
+                      <a href="https://diabetes.org/about-diabetes/statistics" target="_blank" rel="noopener noreferrer" className="hover:text-primary hover:underline flex items-center gap-1">
+                        • Demographic Analysis <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </li>
                   </ul>
                 </div>
               </div>
