@@ -38,28 +38,28 @@ const filterOptions: FilterOption[] = [
     label: "Healthy Grocery Stores",
     icon: ShoppingBag,
     types: ["grocery_or_supermarket", "store"],
-    keywords: ["whole foods", "trader joe", "organic", "natural", "healthy"],
+    keywords: [], // Show all grocery stores, let users decide what's healthy
   },
   {
     id: "farmers",
     label: "Farmers Markets",
     icon: Apple,
     types: ["store"],
-    keywords: ["farmers market", "farm market", "fresh produce"],
+    keywords: ["farmers market", "farm market", "fresh produce", "farmers"],
   },
   {
     id: "restaurants",
     label: "Healthy Restaurants",
     icon: Utensils,
     types: ["restaurant"],
-    keywords: ["salad", "healthy", "organic", "vegan", "vegetarian", "juice bar"],
+    keywords: [], // Show all restaurants, let users filter
   },
   {
     id: "organic",
     label: "Organic/Health Stores",
     icon: Leaf,
     types: ["health", "store"],
-    keywords: ["organic", "health food", "natural", "vitamin", "supplement"],
+    keywords: ["organic", "health food", "natural", "vitamin", "supplement", "wellness"],
   },
 ];
 
@@ -127,7 +127,8 @@ const FoodFinder = () => {
 
     const selectedFilters = filterOptions.filter((f) => activeFilters.includes(f.id));
     
-    // Calculate total number of searches needed (including pagination)
+    // Calculate total number of searches needed (with pagination - up to 3 pages per search)
+    const maxPagesPerSearch = 3; // Google Places API allows up to 3 pages (60 results max)
     const totalSearches = selectedFilters.reduce((sum, filter) => sum + filter.types.length, 0);
     let completedSearches = 0;
 
@@ -137,12 +138,13 @@ const FoodFinder = () => {
       return;
     }
 
-    // Simplified search without pagination for faster results
+    // Enhanced search with pagination to get more diverse results
     const performSearch = (
       request: google.maps.places.PlaceSearchRequest,
-      filter: FilterOption
+      filter: FilterOption,
+      pageNum: number = 1
     ) => {
-      service.nearbySearch(request, (results, status) => {
+      service.nearbySearch(request, (results, status, pagination) => {
         if (status === google.maps.places.PlacesServiceStatus.OK && results) {
           // Filter results by keywords - use OR logic (any keyword match)
           const filtered = results.filter((place) => {
@@ -163,16 +165,26 @@ const FoodFinder = () => {
           });
           
           allPlaces.push(...filtered);
+
+          // Check if we should get more results from next page
+          if (pagination && pagination.hasNextPage && pageNum < maxPagesPerSearch) {
+            // Add a small delay to avoid rate limiting
+            setTimeout(() => {
+              pagination.nextPage();
+            }, 300); // 300ms delay between pagination requests
+            return; // Don't increment completedSearches yet
+          }
         }
         
         completedSearches++;
         
         // When all searches complete, update places
         if (completedSearches === totalSearches) {
-          // Remove duplicates by place_id
+          // Remove duplicates by place_id and sort by rating
           const uniquePlaces = Array.from(
             new Map(allPlaces.map((place) => [place.place_id, place])).values()
-          );
+          ).sort((a, b) => (b.rating || 0) - (a.rating || 0));
+          
           setPlaces(uniquePlaces);
           setLoading(false);
           
@@ -191,15 +203,20 @@ const FoodFinder = () => {
       });
     };
 
-    selectedFilters.forEach((filter) => {
-      filter.types.forEach((type) => {
-        const request = {
-          location: center,
-          radius: 8047, // 5 miles in meters (reduced for faster, more relevant results)
-          type: type,
-        };
+    // Stagger the search requests slightly to prevent API rate limiting
+    selectedFilters.forEach((filter, filterIndex) => {
+      filter.types.forEach((type, typeIndex) => {
+        const delay = (filterIndex * filter.types.length + typeIndex) * 100; // 100ms stagger
+        
+        setTimeout(() => {
+          const request = {
+            location: center,
+            radius: 8047, // 5 miles in meters
+            type: type,
+          };
 
-        performSearch(request, filter);
+          performSearch(request, filter);
+        }, delay);
       });
     });
   };
