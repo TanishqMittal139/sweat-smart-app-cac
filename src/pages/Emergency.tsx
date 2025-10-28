@@ -405,7 +405,7 @@ const Emergency = () => {
               </div>
             ) : (
               <div className="flex flex-col gap-4 min-w-[300px]">
-                <div className="text-white text-center font-medium">
+                <div className="text-foreground text-center font-medium">
                   {currentQuestion}
                 </div>
                 <div className="flex gap-2">
@@ -413,7 +413,7 @@ const Emergency = () => {
                     value={userInput}
                     onChange={(e) => setUserInput(e.target.value)}
                     placeholder={questionType === "boxer" ? "e.g., Mike Tyson" : "e.g., stressed, excited, tired..."}
-                    className="bg-white/20 border-white/30 text-white placeholder:text-white/70 backdrop-blur-sm"
+                    className="bg-background border-2 text-foreground placeholder:text-muted-foreground"
                     onKeyPress={(e) => e.key === 'Enter' && handlePersonalizedInput()}
                   />
                   <Button
@@ -430,7 +430,7 @@ const Emergency = () => {
                     setQuestionType("general");
                   }}
                   variant="outline"
-                  className="text-white border-white/30 hover:bg-white/10 rounded-lg"
+                  className="text-foreground border-border hover:bg-accent rounded-lg"
                 >
                   Back
                 </Button>
