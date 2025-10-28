@@ -110,8 +110,8 @@ const HeroSection = () => {
                   <span className={`absolute left-0 top-0 bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent ${isAnimating ? "translate-y-0 transition-transform duration-1000" : "-translate-y-full"}`}>
                     {words[(currentWordIndex + 1) % words.length]}
                   </span>
-                </span>{" "}
-                Journey
+                </span>
+                <span className="block sm:inline"> Journey</span>
               </h1>
               
               <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 leading-relaxed max-w-2xl mx-0">With intelligent tracking and personalized insights, SweatSmart helps you stay consistent, build healthy habits, and achieve your wellness goals.</p>
