@@ -375,7 +375,7 @@ const Emergency = () => {
         {/* Interactive Control Panel */}
         <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-20">
           <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-bubble">
-            <h2 className="text-white text-xl font-bold mb-4 text-center">Emergency Motivation Hub 🌟</h2>
+            <h2 className="text-foreground text-xl font-bold mb-4 text-center">Emergency Motivation Hub 🌟</h2>
             
             {!showInput ? (
               <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
