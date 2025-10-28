@@ -134,7 +134,7 @@ All colors MUST be HSL for consistent theming.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground overflow-x-hidden;
   }
 
   /* Emergency page quote animation */

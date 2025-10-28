@@ -134,13 +134,13 @@ const HeroSection = () => {
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-start">
-              <Button size="lg" onClick={() => navigate(user ? "/dashboard" : "/auth")} className="bg-white text-primary hover:bg-white/90 rounded-2xl px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold shadow-float hover:shadow-glow transition-all duration-300 hover:scale-105 w-full sm:w-auto">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-start">
+              <Button size="lg" onClick={() => navigate(user ? "/dashboard" : "/auth")} className="bg-white text-primary hover:bg-white/90 rounded-2xl px-5 sm:px-8 py-3 sm:py-4 text-sm sm:text-lg font-semibold shadow-float hover:shadow-glow transition-all duration-300 hover:scale-105 w-auto">
                 Start Your Journey
                 <ArrowRight className="w-4 sm:w-5 h-4 sm:h-5 ml-2" />
               </Button>
               
-              <Button variant="outline" size="lg" onClick={() => navigate("/data")} className="border-2 border-white/30 bg-accent text-accent-foreground rounded-2xl px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold backdrop-blur-sm transition-all duration-300 hover:scale-105 w-full sm:w-auto">
+              <Button variant="outline" size="lg" onClick={() => navigate("/data")} className="border-2 border-white/30 bg-accent text-accent-foreground rounded-2xl px-5 sm:px-8 py-3 sm:py-4 text-sm sm:text-lg font-semibold backdrop-blur-sm transition-all duration-300 hover:scale-105 w-auto">
                 <Play className="w-4 sm:w-5 h-4 sm:h-5 mr-2" />
                 View The Data
               </Button>
