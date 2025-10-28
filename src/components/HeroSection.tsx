@@ -80,24 +80,24 @@ const HeroSection = () => {
     
     return () => clearInterval(interval);
   }, [carouselApi]);
-  return <div className="relative min-h-screen flex items-center overflow-hidden bg-gradient-hero">
+  return <div className="relative min-h-screen flex items-center overflow-hidden bg-gradient-hero px-4">
       {/* Background Elements */}
       <div className="absolute inset-0 bg-gradient-hero opacity-90" />
       <div className="absolute top-20 left-10 w-20 h-20 bg-primary/20 rounded-full animate-bounce-gentle" />
       <div className="absolute top-40 right-20 w-16 h-16 bg-secondary/20 rounded-full animate-bounce-gentle delay-500" />
       <div className="absolute bottom-40 left-1/4 w-12 h-12 bg-accent/20 rounded-full animate-bounce-gentle delay-1000" />
       
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div className="relative max-w-7xl mx-auto w-full py-12 sm:py-20">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           {/* Content */}
-          <div className="text-left space-y-8">
-            <div className="space-y-6">
-              <div className="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-white">
-                <TrendingUp className="w-4 h-4" />
-                <span className="text-sm font-medium">Obesity Crisis in America</span>
+          <div className="text-left space-y-6 sm:space-y-8">
+            <div className="space-y-4 sm:space-y-6">
+              <div className="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-sm rounded-full px-3 sm:px-4 py-1.5 sm:py-2 text-white">
+                <TrendingUp className="w-3 sm:w-4 h-3 sm:h-4" />
+                <span className="text-xs sm:text-sm font-medium">Obesity Crisis in America</span>
               </div>
               
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight text-center lg:text-left">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight">
                 Take Control of Your{" "}
                 <span className="relative overflow-hidden" style={{
                 minWidth: `${spanWidthCh}ch`,
@@ -114,27 +114,27 @@ const HeroSection = () => {
                 Journey
               </h1>
               
-              <p className="text-xl md:text-2xl text-white/90 leading-relaxed max-w-2xl mx-0">With intelligent tracking and personalized insights, SweatSmart helps you stay consistent, build healthy habits, and achieve your wellness goals.</p>
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 leading-relaxed max-w-2xl mx-0">With intelligent tracking and personalized insights, SweatSmart helps you stay consistent, build healthy habits, and achieve your wellness goals.</p>
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 py-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 py-4 sm:py-6">
               <div className="text-left">
-                <div className="text-2xl md:text-3xl font-bold text-white">41.9%</div>
-                <div className="text-white/80 text-sm">US Adults Obese</div>
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-white">41.9%</div>
+                <div className="text-white/80 text-xs sm:text-sm">US Adults Obese</div>
               </div>
               <div className="text-left">
-                <div className="text-2xl md:text-3xl font-bold text-white">97.6M</div>
-                <div className="text-white/80 text-sm">Adults Prediabetic</div>
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-white">97.6M</div>
+                <div className="text-white/80 text-xs sm:text-sm">Adults Prediabetic</div>
               </div>
               <div className="text-left">
-                <div className="text-2xl md:text-3xl font-bold text-white">38.4M</div>
-                <div className="text-white/80 text-sm">Americans w/ Diabetes</div>
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-white">38.4M</div>
+                <div className="text-white/80 text-xs sm:text-sm">Americans w/ Diabetes</div>
               </div>
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-start">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-start">
               <Button size="lg" onClick={() => navigate(user ? "/dashboard" : "/auth")} className="bg-white text-primary hover:bg-white/90 rounded-2xl px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold shadow-float hover:shadow-glow transition-all duration-300 hover:scale-105 w-full sm:w-auto">
                 Start Your Journey
                 <ArrowRight className="w-4 sm:w-5 h-4 sm:h-5 ml-2" />
@@ -151,7 +151,7 @@ const HeroSection = () => {
           </div>
 
           {/* Data Carousel */}
-          <div className="relative">
+          <div className="relative hidden lg:block">
             <Carousel 
               setApi={setCarouselApi}
               opts={{
