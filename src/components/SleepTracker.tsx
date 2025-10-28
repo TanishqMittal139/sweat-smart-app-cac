@@ -300,7 +300,7 @@ export const SleepTracker = ({ userId }: Props) => {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="rounded-xl border-2 hover:border-destructive hover:text-destructive"
+                    className="rounded-xl border-2 hover:border-destructive hover:text-destructive hover:bg-transparent"
                     disabled={isResetting}
                   >
                     <RotateCcw className="w-4 h-4 mr-1" />
