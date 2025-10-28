@@ -475,7 +475,7 @@ const Emergency = () => {
         {/* Bottom motivation text */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
           <div className="bg-white/10 backdrop-blur-md rounded-xl px-6 py-3 border border-white/20">
-            <p className="text-white text-center font-medium">
+            <p className="text-foreground text-center font-medium">
               🌟 Motivation is the foundation of health goals! You've got this! 🌟
             </p>
           </div>
