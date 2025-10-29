@@ -154,6 +154,18 @@ const SOURCES = [
   "https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-024-19895-8",
   "https://www.mdpi.com/1660-4601/17/17/6216",
   
+  // Mental health and obesity research
+  "https://www.ncbi.nlm.nih.gov/books/NBK603747/",
+  "https://pmc.ncbi.nlm.nih.gov/articles/PMC9985585/",
+  "https://www.sciencedirect.com/science/article/pii/S2530018022001767",
+  "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2024.1474844/full",
+  "https://www.worldobesity.org/what-we-do/our-policy-priorities/weight-stigma",
+  "https://www.ncoa.org/article/how-excess-weight-impacts-our-mental-and-emotional-health/",
+  "https://rcgd.isr.umich.edu/wp-content/uploads/2018/08/Major_Tomiyama__Hunger_Oxford_Handbook.pdf",
+  "https://obesitymedicine.org/blog/womens-mental-health-and-obesity/",
+  "https://publichealth.uic.edu/community-engagement/collaboratory-for-health-justice/addressing-weight-stigma-and-fatphobia-in-public-health/",
+  "https://tmsinstitute.co/is-higher-bmi-impacting-your-mental-health/",
+  
   // Dietary guidelines
   "https://www.dietaryguidelines.gov/sites/default/files/2021-03/Dietary_Guidelines_for_Americans-2020-2025.pdf"
 ];
