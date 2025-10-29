@@ -1,22 +1,22 @@
-# Welcome to your Lovable project
+# SweatSmart - Health & Wellness Platform
 
-## Project info
+SweatSmart is a comprehensive health and wellness web application that helps users achieve their fitness goals through personalized plans, AI-powered health guidance, and tracking tools.
 
-**URL**: https://lovable.dev/projects/7791dceb-7e45-4bc4-8ec5-36ce63eff2bc
+## Features
 
-## How can I edit this code?
+- **Personalized Health Plans**: AI-generated customized health and fitness plans
+- **AI Health Assistant**: Chat with an intelligent health advisor powered by advanced RAG (Retrieval-Augmented Generation)
+- **Weight & Sleep Tracking**: Monitor your progress with intuitive tracking tools
+- **Interactive Games**: Engage with health-focused educational games
+- **Food Finder**: Discover healthy dining options nearby
+- **Emergency Resources**: Quick access to emergency health information
+- **Data Visualization**: Comprehensive health statistics and insights
 
-There are several ways of editing your application.
+## Getting Started
 
-**Use Lovable**
+**Local Development**
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/7791dceb-7e45-4bc4-8ec5-36ce63eff2bc) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Clone this repository and install dependencies:
 
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
@@ -60,14 +60,16 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
-## How can I deploy this project?
+## Deployment
 
-Simply open [Lovable](https://lovable.dev/projects/7791dceb-7e45-4bc4-8ec5-36ce63eff2bc) and click on Share -> Publish.
+Build the project for production:
 
-## Can I connect a custom domain to my Lovable project?
+```sh
+npm run build
+```
 
-Yes, you can!
+The built files will be in the `dist` directory, ready to be deployed to any static hosting service.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## Technologies Used
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+This project leverages modern web technologies including React, TypeScript, Vite, Tailwind CSS, and Supabase for backend services.
