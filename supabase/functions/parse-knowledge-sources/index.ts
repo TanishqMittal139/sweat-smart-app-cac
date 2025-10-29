@@ -7,39 +7,106 @@ const corsHeaders = {
 };
 
 const SOURCES = [
-  // Existing sources
+  // CDC data sources
+  "https://stacks.cdc.gov/view/cdc/147179",
+  "https://www.cdc.gov/dnpao-data-trends-maps/cbs-heals/index.html",
+  "https://www.cdc.gov/dnpao-data-trends-maps/healthy-people-2030/index.html",
+  "https://www.cdc.gov/dnpao-state-local-programs/php/data-statistics/health-equity.html",
+  "https://www.cdc.gov/nutrition/php/data-research/index.html",
+  "https://www.cdc.gov/breastfeeding-data/about/index.html",
+  "https://www.cdc.gov/obesity/childhood-obesity-facts/childhood-obesity-facts.html",
+  "https://gis.cdc.gov/grasp/diabetes/diabetesatlas-surveillance.html",
+  "https://gis.cdc.gov/grasp/diabetes/diabetesatlas-analysis.html",
+  "https://www.cdc.gov/nchs/fastats/obesity-overweight.htm",
   "https://www.cdc.gov/obesity/data-and-statistics/adult-obesity-prevalence-maps.html",
   "https://www.cdc.gov/obesity/adult-obesity-facts/",
-  "https://www.who.int/news-room/fact-sheets/detail/obesity-and-overweight",
   "https://www.cdc.gov/nchs/products/databriefs/db508.htm",
+  "https://www.cdc.gov/diabetes/php/data-research/index.html",
+  "https://www.cdc.gov/chronicdisease/resources/publications/factsheets/heart-disease-stroke.htm",
+  "https://www.cdc.gov/mental-health/data-research/facts-stats/index.html",
+  "https://www.cdc.gov/physical-activity-basics/guidelines/index.html",
+  "https://www.cdc.gov/nutrition/resources-publications/data-statistics.html",
+  "https://www.cdc.gov/obesity/php/about/index.html",
+  "https://www.cdc.gov/obesity/adult-obesity-facts/index.html",
+  "https://www.cdc.gov/nchs/products/nvsr.htm",
+  "https://www.cdc.gov/nchs/products/nhsr.htm",
+  "https://www.cdc.gov/nchs/products/life_tables.htm",
+  "https://www.cdc.gov/chronic-disease/about/index.html",
+  "https://www.cdc.gov/active-people-healthy-nation/php/tools/sports-and-fitness.html",
+  "https://www.cdc.gov/diabetes-prevention/php/lifestyle-change-resources/t2-curriculum.html",
+  "https://blogs.cdc.gov/nchs/2013/01/30/215/",
+  "https://www.cdc.gov/pcd/issues/2015/14_0392.htm",
+  "https://blogs.cdc.gov/nchs/2014/05/28/2271/",
+  "https://www.cdc.gov/disability-and-health/conditions/physical-activity.html",
+  "https://www.cdc.gov/disability-and-health/articles-documents/cdc-and-special-olympics-inclusive-health.html",
+  "https://blogs.cdc.gov/niosh-science-blog/2022/01/31/fitness-equipment/",
+  "https://www.cdc.gov/physical-activity-education/guidelines/",
+  "https://www.cdc.gov/obesity/family-action/",
+  
+  // World health organizations
+  "https://data.worldobesity.org/",
+  "https://gateway.euro.who.int/en/",
+  "https://www.who.int/news/item/01-03-2024-one-in-eight-people-are-now-living-with-obesity",
+  "https://www.paho.org/en/news/1-3-2024-one-eight-people-are-now-living-obesity",
+  "https://www.worldobesity.org/about/about-obesity/prevalence-of-obesity",
+  "https://www.who.int/news-room/fact-sheets/detail/obesity-and-overweight",
+  "https://www.who.int/news-room/fact-sheets/detail/physical-activity",
+  "https://www.who.int/westernpacific/newsroom/feature-stories/item/10-health-tips-for-2025",
+  
+  // NIH and research
+  "https://www.niddk.nih.gov/about-niddk/research-areas/obesity",
   "https://www.niddk.nih.gov/health-information/health-statistics/overweight-obesity",
   "https://www.niddk.nih.gov/health-information/health-statistics/diabetes-statistics",
   "https://www.niddk.nih.gov/health-information/health-statistics/diabetes-statistics/national-diabetes-survey",
+  "https://www.nimh.nih.gov/health/statistics/mental-illness",
+  "https://www.nih.gov/health-information/your-healthiest-self-wellness-toolkits",
+  "https://www.nih.gov/news-events/nih-research-matters/2024-nih-research-highlights-promising-medical-findings",
+  
+  // Statistics and reports
+  "https://www.nationmaster.com/country-info/stats/Health/Obesity#google_vignette",
+  "https://www.massgeneralbrigham.org/en/about/newsroom/press-releases/dramatic-increase-in-adults-who-meet-new-definition-of-obesity",
+  "https://www.statista.com/topics/1005/obesity-and-overweight/",
+  "https://www.tfah.org/report-details/state-of-obesity-report-2025/",
+  "https://www.tfah.org/report-details/state-of-obesity-2024/",
+  "https://www.oecd.org/en/publications/2023/11/health-at-a-glance-2023_e04f8239/full-report/overweight-and-obesity_590d3909.html",
+  "https://www.healthsystemtracker.org/indicator/health-well-being/body-mass-index-bmi/",
+  "https://newsroom.heart.org/news/obesity-related-heart-disease-deaths-increased-in-the-u-s-over-the-past-two-decades",
   "https://www.henryford.com/blog/2025/02/american-obesity-rates-are-increasing",
   "https://obesitymedicine.org/blog/rising-obesity-rates-in-america-a-public-health-crisis/",
   "https://www.healthdata.org/news-events/newsroom/news-releases/lancet-without-immediate-action-nearly-260-million-people-usa",
   "https://usafacts.org/articles/obesity-rate-nearly-triples-united-states-over-last-50-years/",
   "https://www.visualcapitalist.com/mapped-u-s-obesity-rates-by-state/",
   "https://www.usnews.com/news/best-states/slideshows/the-most-obese-states-in-america",
-  "https://www.tfah.org/report-details/state-of-obesity-2024/",
+  "https://diabetes.org/about-diabetes/statistics/about-diabetes",
+  "https://www.chartspan.com/blog/top-chronic-disease-risk-factors/",
+  
+  // Health resources and tips
+  "https://www.southbendclinic.com/health-topic/tips-for-maintaining-wellness-at-every-age",
+  "https://medlineplus.gov/healthyaging.html",
+  "https://fairbanks.indianapolis.iu.edu/doc/10-Tips-Healthy-Lifestyle.pdf",
+  "https://www.sciencedaily.com/news/health_medicine/",
+  
+  // Healthcare insights and industry
+  "https://asmbs.org/resources/metabolic-and-bariatric-surgery/",
+  "https://www.wolterskluwer.com/en/expert-insights/health",
+  "https://www.deloitte.com/us/en/insights/industry/government-public-sector-services/measuring-health-campaign-impact.html",
+  "https://www.deloitte.com/us/en/insights/multimedia/podcasts/ai-to-improve-health-care-access.html",
+  "https://www.deloitte.com/us/en/insights/industry/health-care/health-equity-economic-impact.html",
+  "https://www.deloitte.com/us/en/insights/industry/government-public-sector-services/preparing-federal-healthcare-providers-for-the-healthcare-revolution.html",
+  "https://www.deloitte.com/us/en/insights/industry/health-care/health-care-cfos-embrace-comprehensive-approach-to-profitability.html",
+  "https://www.deloitte.com/us/en/insights/industry/health-care/consumer-trust-in-health-care-generative-ai.html",
+  "https://www.deloitte.com/us/en/insights/industry/health-care/economic-burden-mental-health-inequities.html",
+  "https://www.deloitte.com/us/en/insights/industry/health-care/how-digital-tools-can-help-the-maternal-health-crisis.html",
+  "https://www.deloitte.com/us/en/insights/industry/health-care/health-tech-and-womens-health-investment-trends.html",
+  "https://www.deloitte.com/us/en/insights/industry/health-care/future-of-healthcare-in-europe.html",
+  
+  // Academic research
   "https://jamanetwork.com/journals/jama/fullarticle/192032",
   "https://www.wvdhhr.org/bph/oehp/obesity/mortality.htm",
   "https://pmc.ncbi.nlm.nih.gov/articles/PMC9065308/",
   "https://www.thelancet.com/journals/lanepe/article/PIIS2666-7762(24)00153-4/fulltext",
-  "https://www.cdc.gov/obesity/php/about/index.html",
   "https://stop.publichealth.gwu.edu/sites/g/files/zaxdzs4356/files/2022-06/fast-facts-costs-of-obesity.pdf",
   "https://stop.publichealth.gwu.edu/LFD-oct23",
-  "https://www.cdc.gov/obesity/adult-obesity-facts/index.html",
-  "https://www.cdc.gov/nchs/products/nvsr.htm",
-  "https://www.cdc.gov/nchs/products/nhsr.htm",
-  "https://www.cdc.gov/nchs/products/life_tables.htm",
-  "https://www.cdc.gov/diabetes/php/data-research/index.html",
-  "https://diabetes.org/about-diabetes/statistics/about-diabetes",
-  "https://www.niddk.nih.gov/health-information/health-statistics/diabetes-statistics",
-  "https://www.cdc.gov/chronic-disease/about/index.html",
-  "https://www.chartspan.com/blog/top-chronic-disease-risk-factors/",
-  
-  // New sources - Mental health and physical activity
   "https://www.annualreviews.org/content/journals/10.1146/annurev-publhealth-040119-094247",
   "https://ncmedicaljournal.com/article/55247",
   "https://www.sciencedirect.com/science/article/pii/S0277953617306639?via%3Dihub",
@@ -86,16 +153,9 @@ const SOURCES = [
   "https://www.jsams.org/article/S1440-2440(18)31221-0/abstract",
   "https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-024-19895-8",
   "https://www.mdpi.com/1660-4601/17/17/6216",
-  "https://www.cdc.gov/active-people-healthy-nation/php/tools/sports-and-fitness.html",
-  "https://www.cdc.gov/diabetes-prevention/php/lifestyle-change-resources/t2-curriculum.html",
-  "https://blogs.cdc.gov/nchs/2013/01/30/215/",
-  "https://www.cdc.gov/pcd/issues/2015/14_0392.htm",
-  "https://blogs.cdc.gov/nchs/2014/05/28/2271/",
-  "https://www.cdc.gov/disability-and-health/conditions/physical-activity.html",
-  "https://www.cdc.gov/disability-and-health/articles-documents/cdc-and-special-olympics-inclusive-health.html",
-  "https://blogs.cdc.gov/niosh-science-blog/2022/01/31/fitness-equipment/",
-  "https://www.cdc.gov/physical-activity-education/guidelines/",
-  "https://www.cdc.gov/obesity/family-action/"
+  
+  // Dietary guidelines
+  "https://www.dietaryguidelines.gov/sites/default/files/2021-03/Dietary_Guidelines_for_Americans-2020-2025.pdf"
 ];
 
 serve(async (req) => {
