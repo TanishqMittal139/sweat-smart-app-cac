@@ -27,7 +27,7 @@ const Index = () => {
   }, {
     icon: Sparkles,
     title: "Interactive Quizzes",
-    description: "Learn through gamified health challenges and earn badges",
+    description: "Learn through gamified health challenges and earn points",
     color: "text-accent",
     bgColor: "bg-accent/10"
   }, {
