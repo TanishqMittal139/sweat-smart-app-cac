@@ -1,6 +1,7 @@
 # SweatSmart - Health & Wellness Platform
 
 SweatSmart is a comprehensive health and wellness web application that helps users achieve their fitness goals through personalized plans, AI-powered health guidance, and tracking tools.
+https://sweat-smart-app-cac.vercel.app/
 
 ## Features
 
